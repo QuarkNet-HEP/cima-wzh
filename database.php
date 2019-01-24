@@ -2,8 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "config/mc.config";
-
+//include "config/mc.config";
+include "../../local-settings/mc.config";
+	
 function askdb($q){
 	$login = getDBConfig();
 	$con = mysqli_connect("localhost", $login["db_login"], $login["db_pw"], $login["db_name"]);
