@@ -1,0 +1,66 @@
+.panel-container {
+	height:14em;
+	width:90%;
+	border:2px solid black;
+	border-radius:0.5em;
+	#background-color:aliceblue;
+	#background-color:azure;
+	#background-color:snow;
+	#background-color:ghostwhite;
+	background-color:whitesmoke;
+	margin-top:2em;
+	margin-bottom:2em;
+}
+
+.subpanel {
+	background-color:transparent;
+	display:inline-block;
+	float:left;
+	width:25%;
+	height:100%;
+}
+
+.panelheader {
+	font-weight:bold;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+}
+
+.divider {
+	width:0.2%;
+	float:left;
+	border:1px solid black;
+	display:inline-block;
+	height:100%;
+	background-color:black;
+}
+
+.selector-1 {
+	display:inline-block;
+	width:96%;
+}
+
+.selector-2 {
+	display:inline-block;
+	width:48%;
+}
+
+.selector-3 {
+	display:inline-block;
+	width:30%;
+}
+
+.massInput {
+	margin-top:1em;
+	margin-bottom:1em;
+}
+
+#indexSelect {
+	margin-top:1em;
+	margin-bottom:1em;
+}
+
+#eventNumber {
+	margin-top:1.5em;
+	margin-bottom:1em;	
+}

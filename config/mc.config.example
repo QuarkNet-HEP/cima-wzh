@@ -1,0 +1,22 @@
+<?php
+
+function getDBConfig(){
+	$db_config = array(
+		"db_login" => "database_user_login",
+		"db_pw" => "database_user_password",
+		"db_name" => "database_name"
+	);
+
+	return $db_config;
+}
+
+function getAuthConfig(){
+	$auth_config = array(
+		"admin_login" => "administrator_login",
+		"admin_pw" => "administrator_password"
+	);
+
+	return $auth_config;
+}
+
+?>
