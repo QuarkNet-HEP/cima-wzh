@@ -43,7 +43,7 @@ $ratioHeaders = array_values($ratioColumns);
  * Entries are the number of times users identified the given
  * particle state within the given datagroup.  Construction is based on
  * whether we're showing a single location's data or combined data.
- */	 
+ */
 if(!isset($_SESSION["comb"])){
 	/*** Single location ***/
 	include 'templates/navbar.tpl';
@@ -197,7 +197,7 @@ if(isset($_SESSION["tables"])){
 	/* If $_SESSION["tables"] is NOT set but $_SESSION["database"] is */
 	/* $_SESSION["database"] is set in sendIndData.php as the 'name' value
 	 * of the Location table returned by GetTableByID() in database.php */
-	$events=GetAllEvents($_SESSION["database"]);	
+	$events=GetAllEvents($_SESSION["database"]);
 	$eCount=0;
 	$muCount=0;
 	$WCount=0;
@@ -330,11 +330,11 @@ foreach($groups as $i => $g){
 echo '</tbody></table></div> <div class=col-md-2></div></div>';
 
 
-/* Below the Results Table is a smaller Totals Table */ 
-include "tableTotals.tpl";
+/* Below the Results Table is a smaller Totals Table */
+include "templates/tableTotals.tpl";
 
 include "templates/floor.tpl";
-	
+
 ?>
 
 
