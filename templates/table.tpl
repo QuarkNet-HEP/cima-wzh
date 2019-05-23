@@ -154,6 +154,7 @@
 		<div class="col-md-3 subpanel" id="primarydata">
 			<div class="panelheader">Primary State</div>
 			<div class="selectorRow">
+			---
 				<div class="selector-3">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
@@ -202,8 +203,9 @@
 						 		 id="other" name="primaryState" value="Zoo">
 					Zoo
 				</div>
-			</div> <!-- End row 4-->
-		</div>
+			</div> <!-- End row 3-->
+
+		</div><!-- End div "primarydata" -->
 
 		<div class="divider"></div>
 
