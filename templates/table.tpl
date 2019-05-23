@@ -149,7 +149,10 @@
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
 						 		 id="charged" name="primaryState" value="charged" />
-					<label for="charged">Charged Particle (W+, W-, W+/-)</label>
+					<label for="charged">
+						Charged Particle <br />
+						(W+, W-, W+/-)
+					</label>
 				</div>
 			</div> <!-- End row 1-->
 
@@ -158,7 +161,10 @@
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
 						 		 id="neutral" name="primaryState" value="neutral" />
-					<label for="neutral">Neutral Particle (Z, H)</label>
+					<label for="neutral">
+						Neutral Particle <br />
+						(Z, H)
+					</label>
 				</div>
 			</div><!-- End row 2-->
 
@@ -182,7 +188,6 @@
 				<input type="text" name="massEntry" class="massEntry" id="enterMass"
 							 size="3%" disabled="disabled" />
 				<label for="enterMass">GeV/c²<label>
-				<!--<span id="mass" style="float:right;"></span>-->
 			</span>
 			<span style="display: inline-block; padding-top:5%; padding-bottom:5%;	
 									border:1px solid transparent;">
