@@ -50,13 +50,13 @@
 	width:30%;
 }
 
-.panel-container label {
+.selectorRow label {
 	font-weight: 400;
 	margin-left: 25px;
   display: block;
 }
 
-.panel-container input[type="radio"] {    
+.selectorRow input[type="radio"] {    
   float: left;
 }
 
