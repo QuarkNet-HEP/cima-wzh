@@ -51,9 +51,20 @@
 }
 
 .primarySelect {
-	text-align:right;
+		text-align:right;
+		horizontal-align:right;
 }
 		
+.panel-container label {
+	font-weight: 400;
+	margin-left: 25px;
+  display: block;
+}
+
+.panel-container input[type="radio"] {    
+  float: left;
+}
+
 .massInput {
 	margin-top:1em;
 	margin-bottom:1em;
