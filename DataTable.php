@@ -82,17 +82,6 @@ function calcEv($id){
 	return $_SESSION["groupNo"].'-'.($id-(100*($_SESSION["groupNo"]-1)));
 }
 
-/* Whether or not to display mass value in the Event Table */
-function showM($checked){
-	$arr=explode(";",$checked);
-	/* If H or Z are selected, show the mass */
-	if((in_array("H",$arr) || in_array("Z",$arr))){
-		return true;
-	}else{
-		return false;
-	}
-}
-
 include 'templates/header.tpl';
 if(isset($event)){
 	$_SESSION["current"]=$event;
