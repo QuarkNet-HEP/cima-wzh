@@ -84,14 +84,14 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="e-nu" name="finalState" value="e&nu;">
-					e &nu;
+						 		 id="e-nu" name="finalState" value="e&nu;" />
+					<label for="e-nu">e &nu;</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="mu-nu" name="finalState" value="&mu;&nu;">
-					&mu; &nu;
+						 		 id="mu-nu" name="finalState" value="&mu;&nu;" />
+					<label for="mu-nu">&mu; &nu;</label>
 				</div>
 			</div><!-- End row 1-->
 
@@ -99,14 +99,14 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="e-e" name="finalState" value="ee">
-					e e
+						 		 id="e-e" name="finalState" value="ee" />
+					<label for="e-e">e e</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="mu-mu" name="finalState" value="&mu;&mu;">
-					&mu; &mu;
+						 		 id="mu-mu" name="finalState" value="&mu;&mu;" />
+					<label for="mu-mu">&mu; &mu;</label>
 				</div>
 			</div> <!-- End row 2-->
 
@@ -114,14 +114,14 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="4-e" name="finalState" value="4e">
-					4e
+						 		 id="4-e" name="finalState" value="4e" />
+					<label for="4-e">4e</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="4-mu" name="finalState" value="4&mu;">
-					4&mu;
+						 		 id="4-mu" name="finalState" value="4&mu;" />
+					<label for="4-mu">4&mu;</label>
 				</div>
 			</div> <!-- End row 3-->
 
@@ -129,25 +129,16 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="2e-2mu" name="finalState" value="2e 2&mu;">
-					2e 2&mu;
+						 		 id="2e-2mu" name="finalState" value="2e 2&mu;" />
+					<label for="2e-2mu">2e 2&mu;</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 onclick="SelectState(this)"
-						 id="2-gam" name="finalState" value="2&gamma;">
-					2&gamma;
+						 id="2-gam" name="finalState" value="2&gamma;" />
+					<label for="2-gam">2&gamma;</label>
 				</div>
 			</div> <!-- End row 4-->
-
-			<div class="selectorRow">
-				<div class="selector-1">
-					<input type="radio" class="finalSelect"
-						 		 onclick="SelectState(this)"
-						 		 id="zoo" name="finalState" value="Zoo">
-					Zoo
-				</div>
-			</div> <!-- End row 5-->
 		</div>
 
 		<div class="divider"></div>
@@ -157,8 +148,8 @@
 				<div class="selector-1">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="charged" name="primaryState" value="charged">
-					Charged Particle (W+, W-, W+/-)
+						 		 id="charged" name="primaryState" value="charged" />
+					<label for="charged">Charged Particle (W+, W-, W+/-)</label>
 				</div>
 			</div> <!-- End row 1-->
 
@@ -166,8 +157,8 @@
 				<div class="selector-1">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="neutral" name="primaryState" value="neutral">
-					Neutral Particle (Z, H)
+						 		 id="neutral" name="primaryState" value="neutral" />
+					<label for="neutral">Neutral Particle (Z, H)</label>
 				</div>
 			</div><!-- End row 2-->
 
@@ -175,8 +166,8 @@
 				<div class="selector-1">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="zoo" name="primaryState" value="zoo">
-					Zoo
+						 		 id="zoo" name="primaryState" value="zoo" />
+					<label for="zoo">Zoo</label>
 				</div>
 			</div><!-- End row 3-->
 		</div><!-- End div "primarydata" -->
@@ -189,15 +180,15 @@
 						style="color:grey; border:1px solid transparent;">
 				<!--Mass:-->
 				<input type="text" name="massEntry" class="massEntry" id="enterMass"
-							 size="3%" disabled="disabled">
-				GeV/c²
+							 size="3%" disabled="disabled" />
+				<label for="enterMass">GeV/c²<label>
 				<!--<span id="mass" style="float:right;"></span>-->
 			</span>
 			<span style="display: inline-block; padding-top:5%; padding-bottom:5%;	
 									border:1px solid transparent;">
 				<button type="submit" disabled="true" id="next" name="fin"
-								class="btn btn-primary btn-lg">
-					Next
+								class="btn btn-primary btn-lg" />
+					<label for="next">Next</label>
 				</button>
 			</span>
 		</div>
