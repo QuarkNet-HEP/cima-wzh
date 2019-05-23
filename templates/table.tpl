@@ -195,21 +195,6 @@
 				</div>
 			</div><!-- End row 2-->
 
-<!--			<div class="selectorRow">
-				<div class="selector-2">
-					<input type="radio" class="primarySelect"
-						 		 onclick="SelectState(this)"
-						 		 id="J-Psi" name="primaryState" value="J/&Psi;">
-					J/&Psi;
-				</div>
-				<div class="selector-2">
-					<input type="radio" class="primarySelect"
-						 		 onclick="SelectState(this)"
-						 		 id="ups" name="primaryState" value="&Upsilon;">
-					&Upsilon;
-				</div>
-			</div> --><!-- End row 3-->
-
 			<div class="selectorRow">
 				<div class="selector-1">
 					<input type="radio" class="primarySelect"
