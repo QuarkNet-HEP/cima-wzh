@@ -154,45 +154,20 @@
 		<div class="col-md-3 subpanel" id="primarydata">
 			<div class="panelheader">Primary State</div>
 			<div class="selectorRow">
-			---
-				<div class="selector-3">
+				<div class="selector-1">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="w-x" name="primaryState" value="W">
-					W
-				</div>
-				<div class="selector-3">
-					<input type="radio" class="primarySelect"
-						 		 onclick="SelectState(this)"
-						 		 id="w+" name="primaryState" value="W+">
-					W+
-				</div>
-				<div class="selector-3">
-					<input type="radio" class="primarySelect"
-						 		 onclick="SelectState(this)"
-						 		 id="w-" name="primaryState" value="W-">
-					W-
+						 		 id="charged" name="primaryState" value="charged">
+					Charged Particle (W+, W-, W+/-)
 				</div>
 			</div> <!-- End row 1-->
 
 			<div class="selectorRow">
-				<div class="selector-3">
+				<div class="selector-1">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="z" name="primaryState" value="Z">
-					Z
-				</div>
-				<div class="selector-3">
-					<input type="radio" class="primarySelect"
-						 		 onclick="SelectState(this)"
-						 		 id="h" name="primaryState" value="H">
-					H
-				</div>
-				<div class="selector-3">
-					<input type="radio" class="primarySelect"
-						 		 onclick="SelectState(this)"
-						 		 id="np" name="primaryState" value="NP">
-					NP
+						 		 id="neutral" name="primaryState" value="neutral">
+					Neutral Particle (Z, H)
 				</div>
 			</div><!-- End row 2-->
 
@@ -200,11 +175,10 @@
 				<div class="selector-1">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="other" name="primaryState" value="Zoo">
+						 		 id="zoo" name="primaryState" value="zoo">
 					Zoo
 				</div>
-			</div> <!-- End row 3-->
-
+			</div><!-- End row 3-->
 		</div><!-- End div "primarydata" -->
 
 		<div class="divider"></div>
