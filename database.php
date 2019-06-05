@@ -538,6 +538,7 @@ function UpData($data,$id){
 
 /* Function to update the histogram table of a location identified by $id */
 function UpdateHistogram($chart,$data,$id){
+	/* $chart is 'data_2l' or 'data_4l', the one you want to update */
 	$q="UPDATE histograms SET ".$chart."='".$data."' WHERE id=".$id;
 	askdb($q);
 }
