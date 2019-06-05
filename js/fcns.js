@@ -65,7 +65,7 @@ function SelP(element,mass){
 
 // Added Nov2018 for WZH upgrades.  A simpler version of SelP()
 /* Update 18Dec2018: For some reason I decided against this in favor of the 
- * following function.  Leaving code in case it's useful in the future. - JG
+ * function that follows.  Leaving code in case it's useful in the future. - JG
  */
 /*
 function SelectState_unused(element){
@@ -111,15 +111,20 @@ function SelectState(element){
 	let finalCheckedList = document.querySelectorAll('input[name="finalState"]:checked');
 	let primaryCheckedList = document.querySelectorAll('input[name="primaryState"]:checked');
 
+	// Mass Entry is required for Final States that are all-charged-leptons
+	// AND that have a Neutral Particle Primary State
+	// We list Mass-Required Final States by their selector id's:
 	let twoLepList=["e-e","mu-mu"];
 	let fourLepList=["4-e","4-mu","2e-2mu"];
 	let massReqList=twoLepList.concat(fourLepList);
 
+	// Elements related to the Mass Entry box
 	let box = document.getElementById('enterMass');
 	let massSpan = document.getElementById('massInput');
 	let button = document.getElementById('next');
-
-	// Using radio buttons, finalCheckedList can have at most one node
+	
+	// Using radio buttons, finalCheckedList and primaryCheckedList can each
+	// have at most one node.  
 	// Iff that node is a Mass-Required element, activate the Mass Entry box.
 	for(let i=0;i<finalCheckedList.length;i++) {
 		if (massReqList.includes(finalCheckedList[i].id)){
