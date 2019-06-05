@@ -9,8 +9,7 @@ function MakeHist(datax, xmin, xmax, ybin, chartId){
 	/* Updates 3Oct2018
 	 * 'ybin' is the size in GeV of the individual bins.
 	 *   Shouldn't that be 'xbin'?  We're binning the x-axis.
-	 * 'chartId' is the value of the HTML 'id' attribute for the canvas that will
-	 *   display this chart
+	 * 'chartId' is the value of the HTML 'id' attribute for the chart's canvas
 	 * 'datax' is a string of semicolon-separated integers representing bin values
 	 * 'x' will be the array of x-axis bin labels
 	 */
