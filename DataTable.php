@@ -38,7 +38,8 @@ if(isset($_POST["fin"]) && $_POST["CustomEvent"]!=""){
 	/* New version (WZH upgrades Nov 2018) */
 	$fState=$_POST["finalState"];
 	$pState=$_POST["primaryState"];
-	
+
+	/* Set the particle mass if it was POSTed and isn't nonsense: */
 	if( !isset($_POST["massEntry"]) || !is_numeric($_POST["massEntry"]) ){
 		$mass='NULL';
 	} else {
