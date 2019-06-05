@@ -106,43 +106,62 @@ function SelectState_unused(element){
 
 // Added Nov2018 for WZH upgrades.  A simpler version of SelP()
 function SelectState(element){
-	// Find what's already checked.  This will include any button checked as 
-	// part of the click that activates this function.
-	let finalCheckedList = document.querySelectorAll('input[name="finalState"]:checked');
-	let primaryCheckedList = document.querySelectorAll('input[name="primaryState"]:checked');
+		// Find what's already checked.  This will include any button checked as 
+		// part of the click that activates this function.
+		let finalCheckedList = document.querySelectorAll('input[name="finalState"]:checked');
+		let primaryCheckedList = document.querySelectorAll('input[name="primaryState"]:checked');
+		
+		// Mass Entry is required for Final States that are all-charged-leptons
+		// AND that have a Neutral Particle Primary State
+		// We list Mass-Required Final States by their selector id's:
+		let twoLepList = ["e-e","mu-mu"];
+		let fourLepList = ["4-e","4-mu","2e-2mu"];
+		let finalMassReqList = twoLepList.concat(fourLepList);
+		let primaryMassReqList = ["neutral"];
+		
+		// Elements related to the Mass Entry box
+		let box = document.getElementById('enterMass');
+		let massSpan = document.getElementById('massInput');
+		let button = document.getElementById('next');
 
-	// Mass Entry is required for Final States that are all-charged-leptons
-	// AND that have a Neutral Particle Primary State
-	// We list Mass-Required Final States by their selector id's:
-	let twoLepList=["e-e","mu-mu"];
-	let fourLepList=["4-e","4-mu","2e-2mu"];
-	let massReqList=twoLepList.concat(fourLepList);
+		// Check each list
+		let finalReqMass = false;
+		let primaryReqMass = false;
 
-	// Elements related to the Mass Entry box
-	let box = document.getElementById('enterMass');
-	let massSpan = document.getElementById('massInput');
-	let button = document.getElementById('next');
-	
-	// Using radio buttons, finalCheckedList and primaryCheckedList can each
-	// have at most one node.  
-	// Iff that node is a Mass-Required element, activate the Mass Entry box.
-	for(let i=0;i<finalCheckedList.length;i++) {
-		if (massReqList.includes(finalCheckedList[i].id)){
+		// Using radio buttons, finalCheckedList and primaryCheckedList can each
+		// have at most one node.  Allow a list in case we want to switch to
+		// checkboxes
+		for(let i=0;i<finalCheckedList.length;i++) {
+				if (finalMassReqList.includes(finalCheckedList[i].id)){
+						finalReqMass = true;
+				}	else {
+						finalReqMass = false;
+				}
+		}
+		for(let i=0;i<primaryCheckedList.length;i++) {
+				if (primaryMassReqList.includes(primaryCheckedList[i].id)){
+						primaryReqMass = true;
+				}	else {
+						primaryReqMass = false;
+				}
+		}
+		
+		// Iff both are Mass-Required elements, activate the Mass Entry box
+		if (finalReqMass && primaryReqMass) {
 			box.disabled = false;
 			massSpan.style.color = 'black';
 		} else {
 			box.disabled = true;
 			massSpan.style.color = 'grey';
 		}
-	}
 
-	// Iff both a final state and primary state are chosen, activate the Submit
-	//	 button
-	if ( (finalCheckedList.length > 0) && (primaryCheckedList.length > 0) ) {
-	 	button.disabled = false;
-	} else {
-	 	button.disabled = true;
-	}
+		// Iff both a final state and primary state are chosen, activate the Submit
+		//	 button
+		if ( (finalCheckedList.length > 0) && (primaryCheckedList.length > 0) ) {
+	 			button.disabled = false;
+		} else {
+	 			button.disabled = true;
+		}
 }
 
 
