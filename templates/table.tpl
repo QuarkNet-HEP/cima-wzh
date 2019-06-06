@@ -1,3 +1,13 @@
+<?php
+	/* 'name' attributes of selector elements are written to the Data Table
+	 * below this selection panel.  They're specified using HTML symbols for
+	 * Greek letters in order to make that look better.
+	 * In retrospect, it makes getting POSTed data into and out of the database more
+	 * difficult, though, since POST keys by 'name'.  Would like to change that
+	 *	-- JG June2019
+	 */
+?>
+
 <form action=DataTable.php method="post">
 	<div class=row>
 		<div class=col-md-4>
@@ -84,13 +94,13 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="e-nu" name="finalState" value="e&nu;" />
+						 		 id="e-nu" name="finalState" value="e_nu" />
 					<label for="e-nu">e &nu;</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="mu-nu" name="finalState" value="&mu;&nu;" />
+						 		 id="mu-nu" name="finalState" value="mu_nu" />
 					<label for="mu-nu">&mu; &nu;</label>
 				</div>
 			</div><!-- End row 1-->
@@ -99,13 +109,13 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="e-e" name="finalState" value="ee" />
+						 		 id="e-e" name="finalState" value="2e" />
 					<label for="e-e">e e</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="mu-mu" name="finalState" value="&mu;&mu;" />
+						 		 id="mu-mu" name="finalState" value="mu_mu" />
 					<label for="mu-mu">&mu; &mu;</label>
 				</div>
 			</div> <!-- End row 2-->
@@ -120,7 +130,7 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="4-mu" name="finalState" value="4&mu;" />
+						 		 id="4-mu" name="finalState" value="4_mu" />
 					<label for="4-mu">4&mu;</label>
 				</div>
 			</div> <!-- End row 3-->
@@ -129,13 +139,13 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="2e-2mu" name="finalState" value="2e 2&mu;" />
+						 		 id="2e-2mu" name="finalState" value="2e_2mu" />
 					<label for="2e-2mu">2e 2&mu;</label>
 				</div>
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 onclick="SelectState(this)"
-						 id="2-gam" name="finalState" value="2&gamma;" />
+						 id="2-gam" name="finalState" value="2gam" />
 					<label for="2-gam">2&gamma;</label>
 				</div>
 			</div> <!-- End row 4-->
