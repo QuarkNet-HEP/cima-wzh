@@ -114,20 +114,20 @@ if(isset($_SESSION["tables"])){
 			 	 */
 				$final=htmlentities($event["final"]);
 				switch ($final) {
-			 		case "e&nu;":
+			 		case "e_nu":
 			 			$groups[$i]["e"]++;
 						$eCount+=1;
 						break;
-			 		case "&mu;&nu;":
+			 		case "mu_nu":
 			 			$groups[$i]["mu"]++;
 						$muCount+=1;
 						break;
-			 		case "ee":
+			 		case "2e":
 			 			//$groups[$i]["e"]+=2;
 			 			$groups[$i]["e"]++;
 						$eCount+=2;
 						break;
-			 		case "&mu;&mu;":
+			 		case "mu_mu":
 			 			//$groups[$i]["mu"]+=2;
 						$groups[$i]["mu"]++;
 						$muCount+=2;
@@ -137,12 +137,12 @@ if(isset($_SESSION["tables"])){
 			 			$groups[$i]["e"]++;
 						$eCount+=4;
 						break;
-			 		case "4&mu;":
+			 		case "4mu":
 			 			//$groups[$i]["mu"]+=4;
 			 			$groups[$i]["mu"]++;
 						$muCount+=4;
 						break;
-			 		case "2e 2&mu;":
+			 		case "2e_2mu":
 			 			//$groups[$i]["e"]+=2;
 			 			//$groups[$i]["mu"]+=2;
 			 			$groups[$i]["e"]++;
@@ -150,7 +150,7 @@ if(isset($_SESSION["tables"])){
 						$eCount+=2;
 						$muCount+=2;
 						break;
-			 		case "2&gamma;":
+			 		case "2gam":
 			 			$groups[$i]["twogam"]++;
 						break;
 					case "Zoo":
@@ -218,20 +218,20 @@ if(isset($_SESSION["tables"])){
 		 	 */
 			$final=htmlentities($event["final"]);
 			switch ($final) {
-				case "e&nu;":
+				case "e_nu":
 					$groups[$i]["e"]++;
 					$eCount+=1;
 					break;
-				case "&mu;&nu;":
+				case "mu_nu":
 		 			$groups[$i]["mu"]++;
 					$muCount+=1;
 					break;
-		 		case "ee":
+		 		case "2e":
 		 			//$groups[$i]["e"]+=2;
 		 			$groups[$i]["e"]++;
 					$eCount+=2;
 					break;
-		 		case "&mu;&mu;":
+		 		case "mu_mu":
 		 			//$groups[$i]["mu"]+=2;
 		 			$groups[$i]["mu"]++;
 					$muCount+=2;
@@ -241,12 +241,12 @@ if(isset($_SESSION["tables"])){
 		 			$groups[$i]["e"]++;
 					$eCount+=4;
 					break;
-		 		case "4&mu;":
+		 		case "4mu":
 		 			//$groups[$i]["mu"]+=4;
 		 			$groups[$i]["mu"]++;
 					$muCount+=4;
 					break;
-		 		case "2e 2&mu;":
+		 		case "2e_2mu":
 		 			//$groups[$i]["e"]+=2;
 		 			//$groups[$i]["mu"]+=2;
 		 			$groups[$i]["e"]++;
@@ -254,7 +254,7 @@ if(isset($_SESSION["tables"])){
 					$eCount+=2;
 					$muCount+=2;
 					break;
-		 		case "2&gamma;":
+		 		case "2gam":
 		 			$groups[$i]["twogam"]++;
 					break;
 				case "Zoo":
