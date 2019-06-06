@@ -83,6 +83,25 @@ function calcEv($id){
 	return $_SESSION["groupNo"].'-'.($id-(100*($_SESSION["groupNo"]-1)));
 }
 
+/* A function to convert 'final_state' values as stored in Location tables and
+	 originating as 'value' attributes in templates/table.tpl in HTML for display. */
+function htmlFilter($value) {
+	$map = array(
+		"e_nu" => "e&nu;",
+		"mu_nu" => "&mu;&nu;",
+		"mu_mu" => "&mu;&mu;",
+		"4mu" => "4&mu;",
+		"2e_2mu" => "2e 2&mu;",
+		"2gam" => "2&gamma;"
+	);
+
+	if (array_key_exists($value, $map)) {
+		return $map[$value];
+	} else {
+		return $value;
+	}
+}
+
 include 'templates/header.tpl';
 if(isset($event)){
 	$_SESSION["current"]=$event;
@@ -120,7 +139,7 @@ echo '<div class=row>
 						<!-- Row entries: -->
 						<div class=col-md-2>'.$tableRow[$i]["event_id"].'</div>
 						<div class=col-md-2>'.$tableRow[$i]["dg_label"].'</div>
-						<div class=col-md-2>'.$tableRow[$i]["final"].'</div>
+						<div class=col-md-2>'.htmlFilter($tableRow[$i]["final"]).'</div>
 						<div class=col-md-2>'.$tableRow[$i]["primary"].'</div>
 						<div class=col-md-2>'.$tableRow[$i]["mass"].'</div>
 						<div class=col-md-2 align="right" 
