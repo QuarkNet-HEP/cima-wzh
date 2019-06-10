@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+/* This page updates the MakeCharts.js mass histograms when the user clicks
+ *   on a bin.
+ */
+
 // Gives GetHistogramData() and UpdateHistogram()
 include 'database.php';
 
