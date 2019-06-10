@@ -367,7 +367,7 @@ function DelGroupsFromTables($tables,$groups){
 
 /* 1) When created, each Location table name in the database is prefixed with
  * 			$locPrefix as given by GetLocationPrefix(), e.g. '__LOC__'
- *	 	This indicate the role of these tables more clearly and cleanly
+ *	 	This indicates the role of these tables more clearly and cleanly
  *		separates them from the other database tables when listed.
  *		Whenever information is taken from the DB about a table, we create a
  *		separate "display name" parameter without this prefix to display the name
@@ -541,6 +541,80 @@ function UpdateHistogram($chart,$data,$id){
 	/* $chart is 'data_2l' or 'data_4l', the one you want to update */
 	$q="UPDATE histograms SET ".$chart."='".$data."' WHERE id=".$id;
 	askdb($q);
+}
+
+
+/* Pulls mass data entered by a Location on the DataTable.php page, generates a
+ * semicolon-separated string of histogram data for each chart, and stores this
+ * generated data to the DB.
+ */
+function GenerateHistogramData($location){
+
+	$twoLeptonList = ["2e", "mu_mu"];
+	$fourLeptonList = ["4e", "4mu", "2e_2mu"];
+
+	# TODO: find a better way to configure these than hard-coding
+	# Hard-coded histogram parameters:
+	$x_min_2l = 1;
+	$x_max_2l = 111;
+	$x_min_4l = 81;
+	$x_max_4l = 211;
+	$bin_2l = 2;
+	$bin_4l = 2;
+
+	# 56 bins in 2l chart
+	# 66 bins in 4l chart
+	$numBins_2l = (int) ($x_max_2l - $x_min_2l + 2)/$bin_2l;
+	$numBins_4l = (int) ($x_max_4l - $x_min_4l + 2)/$bin_4l;
+
+	# Create arrays to hold data for each chart
+	# Initialized to all zeroes
+	$data_2l = array();
+	for($i = 0;$i < $numBins_2l;$i++) {
+    $data_2l[$i] = 0;
+	}
+	$data_4l = array();
+	for($i = 0;$i < $numBins_4l;$i++) {
+    $data_4l[$i] = 0;
+	}
+
+	/* Get masses for this location */
+	$q="SELECT final_state, mass FROM `".$location."` WHERE mass IS NOT NULL";
+	$result=askdb($q);
+	if($obj = $result->fetch_assoc()){
+		while($row = $result->fetch_array()){
+			$final = $row['final_state'];
+			$mass = $row['mass'];
+
+			/* Calculate the bin number */
+			if ( in_array($final, ["2e", "mu_mu"]) ) {
+				#$chart="data_2l";
+			  $binNo = floor( ($mass - $x_min_2l + 1)/$bin_2l );
+				$data_2l[$binNo]++;
+			} elseif ( in_array($final, ["4e", "4mu", "2e_2mu"]) ) {
+				#$chart="data_4l";
+				$binNo = floor( ($mass - $x_min_4l + 1)/$bin_4l );
+				$data_4l[$binNo]++;
+			}
+		}
+	}
+
+	/* Create semicolon-separated strings out of the data
+	$newData_2l = implode(";", $data_2l);
+	$newData_4l = implode(";", $data_4l);
+
+	/* Get the histogram id value for this location */
+	$q="SELECT histogram_id FROM Tables WHERE `name`='".$location."'";
+	$result=askdb($q);
+	if($obj = $result->fetch_object()){
+		$id=$obj->histogram_id;
+	}
+
+	/* Call the UpdateHistogram() function database.php to change the
+	 *   recorded histogram data */
+	UpdateHistogram("data_2l",$newData_2l,$id);
+	UpdateHistogram("data_4l",$newData_4l,$id);
+
 }
 
 
