@@ -18,8 +18,9 @@ echo '<script src="js/Chart.js"> </script>';
 echo '<script src="js/MakeCharts.js"> </script>';
 
 /* $_SESSION["comb"] is set in Classes.php.
-	 It indicates that we want to combine data from all sections.
-	 If it's *not* set, then we want data only from the current group. */
+ * It indicates that we want to combine data from all sections.
+ * If it's *not* set, then we want data only from the current group.
+ */
 if(!isset($_SESSION["comb"])){
 		/* If no database is set, redirect to index.php (where databases are
 			 selected) */
@@ -29,19 +30,24 @@ if(!isset($_SESSION["comb"])){
 		include 'templates/navbar.tpl';
 		include 'templates/hist.tpl';
 
-		/* GetHistDataFortable() is a database.php function.
-			 Argument expected to be a table name.
-			 Returns id,data from histograms */
+		/* GetHistDataForTable() is a database.php function.
+		 * Argument expected to be a table name.
+		 * Returns id,data from histograms
+		 */
 		/* $datax=GetHistDataForTable($_SESSION["database"]); */
 		$datax=GetHistogramData($_SESSION["database"]);
+
 		/* $datax is a 2-element dictionary for GetHistDataForTable()
-			 $datax["id"] is the histogram id
-			 $datax["data"] is the histogram datastring */
+		 * $datax["id"] is the histogram id
+		 * $datax["data"] is the histogram datastring
+		 */
 		/* $datax is a 3-element dictionary for GetHistogramData()
-			 $datax["id"] is the histogram id
-			 $datax["data_2l"] is the 2-lepton histogram datastring
-			 $datax["data_4l"] is the 4-lepton histogram datastring */
+		 * $datax["id"] is the histogram id
+		 * $datax["data_2l"] is the 2-lepton histogram datastring
+		 * $datax["data_4l"] is the 4-lepton histogram datastring
+		 */
 		$_SESSION["currentHist"]=$datax;
+
 }else{
 		/* If "comb" *is* set: */
 		include 'templates/Resnav.tpl';
