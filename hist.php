@@ -30,23 +30,29 @@ if(!isset($_SESSION["comb"])){
 		include 'templates/navbar.tpl';
 		include 'templates/hist.tpl';
 
-		/* GetHistDataForTable() is a database.php function.
+		/* The options presented here are database.php functions.
 		 * Argument expected to be a table name.
-		 * Returns id,data from histograms
+		 * Returns id,data from histograms.
 		 */
-		/* $datax=GetHistDataForTable($_SESSION["database"]); */
-		$datax=GetHistogramData($_SESSION["database"]);
+		//$datax=GetHistDataForTable($_SESSION["database"]);
+		//$datax=GetHistogramData($_SESSION["database"]);
+		$datax=GetTestData();
 
-		/* $datax is a 2-element dictionary for GetHistDataForTable()
+		/* GetHistDataForTable() returns a 2-element keyed array for $datax
 		 * $datax["id"] is the histogram id
 		 * $datax["data"] is the histogram datastring
 		 */
-		/* $datax is a 3-element dictionary for GetHistogramData()
+		/* GetHistDataForTable() returns a 3-element keyed array for $datax
 		 * $datax["id"] is the histogram id
 		 * $datax["data_2l"] is the 2-lepton histogram datastring
 		 * $datax["data_4l"] is the 4-lepton histogram datastring
 		 */
-		$_SESSION["currentHist"]=$datax;
+		/* GetTestData() returns a 2-element keyed array for $datax
+		 * $datax["data_2l"] is the 2-lepton histogram datastring
+		 * $datax["data_4l"] is the 4-lepton histogram datastring
+		 */
+		 // Set the given data to the Session:
+		 $_SESSION["currentHist"]=$datax;
 
 }else{
 		/* If "comb" *is* set: */
