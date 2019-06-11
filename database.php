@@ -612,8 +612,26 @@ function GenerateHistogramData($location){
 
 	/* Call the UpdateHistogram() function database.php to change the
 	 *   recorded histogram data */
-	UpdateHistogram("data_2l",$newData_2l,$id);
-	UpdateHistogram("data_4l",$newData_4l,$id);
+	//UpdateHistogram("data_2l",$newData_2l,$id);
+	//UpdateHistogram("data_4l",$newData_4l,$id);
+
+	$dataList = ["data_2l" => $newData_2l,
+							 "data_4l" => $newData_4l];
+
+	return $dataList;
+
+}
+
+
+function GetTestData(){
+	$data_2l = "0;0;0;1;1;2;1;3;2;1;3;5;9;12;7;4;1;3;0;2;1;0;2;3;1;0;1;0;0;0;0;0;0;0;1;2;0;3;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0";
+
+	$data_4l = "0;0;0;0;0;0;0;0;0;0;0;1;0;0;2;1;1;1;4;2;3;5;9;11;10;6;3;4;3;2;2;1;0;1;0;2;0;1;0;1;2;4;2;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0";
+
+	$dataList = ["data_2l" => $data_2l,
+							 "data_4l" => $data_4l];
+
+	return $dataList;
 
 }
 
