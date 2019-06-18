@@ -2,6 +2,7 @@
 
 function getDBConfig(){
 	$db_config = array(
+                "db_host" => "database_host",
 		"db_login" => "database_user_login",
 		"db_pw" => "database_user_password",
 		"db_name" => "database_name"
