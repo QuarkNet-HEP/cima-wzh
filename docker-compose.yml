@@ -1,0 +1,29 @@
+# See https://docs.docker.com/compose/compose-file/
+version: "3.7"
+
+services:
+  php_apache:
+    build:
+      context: ./
+    container_name: cima-php-apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html:rw
+    networks:
+      - frontend
+      - backend
+  db_mysql:
+    image: mysql:5.7
+    container_name: cima-mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+    volumes:
+      - ./cima_cimadb-25Apr2019.sql:/docker-entrypoint-initdb.d/cima_cimadb-25Apr2019.sql
+
+
+networks:
+  frontend:
+  backend:  
