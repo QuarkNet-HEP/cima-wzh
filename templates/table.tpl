@@ -1,13 +1,3 @@
-<?php
-	/* 'name' attributes of selector elements are written to the Data Table
-	 * below this selection panel.  They're specified using HTML symbols for
-	 * Greek letters in order to make that look better.
-	 * In retrospect, it makes getting POSTed data into and out of the database more
-	 * difficult, though, since POST keys by 'name'.  Would like to change that
-	 *	-- JG June2019
-	 */
-?>
-
 <form action=DataTable.php method="post">
 	<div class=row>
 		<div class=col-md-4>
@@ -142,12 +132,12 @@
 						 		 id="2e-2mu" name="finalState" value="2e_2mu" />
 					<label for="2e-2mu">2e 2&mu;</label>
 				</div>
-				<div class="selector-2">
+				<!--<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 onclick="SelectState(this)"
 						 id="2-gam" name="finalState" value="2gam" />
 					<label for="2-gam">2&gamma;</label>
-				</div>
+				</div>-->
 			</div> <!-- End row 4-->
 		</div>
 
