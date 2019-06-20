@@ -11,11 +11,18 @@ print_r('<br/>');
 print_r($_SESSION);
 print_r('<br/>');
 */
+/*
+print_r('<br/>');
+print_r('$_SESSION["tables"] = ');
+print_r($_SESSION["tables"]);
+print_r('<br/>');
+*/
 
 include 'database.php';
 include 'templates/header.tpl';
 
 /* Keys are *code* labels for the table columns.  Values are actual HTML labels */
+/*
 $tableColumns = array("datagroup" => "Group",
 	"e" => "e",
 	"mu" => "&mu;",
@@ -28,55 +35,98 @@ $tableColumns = array("datagroup" => "Group",
 	"higgs" => "H",
 	"total" => "Total"
 	);
+*/
+/* For CIMA-WZH: */
+$tableColumns = array("datagroup" => "Group",
+	"e" => "e",
+	"mu" => "&mu;",
+	"charged" => "Charged",
+	"neutral" => "Neutral",
+	"zoo" => "Zoo",
+	"total" => "Total"
+	);
+$tableLabels = array_keys($tableColumns);
 $tableHeaders = array_values($tableColumns);
-$tableData = array_keys($tableColumns);
 
+/*
 $ratioColumns = array(
 	"e-mu" => "e/&mu;",
 	"Wp-Wm" => "W+/W-",
 	"W-Z" => "W/Z"
 	);
+*/
+/* For CIMA-WZH:
+$ratioColumns = array(
+	"e-mu" => "e/&mu;"
+	);
 $ratioHeaders = array_values($ratioColumns);
 
-/* Define table array $groups[][] */
+/* Define table array $tableCells[][] */
 /* Rows are datagroup_id values and columns are selectable particle states.
  * Entries are the number of times users identified the given
  * particle state within the given datagroup.  Construction is based on
  * whether we're showing a single location's data or combined data.
  */
+/* The datagroup_id = N row of the table is $tableCells[N].
+ * $tableCells[N] will have columns corresponding to each entry in $tableLabels
+ * as well as $tableCells[N]["datagroup"] to give the leftmost column of
+ * datagroup_id values as well as $tableCells[N]["total"] to give the rightmost
+ * column of row totals.
+ */
+
 if(!isset($_SESSION["comb"])){
 	/*** Single location ***/
 	include 'templates/navbar.tpl';
 	/* For a single location, we need tabulate only those datagroups assigned
 		 to the location */
 	$datagroups = GetDatagroupsById($_SESSION["databaseId"]);
+
+	/* TODO: If there are no assigned datagroups, $tableCells may be undefined.
+	 * Don't expect this in practice. */
 	foreach($datagroups as $row){
-		foreach($tableData as $column){
-			$groups[$row][$column]=0;
+		// For each row, initialize all values to zero:
+		foreach($tableLabels as $column){
+			$tableCells[$row][$column]=0;
 		}
-		/* Set the first column of every row to be equal to the datagroup.
-	 	 * NB that rows are indexed by datagroup, which may not be equal to 
-	 	 * the standard [0,1,2,...] array indexing */
-		$groups[$row]["datagroup"] = $row;
+		/* We can go ahead and set the $tableCells[N]["datagroup"] values
+	 	 * NB that $rows is a datagroup_id and not a sequence of
+		 * row numbers [1,2,3...] */
+		$tableCells[$row]["datagroup"] = $row;
 	}
-}else{
+} else{
 	/** Combined locations **/
 	include 'templates/Resnav.tpl';
+
+	/* First, identify of all Location tables for this event.
+	 * These are all `Tables`.`id` values assigned to the current
+	 * `MclassEvents`.`id` in the `EventTables` table.
+	 * $_SESSION["tables"], set in Classes.php, contains these `Tables`.`id` values.
+	 *
+	 */
+
 	/* Get the datagroups assigned to this Masterclass's Location tables */
-	/* GetGroups() returns datagroup_id and postAdded from the TableGroups table */
-	$g=GetGroups($_SESSION["tables"]);
-	$start=$g[0]["dg_id"];
-	$ng=count($g);
-	for($j=0;$j<$ng;$j++){
-		$i=$g[$j]["dg_id"];
-		foreach($dataCols as $column){
-			$groups[$i][$column]=0;
+	/* GetGroups() returns datagroup_id (as "dg_id") and "postAdded" from
+	 * the TableGroups table */
+	$g = GetGroups($_SESSION["tables"]);
+
+	/* The starting value of rows is the "dg_id" of the first entry in $g */
+	$start = $g[0]["dg_id"];
+	
+	$numGroups=count($g);
+
+	for($i=0; $i<$numGroups; $i++){
+		// $row is the datagroup_id, not the index of the row in the table
+		$row=$g[$i]["dg_id"];
+		foreach($tableLabels as $column){
+			// $tableLabels = ["e", "mu", "wplus", ...]
+			$tableCells[$row][$column]=0;
+			$tableCells[$row]["datagroup"] = $row;
 		}
 	}
 }
 
 
-/*** Now fill $groups[][] in with data ***/
+/*** Now fill $tableCells[][] with data ***/
 /* $_SESSION["tables"] is set in Classes.php */
 if(isset($_SESSION["tables"])){
 	foreach($_SESSION["tables"] as $t_id){
@@ -104,7 +154,7 @@ if(isset($_SESSION["tables"])){
 				// $i is the datagroup_id [1,100] that the chosen event is assigned to.
 				$i=GetDatagroupId($event["id"]);
 				// Increment the 'total' column for this datagroup:
-				$groups[$i]["total"]++;
+				$tableCells[$i]["total"]++;
 
 				// Tally the "final" states
 				/* If the state contains Greek letters, then $event["final"] comes
@@ -115,78 +165,92 @@ if(isset($_SESSION["tables"])){
 				$final=htmlentities($event["final"]);
 				switch ($final) {
 			 		case "e_nu":
-			 			$groups[$i]["e"]++;
+			 			$tableCells[$i]["e"]++;
 						$eCount+=1;
 						break;
 			 		case "mu_nu":
-			 			$groups[$i]["mu"]++;
+			 			$tableCells[$i]["mu"]++;
 						$muCount+=1;
 						break;
 			 		case "2e":
-			 			//$groups[$i]["e"]+=2;
-			 			$groups[$i]["e"]++;
+			 			//$tableCells[$i]["e"]+=2;
+			 			$tableCells[$i]["e"]++;
 						$eCount+=2;
 						break;
 			 		case "mu_mu":
-			 			//$groups[$i]["mu"]+=2;
-						$groups[$i]["mu"]++;
+			 			//$tableCells[$i]["mu"]+=2;
+						$tableCells[$i]["mu"]++;
 						$muCount+=2;
 						break;
 			 		case "4e":
-			 			//$groups[$i]["e"]+=4;
-			 			$groups[$i]["e"]++;
+			 			//$tableCells[$i]["e"]+=4;
+			 			$tableCells[$i]["e"]++;
 						$eCount+=4;
 						break;
 			 		case "4mu":
-			 			//$groups[$i]["mu"]+=4;
-			 			$groups[$i]["mu"]++;
+			 			//$tableCells[$i]["mu"]+=4;
+			 			$tableCells[$i]["mu"]++;
 						$muCount+=4;
 						break;
 			 		case "2e_2mu":
-			 			//$groups[$i]["e"]+=2;
-			 			//$groups[$i]["mu"]+=2;
-			 			$groups[$i]["e"]++;
-			 			$groups[$i]["mu"]++;
+			 			//$tableCells[$i]["e"]+=2;
+			 			//$tableCells[$i]["mu"]+=2;
+			 			$tableCells[$i]["e"]++;
+			 			$tableCells[$i]["mu"]++;
 						$eCount+=2;
 						$muCount+=2;
 						break;
-			 		case "2gam":
-			 			$groups[$i]["twogam"]++;
+			 		/*case "2gam":
+			 			$tableCells[$i]["twogam"]++;
 						break;
 					case "Zoo":
-			 			$groups[$i]["zoo"]++;
-						break;
+			 			$tableCells[$i]["zoo"]++;
+						break;*/
 				}
 
 				// Tally the "primary" states
 				$primary=htmlentities($event["primary"]);
+				/*
 				switch ($primary) {
 			 		case "W":
-			 			$groups[$i]["wplain"]++;
+			 			$tableCells[$i]["wplain"]++;
 						$WCount+=1;
 						break;
 			 		case "W+":
-			 			$groups[$i]["wplus"]++;
+			 			$tableCells[$i]["wplus"]++;
 						$WCount+=1;
 						$WplusCount+=1;
 						break;
 			 		case "W-":
-			 			$groups[$i]["wminus"]++;
+			 			$tableCells[$i]["wminus"]++;
 						$WCount+=1;
 						$WminusCount+=1;
 						break;
 			 		case "Z":
-			 			$groups[$i]["zed"]++;
+			 			$tableCells[$i]["zed"]++;
 						$ZCount+=1;
 						break;
 			 		case "H":
-			 			$groups[$i]["higgs"]++;
+			 			$tableCells[$i]["higgs"]++;
 						break;
 			 		//case "NP":
-			 		//	$groups[$i]["np"]++;
+			 		//	$tableCells[$i]["np"]++;
 					//	break;
 			 		case "Zoo":
-			 			$groups[$i]["zoo"]++;
+			 			$tableCells[$i]["zoo"]++;
+						break;
+				}
+				*/
+				/* For CIMA-WZH: */
+				switch ($primary) {
+			 		case "charged":
+			 			$tableCells[$i]["charged"]++;
+						break;
+			 		case "neutral":
+			 			$tableCells[$i]["neutral"]++;
+						break;
+			 		case "zoo":
+			 			$tableCells[$i]["zoo"]++;
 						break;
 				}
 			} // End foreach(event)
@@ -208,7 +272,7 @@ if(isset($_SESSION["tables"])){
 	if(isset($events)){
 		foreach($events as $event){
 			$i=GetDatagroupId($event["id"]);
-			$groups[$i]["total"]++;
+			$tableCells[$i]["total"]++;
 
 			// Tally the "final" states
 			/* If the state contains Greek letters, then $event["final"] comes
@@ -219,80 +283,94 @@ if(isset($_SESSION["tables"])){
 			$final=htmlentities($event["final"]);
 			switch ($final) {
 				case "e_nu":
-					$groups[$i]["e"]++;
+					$tableCells[$i]["e"]++;
 					$eCount+=1;
 					break;
 				case "mu_nu":
-		 			$groups[$i]["mu"]++;
+		 			$tableCells[$i]["mu"]++;
 					$muCount+=1;
 					break;
 		 		case "2e":
-		 			//$groups[$i]["e"]+=2;
-		 			$groups[$i]["e"]++;
+		 			//$tableCells[$i]["e"]+=2;
+		 			$tableCells[$i]["e"]++;
 					$eCount+=2;
 					break;
 		 		case "mu_mu":
-		 			//$groups[$i]["mu"]+=2;
-		 			$groups[$i]["mu"]++;
+		 			//$tableCells[$i]["mu"]+=2;
+		 			$tableCells[$i]["mu"]++;
 					$muCount+=2;
 					break;
 		 		case "4e":
-		 			//$groups[$i]["e"]+=4;
-		 			$groups[$i]["e"]++;
+		 			//$tableCells[$i]["e"]+=4;
+		 			$tableCells[$i]["e"]++;
 					$eCount+=4;
 					break;
 		 		case "4mu":
-		 			//$groups[$i]["mu"]+=4;
-		 			$groups[$i]["mu"]++;
+		 			//$tableCells[$i]["mu"]+=4;
+		 			$tableCells[$i]["mu"]++;
 					$muCount+=4;
 					break;
 		 		case "2e_2mu":
-		 			//$groups[$i]["e"]+=2;
-		 			//$groups[$i]["mu"]+=2;
-		 			$groups[$i]["e"]++;
-		 			$groups[$i]["mu"]++;
+		 			//$tableCells[$i]["e"]+=2;
+		 			//$tableCells[$i]["mu"]+=2;
+		 			$tableCells[$i]["e"]++;
+		 			$tableCells[$i]["mu"]++;
 					$eCount+=2;
 					$muCount+=2;
 					break;
-		 		case "2gam":
-		 			$groups[$i]["twogam"]++;
+		 		/*case "2gam":
+		 			$tableCells[$i]["twogam"]++;
 					break;
 				case "Zoo":
-		 			$groups[$i]["zoo"]++;
-					break;
+		 			$tableCells[$i]["zoo"]++;
+					break;*/
 			}
 
 			// Tally the "primary" states
 			$primary=htmlentities($event["primary"]);
+			/*
 			switch ($primary) {
 		 		case "W":
-		 			$groups[$i]["wplain"]++;
+		 			$tableCells[$i]["wplain"]++;
 					$WCount+=1;
 					break;
 		 		case "W+":
-		 			$groups[$i]["wplain"]++;
-		 			$groups[$i]["wplus"]++;
+		 			$tableCells[$i]["wplain"]++;
+		 			$tableCells[$i]["wplus"]++;
 					$WCount+=1;
 					$WplusCount+=1;
 					break;
 		 		case "W-":
-		 			$groups[$i]["wplain"]++;
-		 			$groups[$i]["wminus"]++;
+		 			$tableCells[$i]["wplain"]++;
+		 			$tableCells[$i]["wminus"]++;
 					$WCount+=1;
 					$WminusCount+=1;
 					break;
 		 		case "Z":
-		 			$groups[$i]["zed"]++;
+		 			$tableCells[$i]["zed"]++;
 					$ZCount+=1;
 					break;
 		 		case "H":
-		 			$groups[$i]["higgs"]++;
+		 			$tableCells[$i]["higgs"]++;
 					break;
 		 		//case "NP":
-		 		//	$groups[$i]["np"]++;
+		 		//	$tableCells[$i]["np"]++;
 				//	break;
 		 		case "Zoo":
-		 			$groups[$i]["zoo"]++;
+		 			$tableCells[$i]["zoo"]++;
+					break;
+			}
+			*/
+			/* For CIMA-WZH: */
+			switch ($primary) {
+				case "charged":
+					$tableCells[$i]["charged"]++;
+					break;
+				case "neutral":
+					$tableCells[$i]["neutral"]++;
+					break;
+				case "zoo":
+					$tableCells[$i]["zoo"]++;
 					break;
 			}
 		}
@@ -303,9 +381,9 @@ if(isset($_SESSION["tables"])){
 include "templates/results.tpl";
 
 /* Initialize a value $tot to zero for every column.  This is the column total,
- * displayed below the main table.  It is  not the group total diplayed as the
+ * displayed below the main table.  It is not the group total diplayed as the
  * rightmost column of the main table. */
-foreach($tableData as $col){
+foreach($tableLabels as $col){
 	// Includes $tot["datagroup"] and $tot["total"]
 	$colTotal[$col] = 0;
 }
@@ -314,15 +392,18 @@ foreach($tableData as $col){
 /* Create the HTML table rows: */
 /* For each row of the table, with $i being the datagroup index and $g being the
 array of column values, */
-foreach($groups as $i => $g){
+foreach($tableCells as $i => $g){
+	/* Open the row */
+	echo '<tr>';
 	/* For each datagroup_id => row_array["datagroup",...,"total"] */
 	foreach($g as $k => $v){
 		/* For each column label => column value pair in the row_array $g, */
-		/* Add the value (the number of particles entered) to the total */
+		/* 1) Print the column value as table data */
+		echo '<td>'.$v.'</td>';
+
+		/* 2) Add the value (the number of particles entered) to the total */
 		/* Keeping tally now for reporting in the Totals Table below */
 		$colTotal[$k]+=$v;
-		/* Print the number of particles entered for this column as table data */
-		echo '<td>'.$v.'</td>';
 	}
 	/* End the row. */
 	echo '</tr>';
