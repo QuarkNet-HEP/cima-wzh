@@ -5,7 +5,7 @@ let suggestedMax = 5;
 
 //debugger;
 
-function MakeHist(datax, xmin, xmax, ybin, chartId){
+function MakeHist(dataString, xmin, xmax, ybin, chartId){
 	/* Updates 3Oct2018
 	 * 'ybin' is the size in GeV of the individual bins.
 	 *   Shouldn't that be 'xbin'?  We're binning the x-axis.
@@ -19,7 +19,7 @@ function MakeHist(datax, xmin, xmax, ybin, chartId){
 	 */
 	numbins = Math.ceil((xmax-xmin)/ybin) + 1;
 	var x=new Array(numbins);
-	var y=datax.split(";");
+	var y=dataString.split(";");
 	/* Find the greatest data value in order to set the height of the y-axis.
 	 * '...' is the "spread operator" */
 	let maxY = Math.max(...y);
@@ -32,8 +32,9 @@ function MakeHist(datax, xmin, xmax, ybin, chartId){
 		x[i]=c;
 		c+=ybin;
 	}
-		
-	var data = {
+
+	// var data = {	
+	var chartData = {
 	    labels: x,
 	    datasets: [
 	        {
@@ -61,7 +62,7 @@ function MakeHist(datax, xmin, xmax, ybin, chartId){
 			scaleSteps : ymax,
 			scaleStepWidth : 1,
 			scaleStartValue : 0, 
-		
+
  			//Boolean - Whether grid lines are shown across the chart
     	scaleShowGridLines : true,
 
@@ -91,7 +92,7 @@ function MakeHist(datax, xmin, xmax, ybin, chartId){
 
 	ctx = document.getElementById(chartId).getContext("2d");
 	console.log(chartList);
-	thisChart = new Chart(ctx).Bar(data, options);
+	thisChart = new Chart(ctx).Bar(chartData, options);
 	chartList[chartId] = thisChart;
 	console.log(chartList);
 }
@@ -120,15 +121,41 @@ function uhist(datax,chartId){
 		myBarChart.scale.steps=ymax;
 		myBarChart.scale.max=ymax;
 	
-		// It seems like this update() is a standard chart.js function,
+		// It seems like this update() is a standard Chart.js function,
 		//   *not* the one defined below
 		myBarChart.update();
 }
 
 
-function update(evt){
+function update_auto(evt){
+		// evt.target.id is the 'id' attribute of the clicked canvas,
+		//   'chart1' or 'chart2'
+		let chartId = evt.target.id;
+
+		// Get the Chart object from the global 'chartList[]' defined in MakeHist()
+		let myBarChart = chartList[chartId];
+
+		// An AJAX call to update the chart without reloading
+    $.ajax({
+				type: "POST",
+				url: "GenHist.php",
+				data: {
+						id : chartId
+				},
+				success: function( data ) {
+						uhist(data,chartId);
+				}
+		});
+
+}
+
+
+// This used to be called update() and is used when we want to update the
+// histogram bar-by-bar on user clicks.
+function update_manual(evt){
 		// Start by getting chart data we'll need:
-		// evt.target.id is the 'id' attribute of the clicked canvas
+		// evt.target.id is the 'id' attribute of the clicked canvas,
+		//   'chart1' or 'chart2'
 		let chartId = evt.target.id;
 
 		// Get the Chart object from the global 'chartList[]' defined in MakeHist()
