@@ -24,7 +24,7 @@
 			</div>
 			<div class=col-md-11>
 				<canvas id="chart1" width="2000" height="600"
-								onmouseup="update(event)"></canvas>
+								onmouseup="update_auto(event)"></canvas>
 			</div>
 		</div>
 		<div class=row>
@@ -44,7 +44,7 @@
 			</div>
 			<div class=col-md-11>
 				<canvas id="chart2" width="2000" height="600"
-								onmouseup="update(event)"></canvas>
+								onmouseup="update_auto(event)"></canvas>
 			</div>
 		</div>
 		<div class=row>
