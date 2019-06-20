@@ -14,10 +14,10 @@ include 'database.php';
 // HTML 'id' attibutes of canvases are 'chart1', 'chart2'
 $chartId=$_POST["id"];
 
-// Obtain the existing histogram data as $data based on which chart was clicked
+// Obtain the existing histogram data as $data based on which chart was clicked.
 // $temp will be a 2-element keyed array whose keys are "data_2l" and "data_4l"
 // and whose values are semicolon-separated strings of the respective data.
-$temp=GenerateHistData($_SESSION["database"]);
+$data=GenerateHistogramData($_SESSION["database"]);
 
 // Determine which chart was clicked
 if($chartId == "chart1") {
@@ -26,14 +26,14 @@ if($chartId == "chart1") {
 	$chart="data_4l";
 }
 
-//$data=explode(";", $temp[$chart]);
-
 // Call the UpdateHistogram() function database.php to change the
 //   recorded histogram data
-UpdateHistogram($chart,$data,$_SESSION["currentHist"]["id"]);
+//UpdateHistogram($chart,$data,$_SESSION["currentHist"]["id"]);
 
 // Set the Session's current histogram data to $data
 $_SESSION["currentHist"][$chart]=$data;
-echo $data;
+
+// This echo sends data back to the AJAX call in MakeCharts.uhist() that is then passed to the 'success' function as 'data':
+echo $data[$chart];
 
 ?>
