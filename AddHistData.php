@@ -39,5 +39,8 @@ $d=implode(";",$data);
 UpdateHistogram($chart,$d,$_SESSION["currentHist"]["id"]);
 // Set the Session's current histogram data to $d
 $_SESSION["currentHist"][$chart]=$d;
+
+// This echo sends data back to the AJAX call in MakeCharts.uhist() that is then passed to the 'success' function as 'data':
 echo $d;
+
 ?>
