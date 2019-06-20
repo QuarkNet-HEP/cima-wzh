@@ -58,8 +58,10 @@
 			<thead>
 				<tr>
 					<th>e/&mu;</th>
-					<th>W+/W-</th>
-					<th>W/Z </th>
+					<?php
+						/*<th>W+/W-</th>
+						<th>W/Z </th>*/
+					?>
 				</tr>
 			</thead>
 			<tbody>
@@ -70,6 +72,8 @@
 					}else{
 						echo '<td> not defined</td>';
 					}
+					/* Removed for CIMA-WZH */
+					/*
 					if($WminusCount!=0){
 						echo '<td>'.round($WplusCount/$WminusCount,2).'</td>';
 					}else{
@@ -80,6 +84,7 @@
 					}else{
 						echo '<td> not defined</td>';
 					}
+					*/
 					?>
 				</tr>
 			</tbody>
