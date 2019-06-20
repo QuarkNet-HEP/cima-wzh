@@ -120,7 +120,7 @@
 				<div class="selector-2">
 					<input type="radio" class="finalSelect"
 						 		 onclick="SelectState(this)"
-						 		 id="4-mu" name="finalState" value="4_mu" />
+						 		 id="4-mu" name="finalState" value="4mu" />
 					<label for="4-mu">4&mu;</label>
 				</div>
 			</div> <!-- End row 3-->
