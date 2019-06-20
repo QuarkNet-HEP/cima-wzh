@@ -10,18 +10,23 @@
 				<h3>Create new Masterclass Event</h3>
 			</div>
 			<div class=col-md-2></div>
-		</div>	
+		</div>
+
 		<div class=row>
 			<div class=col-md-2></div>
 			<div class=col-md-3>
-				<strong>Enter name of new event:</strong> <br>
-				<input name="EventName" type="text" placeholder="Event name" maxlength="30" size="30">
+				<strong>Enter name of new event:</strong></br>
+				<input name="EventName" type="text" placeholder="Event name"
+							 maxlength="30" size="30">
 			</div>
-			<div class=col-md-4 align="left">
-				<button type="submit" class="btn btn-primary btn-lg" name="chist">Create Event</button>
+			<div class=col-md-3 align="left">
+				<button type="submit" class="btn btn-primary btn-lg" name="chist">
+					Create Event
+				</button>
 			</div>
-			<div class=col-md-3></div>
+			<div class=col-md-4></div>
 		</div>
+
 	</form>
 
 	<!-- Second form: Edit an Existing Masterclass Event -->
