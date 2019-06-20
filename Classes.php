@@ -35,12 +35,12 @@ if(isset($_POST["Results"]) && $_POST["Results"]=="R"){
 	unset($_SESSION["tables"]);
 	if( isset($_POST["tselect"]) && $_POST["tselect"]!="" ){
 		$_SESSION["tables"]=$_POST["tselect"];
-	}elseif( isset($_POST["Eselect"]) && $_POST["Eselect"]!="" ){
-		for($i=0;$i<count($_POST["Eselect"]);$i++){
-			$tables=GetTables($_POST["Eselect"][$i]);
-				for($j=0;$j<count($tables);$j++){
-					$_SESSION["tables"][]=$tables[$j]["id"];
-				}
+	} elseif( isset($_POST["Eselect"]) && $_POST["Eselect"]!="" ){
+		for($i=0; $i<count($_POST["Eselect"]); $i++){
+			$tables = GetTables($_POST["Eselect"][$i]);
+			for($j=0; $j<count($tables); $j++){
+				$_SESSION["tables"][] = $tables[$j]["id"];
+			}
 		}
 	}
 	/* If the preceeding successfully reset "tables" to the SESSION,
