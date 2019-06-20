@@ -5,13 +5,14 @@ include "database.php";
 
 session_start();
 
+/*
 print_r('<br/>');
 print_r('<br/>');
 print_r($_POST);
 print_r('<br/>');
 print_r($_SESSION);
 print_r('<br/>');
-/**/
+*/
 /*
 print_r('<br/>');
 print_r($_POST["finalState"]);
@@ -118,9 +119,9 @@ $tableRow = GetEventTableRows($_SESSION["groupNo"],$_SESSION["database"]);
 
 /* The Events Table */
 echo '<div class=row>
-	<div class=col-md-1></div> <!-- Left padder column -->
+	<div class=col-md-2></div> <!-- Left padder column -->
 	<div class=col-md-8>
-		<div class=container-fluid>
+		<div class=container-fluid style="border:1pt solid black; padding:10pt;">
 			<div class=row style="padding-right: 3%;">';
 				foreach($tableHeaders as $i => $header){
 					echo '<div class=col-md-2>
@@ -128,7 +129,7 @@ echo '<div class=row>
 					</div>';
 				}
 			echo '</div>
-			<div class=container-fluid style="overflow-y: scroll; height: 50%;">';
+			<div class=container-fluid style="overflow-y: scroll; height: 60%;">';
 
 				for($i=(count($tableRow)-1);$i>=0;$i--){
 					echo '<div class=row id="'.$tableRow[$i]["event_id"].'"
@@ -149,16 +150,8 @@ echo '<div class=row>
 			echo '</div>
 		</div>
 	</div>
-</div>
-</div>
-<div class=col-md-2></div> <!-- Right padder column -->
+	<div class=col-md-2></div> <!-- Right padder column -->
 </div>';
-/* Two extra </div>'s there.  Opened in table.tpl?  */
-
-
-
-
-
 
 include 'templates/floor.tpl';
 
@@ -178,5 +171,5 @@ print_r($_SESSION);
 */
 
 ?>
-<script> var massGlobal= '<?php echo $s ?>';</script>;
+<!--<script> var massGlobal= '<?php echo $s ?>';</script>;-->
 
