@@ -4,11 +4,24 @@ ini_set('display_errors', 1);
 include "database.php";
 
 session_start();
+
+/*
+print_r('<br/>');
+print_r('$_SESSION: ');
 print_r($_SESSION);
 print_r('<br/>');
 print_r('<br/>');
+print_r('$_POST: ');
 print_r($_POST);
 print_r('<br/>');
+*/
+/*
+$debugData = GenerateHistogramData($_SESSION["database"]);
+print_r('$debugData_2l = '.$debugData['data_2l']);
+print_r('<br/>');
+print_r('$debugData_4l = '.$debugData['data_4l']);
+*/
+
 $script=1;
 
 include 'templates/header.tpl';
@@ -34,15 +47,11 @@ if(!isset($_SESSION["comb"])){
 		 * Argument expected to be a table name.
 		 * Returns id,data from histograms.
 		 */
-		//$datax=GetHistDataForTable($_SESSION["database"]);
-		//$datax=GetHistogramData($_SESSION["database"]);
-		$datax=GetTestData();
-
 		/* GetHistDataForTable() returns a 2-element keyed array for $datax
 		 * $datax["id"] is the histogram id
 		 * $datax["data"] is the histogram datastring
 		 */
-		/* GetHistDataForTable() returns a 3-element keyed array for $datax
+		/* GetHistogramData() returns a 3-element keyed array for $datax
 		 * $datax["id"] is the histogram id
 		 * $datax["data_2l"] is the 2-lepton histogram datastring
 		 * $datax["data_4l"] is the 4-lepton histogram datastring
@@ -51,8 +60,18 @@ if(!isset($_SESSION["comb"])){
 		 * $datax["data_2l"] is the 2-lepton histogram datastring
 		 * $datax["data_4l"] is the 4-lepton histogram datastring
 		 */
-		 // Set the given data to the Session:
-		 $_SESSION["currentHist"]=$datax;
+
+		/* For testing: */
+		//$datax=GetTestData();
+
+		/* For manual histogram construction: */
+		//$datax=GetHistogramData($_SESSION["database"]);
+
+		/* For automatic histogram construction: */
+		$datax=GenerateHistogramData($_SESSION["database"]);
+
+		// Set the given data to the Session:
+		$_SESSION["currentHist"]=$datax;
 
 }else{
 		/* If "comb" *is* set: */
@@ -103,6 +122,15 @@ if(!isset($_SESSION["comb"])){
 echo '<script> MakeHist("'.$datax["data_2l"].'",2,"chart1"); </script>';
 echo '<script> MakeHist("'.$datax["data_4l"].'",2,"chart2"); </script>';
 */
+
+/*
+print_r('<br/>');
+print_r('$data_2l = '.$datax["data_2l"]);
+print_r('<br/>');
+print_r('$data_4l = '.$datax["data_4l"]);
+print_r('<br/>');
+*/
+
 echo '<script> MakeHist("'.$datax["data_2l"].'",1,111,2,"chart1"); </script>';
 echo '<script> MakeHist("'.$datax["data_4l"].'",81,211,2,"chart2"); </script>';
 

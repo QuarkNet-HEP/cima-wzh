@@ -589,17 +589,23 @@ function GenerateHistogramData($location){
 			/* Calculate the bin number */
 			if ( in_array($final, ["2e", "mu_mu"]) ) {
 				#$chart="data_2l";
-			  $binNo = floor( ($mass - $x_min_2l + 1)/$bin_2l );
-				$data_2l[$binNo]++;
+				# Find the bin the mass belongs in
+				$binNo = floor( ($mass - $x_min_2l + 1)/$bin_2l );
+				# The bin might be outside of the bounds we've set for the chart
+				if ( ($binNo >= 0) and ($binNo < $numBins_2l) ) {
+					 $data_2l[$binNo]++;
+				}
 			} elseif ( in_array($final, ["4e", "4mu", "2e_2mu"]) ) {
 				#$chart="data_4l";
 				$binNo = floor( ($mass - $x_min_4l + 1)/$bin_4l );
-				$data_4l[$binNo]++;
+				if ( ($binNo >= 0) and ($binNo < $numBins_4l) ) {
+					 $data_4l[$binNo]++;
+				}
 			}
 		}
 	}
 
-	/* Create semicolon-separated strings out of the data
+	/* Create semicolon-separated strings out of the data */
 	$newData_2l = implode(";", $data_2l);
 	$newData_4l = implode(";", $data_4l);
 
