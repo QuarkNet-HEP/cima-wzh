@@ -145,14 +145,24 @@
 		<div class="col-md-3 subpanel" id="primarydata">
 			<div class="panelheader">Primary State</div>
 			<div class="selectorRow">
-				<div class="selector-1">
+				<div>Charged Particle:</div>
+				<div class="selector-3">
 					<input type="radio" class="primarySelect"
 						 		 onclick="SelectState(this)"
-						 		 id="charged" name="primaryState" value="charged" />
-					<label for="charged">
-						Charged Particle <br />
-						(W+, W-, W+/-)
-					</label>
+						 		 id="charged" name="primaryState" value="W+" />
+					<label for="charged">W+</label>
+				</div>
+				<div class="selector-3">
+					<input type="radio" class="primarySelect"
+						 		 onclick="SelectState(this)"
+						 		 id="charged" name="primaryState" value="W-" />
+					<label for="charged">W-</label>
+				</div>
+				<div class="selector-3">
+					<input type="radio" class="primarySelect"
+						 		 onclick="SelectState(this)"
+						 		 id="charged" name="primaryState" value="W_pm" />
+					<label for="charged">W&#177;</label>
 				</div>
 			</div> <!-- End row 1-->
 

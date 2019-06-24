@@ -93,7 +93,8 @@ function htmlFilter($value) {
 		"mu_mu" => "&mu;&mu;",
 		"4mu" => "4&mu;",
 		"2e_2mu" => "2e 2&mu;",
-		"2gam" => "2&gamma;"
+		"2gam" => "2&gamma;",
+		"W_pm" => "W&#177;"
 	);
 
 	if (array_key_exists($value, $map)) {
@@ -141,7 +142,7 @@ echo '<div class=row>
 						<div class=col-md-2>'.$tableRow[$i]["event_id"].'</div>
 						<div class=col-md-2>'.$tableRow[$i]["dg_label"].'</div>
 						<div class=col-md-2>'.htmlFilter($tableRow[$i]["final"]).'</div>
-						<div class=col-md-2>'.$tableRow[$i]["primary"].'</div>
+						<div class=col-md-2>'.htmlFilter($tableRow[$i]["primary"]).'</div>
 						<div class=col-md-2>'.$tableRow[$i]["mass"].'</div>
 						<div class=col-md-2 align="right" 
 								 id="del-'.$tableRow[$i]["event_id"].'"></div>

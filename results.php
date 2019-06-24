@@ -40,7 +40,10 @@ $tableColumns = array("datagroup" => "Group",
 $tableColumns = array("datagroup" => "Group",
 	"e" => "e",
 	"mu" => "&mu;",
-	"charged" => "Charged",
+	//"charged" => "Charged",
+	"wplus" => "W+",
+	"wminus" => "W-",
+	"wpm" => "W&#177;",
 	"neutral" => "Neutral",
 	"zoo" => "Zoo",
 	"total" => "Total"
@@ -55,9 +58,10 @@ $ratioColumns = array(
 	"W-Z" => "W/Z"
 	);
 */
-/* For CIMA-WZH:
+/* For CIMA-WZH: */
 $ratioColumns = array(
-	"e-mu" => "e/&mu;"
+	"e-mu" => "e/&mu;",
+	"Wp-Wm" => "W+/W-"
 	);
 $ratioHeaders = array_values($ratioColumns);
 
@@ -243,8 +247,22 @@ if(isset($_SESSION["tables"])){
 				*/
 				/* For CIMA-WZH: */
 				switch ($primary) {
-			 		case "charged":
-			 			$tableCells[$i]["charged"]++;
+			 		//case "charged":
+			 		//	$tableCells[$i]["charged"]++;
+					//	break;
+			 		//case "W_pm":
+			 		//	$tableCells[$i]["wpm"]++;
+					//	$WCount+=1;
+					//	break;
+			 		case "W+":
+			 			$tableCells[$i]["wplus"]++;
+						//$WCount+=1;
+						$WplusCount+=1;
+						break;
+			 		case "W-":
+			 			$tableCells[$i]["wminus"]++;
+						//$WCount+=1;
+						$WminusCount+=1;
 						break;
 			 		case "neutral":
 			 			$tableCells[$i]["neutral"]++;
@@ -363,8 +381,18 @@ if(isset($_SESSION["tables"])){
 			*/
 			/* For CIMA-WZH: */
 			switch ($primary) {
-				case "charged":
-					$tableCells[$i]["charged"]++;
+				//case "charged":
+				//	$tableCells[$i]["charged"]++;
+				//	break;
+				case "W+":
+			 		$tableCells[$i]["wplus"]++;
+					//$WCount+=1;
+					$WplusCount+=1;
+					break;
+			 	case "W-":
+			 		$tableCells[$i]["wminus"]++;
+					//$WCount+=1;
+					$WminusCount+=1;
 					break;
 				case "neutral":
 					$tableCells[$i]["neutral"]++;
