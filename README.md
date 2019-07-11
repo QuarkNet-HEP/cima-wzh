@@ -38,7 +38,7 @@ docker-compose build
 docker-compose up
 ```
 
-and then go to `http://localhost:8080`
+(these will typically require `sudo`) and then go to `http://localhost:8080`
 
 ### Issues and troubleshooting
 
@@ -47,7 +47,20 @@ and then go to `http://localhost:8080`
 ERROR: Couldn't connect to Docker daemon at http+docker://localunixsocket - is it running?
 ```
 
-Your Docker daemon is not running. In the command line you can start it with the `dockerd` command. For more information visit [here](https://docs.docker.com/config/daemon/).
+This can occur if you attempt to run `docker-compose build` without `sudo`.  If you are using `sudo`, then it's likely your Docker daemon is not running. To check, use the following command to look for an active `dockerd` process:
+```
+$ ps -ef | egrep "docker|PID" | egrep -v grep
+UID        PID  PPID  C STIME TTY          TIME CMD
+root      1349     1  0 Jun19 ?        00:03:04 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+```
+
+On `systemd` systems, you can also use
+```
+$ sudo systemctl is-active docker
+active
+```
+
+If your Docker daemon is not running, you can start it from the command line with the `dockerd` command. For more information visit [here](https://docs.docker.com/config/daemon/).
 
 *  When I run `docker-compose build` I get the following error:
 ```
