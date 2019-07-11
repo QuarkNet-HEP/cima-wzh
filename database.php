@@ -2,12 +2,15 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-//include "config/mc.config";
-include "../../local-settings/mc.config";
+include "./config/mc.config";
+//include "../../local-settings/mc.config";
+
 
 function askdb($q){
 	$login = getDBConfig();
+
 	$con = mysqli_connect($login["db_host"], $login["db_login"], $login["db_pw"], $login["db_name"]);
+	
 	if (mysqli_connect_errno($con)){
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
