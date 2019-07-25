@@ -134,7 +134,8 @@ print_r('<br/>');
 # NB Chart boundaries are also hard-coded in the GenerateHistogramData()
 #   function of database.php
 echo '<script> MakeHist("'.$datax["data_2l"].'",50,111,2,"chart1"); </script>';
-echo '<script> MakeHist("'.$datax["data_4l"].'",81,211,2,"chart2"); </script>';
+#echo '<script> MakeHist("'.$datax["data_4l"].'",81,211,2,"chart2"); </script>';
+echo '<script> MakeHist("'.$datax["data_4l"].'",81,800,2,"chart2"); </script>';
 
 include 'templates/floor.tpl';
 ?>

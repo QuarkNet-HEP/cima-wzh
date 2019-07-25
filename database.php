@@ -559,7 +559,8 @@ function GenerateHistogramData($location){
 	$x_min_2l = 50;
 	$x_max_2l = 111;
 	$x_min_4l = 81;
-	$x_max_4l = 211;
+	#$x_max_4l = 211;
+	$x_max_4l = 800;
 	$bin_2l = 2;
 	$bin_4l = 2;
 
