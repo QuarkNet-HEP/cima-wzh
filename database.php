@@ -563,10 +563,8 @@ function GenerateHistogramData($location){
 	$bin_2l = 2;
 	$bin_4l = 2;
 
-	# 56 bins in 2l chart
-	# 66 bins in 4l chart
-	$numBins_2l = (int) ($x_max_2l - $x_min_2l + 2)/$bin_2l;
-	$numBins_4l = (int) ($x_max_4l - $x_min_4l + 2)/$bin_4l;
+	$numBins_2l = ceil( ($x_max_2l - $x_min_2l)/$bin_2l );
+	$numBins_4l = ceil( ($x_max_4l - $x_min_4l)/$bin_4l );
 
 	# Create arrays to hold data for each chart
 	# Initialized to all zeroes
@@ -591,14 +589,15 @@ function GenerateHistogramData($location){
 			if ( in_array($final, ["2e", "mu_mu"]) ) {
 				#$chart="data_2l";
 				# Find the bin the mass belongs in
-				$binNo = floor( ($mass - $x_min_2l + 1)/$bin_2l );
+				# bin counting is *zero-indexed*
+				$binNo = floor( ($mass - $x_min_2l)/$bin_2l );
 				# The bin might be outside of the bounds we've set for the chart
 				if ( ($binNo >= 0) and ($binNo < $numBins_2l) ) {
 					 $data_2l[$binNo]++;
 				}
 			} elseif ( in_array($final, ["4e", "4mu", "2e_2mu"]) ) {
 				#$chart="data_4l";
-				$binNo = floor( ($mass - $x_min_4l + 1)/$bin_4l );
+				$binNo = floor( ($mass - $x_min_4l)/$bin_4l );
 				if ( ($binNo >= 0) and ($binNo < $numBins_4l) ) {
 					 $data_4l[$binNo]++;
 				}

@@ -17,7 +17,7 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 	 * 2- and 4- lepton plots need different axis parameters, so have to lose the
 	 * hard-coded 68 and pass parameters in as arguments
 	 */
-	numbins = Math.ceil((xmax-xmin)/ybin) + 1;
+	numbins = Math.ceil((xmax-xmin)/ybin);
 	var x=new Array(numbins);
 	var y=dataString.split(";");
 	/* Find the greatest data value in order to set the height of the y-axis.
