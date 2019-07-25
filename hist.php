@@ -131,6 +131,8 @@ print_r('$data_4l = '.$datax["data_4l"]);
 print_r('<br/>');
 */
 
+# NB Chart boundaries are also hard-coded in the GenerateHistogramData()
+#   function of database.php
 echo '<script> MakeHist("'.$datax["data_2l"].'",1,111,2,"chart1"); </script>';
 echo '<script> MakeHist("'.$datax["data_4l"].'",81,211,2,"chart2"); </script>';
 

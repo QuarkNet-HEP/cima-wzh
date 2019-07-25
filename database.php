@@ -554,7 +554,8 @@ function GenerateHistogramData($location){
 	$fourLeptonList = ["4e", "4mu", "2e_2mu"];
 
 	# TODO: find a better way to configure these than hard-coding
-	# Hard-coded histogram parameters:
+	# NB These values are also hard-coded in the MakeHist() calls in hist.php
+	# histogram parameters:
 	$x_min_2l = 1;
 	$x_max_2l = 111;
 	$x_min_4l = 81;
