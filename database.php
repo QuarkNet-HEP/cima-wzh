@@ -556,7 +556,7 @@ function GenerateHistogramData($location){
 	# TODO: find a better way to configure these than hard-coding
 	# NB These values are also hard-coded in the MakeHist() calls in hist.php
 	# histogram parameters:
-	$x_min_2l = 1;
+	$x_min_2l = 50;
 	$x_max_2l = 111;
 	$x_min_4l = 81;
 	$x_max_4l = 211;
