@@ -198,12 +198,12 @@
 				<input type="text" name="massEntry" class="massEntry" id="enterMass"
 							 size="3%" disabled="disabled" />
 				<label for="enterMass">GeV/c²<label>
-			</span>
+			</span></br>
 			<span style="display: inline-block; padding-top:5%; padding-bottom:5%;	
 									border:1px solid transparent;">
 				<button type="submit" disabled="true" id="next" name="fin"
 								class="btn btn-primary btn-lg" />
-					<label for="next">Next</label>
+					Next
 				</button>
 			</span>
 		</div>
