@@ -33,7 +33,6 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 		c+=ybin;
 	}
 
-	// var data = {	
 	var chartData = {
 	    labels: x,
 	    datasets: [
