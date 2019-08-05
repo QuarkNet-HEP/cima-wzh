@@ -250,10 +250,10 @@ if(isset($_SESSION["tables"])){
 			 		//case "charged":
 			 		//	$tableCells[$i]["charged"]++;
 					//	break;
-			 		//case "W_pm":
-			 		//	$tableCells[$i]["wpm"]++;
-					//	$WCount+=1;
-					//	break;
+			 		case "W_pm":
+			 			$tableCells[$i]["wpm"]++;
+						$WCount+=1;
+						break;
 			 		case "W+":
 			 			$tableCells[$i]["wplus"]++;
 						//$WCount+=1;
@@ -384,6 +384,10 @@ if(isset($_SESSION["tables"])){
 				//case "charged":
 				//	$tableCells[$i]["charged"]++;
 				//	break;
+			 	case "W_pm":
+			 		$tableCells[$i]["wpm"]++;
+					$WCount+=1;
+					break;
 				case "W+":
 			 		$tableCells[$i]["wplus"]++;
 					//$WCount+=1;
