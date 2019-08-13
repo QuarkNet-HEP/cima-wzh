@@ -110,15 +110,15 @@ function SelectState(element){
 		// part of the click that activates this function.
 		let finalCheckedList = document.querySelectorAll('input[name="finalState"]:checked');
 		let primaryCheckedList = document.querySelectorAll('input[name="primaryState"]:checked');
-		
+
 		// Mass Entry is required for Final States that are all-charged-leptons
 		// AND that have a Neutral Particle Primary State
-		// We list Mass-Required Final States by their selector id's:
+		// We list mass-required Final States by their selector id's:
 		let twoLepList = ["e-e","mu-mu"];
 		let fourLepList = ["4-e","4-mu","2e-2mu"];
 		let finalMassReqList = twoLepList.concat(fourLepList);
 		let primaryMassReqList = ["neutral"];
-		
+
 		// Elements related to the Mass Entry box
 		let box = document.getElementById('enterMass');
 		let massSpan = document.getElementById('massInput');
@@ -127,6 +127,7 @@ function SelectState(element){
 		// Check each list
 		let finalReqMass = false;
 		let primaryReqMass = false;
+		let activateSubmit = false;
 
 		// Using radio buttons, finalCheckedList and primaryCheckedList can each
 		// have at most one node.  Allow a list in case we want to switch to
@@ -145,7 +146,7 @@ function SelectState(element){
 						primaryReqMass = false;
 				}
 		}
-		
+
 		// Iff both are Mass-Required elements, activate the Mass Entry box
 		if (finalReqMass && primaryReqMass) {
 			box.disabled = false;
@@ -155,9 +156,10 @@ function SelectState(element){
 			massSpan.style.color = 'grey';
 		}
 
-		// Iff both a final state and primary state are chosen, activate the Submit
-		//	 button
-		if ( (finalCheckedList.length > 0) && (primaryCheckedList.length > 0) ) {
+		// If both a final state and primary state are chosen, OR if the primary
+		// state is Zoo, activate the Next button
+		activateSubmit = ((finalCheckedList.length > 0) && (primaryCheckedList.length > 0)) || primaryCheckedList[0].id == "zoo";
+		if ( activateSubmit ) {
 	 			button.disabled = false;
 		} else {
 	 			button.disabled = true;
