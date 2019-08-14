@@ -135,7 +135,8 @@ print_r('<br/>');
 #   function of database.php
 echo '<script> MakeHist("'.$datax["data_2l"].'",51,111,2,"chart1"); </script>';
 #echo '<script> MakeHist("'.$datax["data_4l"].'",81,211,2,"chart2"); </script>';
-echo '<script> MakeHist("'.$datax["data_4l"].'",81,400,2,"chart2"); </script>';
+#echo '<script> MakeHist("'.$datax["data_4l"].'",81,400,2,"chart2"); </script>';
+echo '<script> MakeHist("'.$datax["data_4l"].'",81,400,3,"chart2"); </script>';
 
 include 'templates/floor.tpl';
 ?>
