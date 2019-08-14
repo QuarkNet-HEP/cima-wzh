@@ -189,20 +189,23 @@ if(isset($_SESSION["tables"])){
 			 		case "4e":
 			 			//$tableCells[$i]["e"]+=4;
 			 			$tableCells[$i]["e"]++;
-						$eCount+=4;
+						// KC/TM: remove counting for 4-lep events - JG 14Aug2019
+						//$eCount+=4;
 						break;
 			 		case "4mu":
 			 			//$tableCells[$i]["mu"]+=4;
 			 			$tableCells[$i]["mu"]++;
-						$muCount+=4;
+						// KC/TM: remove counting for 4-lep events - JG 14Aug2019
+						//$muCount+=4;
 						break;
 			 		case "2e_2mu":
 			 			//$tableCells[$i]["e"]+=2;
 			 			//$tableCells[$i]["mu"]+=2;
 			 			$tableCells[$i]["e"]++;
 			 			$tableCells[$i]["mu"]++;
-						$eCount+=2;
-						$muCount+=2;
+						// KC/TM: remove counting for 4-lep events - JG 14Aug2019
+						//$eCount+=2;
+						//$muCount+=2;
 						break;
 			 		/*case "2gam":
 			 			$tableCells[$i]["twogam"]++;
@@ -321,20 +324,23 @@ if(isset($_SESSION["tables"])){
 		 		case "4e":
 		 			//$tableCells[$i]["e"]+=4;
 		 			$tableCells[$i]["e"]++;
-					$eCount+=4;
+					// KC/TM: remove counting for 4-lep events - JG 14Aug2019
+					//$eCount+=4;
 					break;
 		 		case "4mu":
 		 			//$tableCells[$i]["mu"]+=4;
 		 			$tableCells[$i]["mu"]++;
-					$muCount+=4;
+					// KC/TM: remove counting for 4-lep events - JG 14Aug2019
+					//$muCount+=4;
 					break;
 		 		case "2e_2mu":
 		 			//$tableCells[$i]["e"]+=2;
 		 			//$tableCells[$i]["mu"]+=2;
 		 			$tableCells[$i]["e"]++;
 		 			$tableCells[$i]["mu"]++;
-					$eCount+=2;
-					$muCount+=2;
+					// KC/TM: remove counting for 4-lep events - JG 14Aug2019
+					//$eCount+=2;
+					//$muCount+=2;
 					break;
 		 		/*case "2gam":
 		 			$tableCells[$i]["twogam"]++;
