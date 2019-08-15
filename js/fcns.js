@@ -1,4 +1,10 @@
 var Mmass=0;
+
+/* This prints the global variable 'Mmass' to the element with id 'mass' if
+ * either the checkbox with id="H" or id="Z" is checked, circumventing the 
+ * need for the user to enter it for this case.
+ * Prior to CIMA-WZH, it was used only by fcns.SelP().
+ * For CIMA-WZH, none of these things exist, and this is not used. */
 function printMass(mass){
 	if(Mmass!=0){
 		mass=Mmass;
@@ -14,54 +20,98 @@ function printMass(mass){
 
 }
 
+
+/* If state="primary", returns boolean of whether a final state is checked.
+ * If state="final", returns boolean of whether a primary state is checked. */
 function check(state){
 	if(state=="primary"){
-		return (document.getElementById("e").checked || document.getElementById("mu").checked);
+			return (document.getElementById("e").checked || document.getElementById("mu").checked);
 	}
+		
 	if(state=="final"){
-		return (document.getElementById("H").checked || document.getElementById("Z").checked || document.getElementById("W").checked
-		|| document.getElementById("Wp").checked || document.getElementById("W-").checked || document.getElementById("Zoo").checked);
+			return (document.getElementById("H").checked || document.getElementById("Z").checked || document.getElementById("W").checked
+								|| document.getElementById("Wp").checked || document.getElementById("W-").checked || document.getElementById("Zoo").checked);
 	}
 }
 
+
+/* This function is activated when a particle-state checkbox is clicked.
+ * When a checkbox is clicked, other checkboxes of the same type (final/primary) 
+ * are disabled.
+ * If the primary-state Higgs or Zoo checkbox is clicked, we additionally 
+ * uncheck and disable the final-state checkboxes.
+ * The canonical mass is displayed if it's not one the user must enter.
+ * If both primary and final states have been selected, or if Higgs or Zoo 
+ * has been selected (which don't require final states to be selected), we 
+ * activate the "Next" button to submit the selection. 
+ */
 function SelP(element,mass){
-	var prim=false;
-	var fin=false;
-	
-	checked=element.checked;
-	if(element.id=="mu" || element.id=="e"){
-		var arr=["mu","e"];
-		prim=checked;
-		fin=check("final");
-	
-	}else{
-		if(element.id=="Zoo" || element.id=="H"){
-			$("#mu").prop("checked",false);
-			$("#e").prop("checked",false);
-			$("#mu").prop("disabled",checked);
-			$("#e").prop("disabled",checked);
-			prim=checked;
+		// I think that 'prim' and 'fin' are reversed in usage in this function.
+		// 'prim' seems to be used to indicate that a final state has been selected.
+		// 'fin' seems to be used to indicate that a primary state has been selected.
+		var prim=false;
+		var fin=false;
+		checked=element.checked;
+
+		/* If the input checkbox is 'mu' or 'e' (a final state), set 'prim'
+		 * equal to its boolean 'checked' status and set 'fin' to 'true' if a 
+		 * primary state is also checked. */
+		if(element.id=="mu" || element.id=="e"){
+				var arr=["mu","e"];
+				prim=checked;
+				fin=check("final");
 		}else{
-			prim=check("primary");
+				/* If the input checkbox is 'Zoo' or 'H' (both primary states),
+				 * set the 'mu' and 'e' checkboxes to unchecked and disabled.
+				 * Set 'prim' to the boolean 'checked' status of the input checkbox. */
+				if(element.id=="Zoo" || element.id=="H"){
+						/* Uncheck and disable final-state checkboxes for these primary 
+						 * state selections */
+						$("#mu").prop("checked",false);
+						$("#e").prop("checked",false);
+						$("#mu").prop("disabled",checked);
+						$("#e").prop("disabled",checked);
+						/* For the purposes of activating the "Next" button, we say the
+						 * final state has been "checked" for Zoo or H checked, even though 
+						 * they're disabled. */
+						prim=checked;
+				}else{
+						/* If the input checkbox is not 'mu', 'e', 'Zoo', or 'H', then 
+						 * it's a different primary state.
+						 * Set 'prim' to 'true' if a final state is also checked. */
+						prim=check("primary");
+				}
+
+				// Display the canonical mass of the state if it's not a user-entered one.
+				printMass(mass);
+
+				// Define an array of primary states
+				var arr=["H","W","W-","Wp","Z","Zoo"];
+
+				// Set 'prim' to the boolean 'checked' status of the input checkbox.
+				fin=checked;
 		}
 
-		printMass(mass);
-		var arr=["H","W","W-","Wp","Z","Zoo"];
-		fin=checked;
-	}	
-	for(var i=0;i<arr.length;i++){
-		if(element.id!=arr[i]){
-			$("#"+arr[i]).prop("disabled", checked);
+		/* If the input checkbox is a final state, 'arr' is an array of final states.
+		 * If the input checkbox is a primary state, 'arr' is an array of primary 
+		 * states. 
+		 * For each of these that is *not* the input state, we disable it if the 
+		 * input checkbox was checked. */
+		for(var i=0;i<arr.length;i++){
+				if(element.id!=arr[i]){
+						$("#"+arr[i]).prop("disabled", checked);
+				}
 		}
-	}
-	if(prim && fin){
-		$("#next").prop("disabled", false);
-	}else{
-		$("#next").prop("disabled", true);
-	}
 
+		/* If at this point we've found that both primary and final states have
+		 * been selected, enable the "Next" button.  Otherwise keep it disabled. */
+		if(prim && fin){
+				$("#next").prop("disabled", false);
+		}else{
+				$("#next").prop("disabled", true);
+		}
 }
-	
+
 
 // Added Nov2018 for WZH upgrades.  A simpler version of SelP()
 /* Update 18Dec2018: For some reason I decided against this in favor of the 
@@ -365,44 +415,155 @@ function GSel(element){
 }
 
 
-// This need attention after the WZH upgrades of Nov2018
+// This was overhauled from del_old() as part of WZH upgrades - JG Aug2019
 function del(element){
-	var cs=element.childNodes;
-	// 'checked' no longer exists. cs[5] is now the "final" value
-	var checked=cs[5].innerHTML.split(";");
-	// mass value is now cs[9].innerHTML	
-	var mass=cs[7].innerHTML;
-	 $.ajax({
-	type: "POST",
-	url: "delE.php",
-	data: {
-	row : element.id
-	},
-	success: function( ) {
-	$( "#"+element.id ).html( "" );
-	}
-	});
 
-	// We now have radio buttons instead of checkboxes
-	$(":checkbox").prop("disabled",false);
-	// These are 'id' values of all checkboxes > radio buttons
-	// These have changed.
-	var allC=["e","mu","W","Wp","W-","Z","H","Zoo"];
-	for(var i=0;i<allC.length;i++){
+		// Pull table entries as identified by their class
+		let eventID = element.getElementsByClassName("event-id")[0].innerHTML;
+		let datagroupID = element.getElementsByClassName("dg-id")[0].innerHTML;
+		let finalState = element.getElementsByClassName("final-state")[0].innerHTML;
+		let primaryState = element.getElementsByClassName("primary-state")[0].innerHTML;
+		//console.log("eventID = "+eventID);
+		//console.log("datagroupID = "+datagroupID);
+		//console.log("finalState = "+finalState);
+		//console.log("primaryState = "+primaryState);
+
+		// Delete the row from the current Location table of the database.
+		// If successful, replace the row's HTML with '', deleting it from the page.
+		$.ajax({
+				type: "POST",
+				url: "delE.php",
+				data: {
+						row : element.id
+				},
+				success: function( ) {
+						$( "#"+element.id ).html( "" );
+				}
+		});
+
+		/* jQuery to select all radio inputs and enable them.
+		 * Are they ever disabled?  This was carried over from del_old() and can
+		 * probably be deleted. */
+		$(":radio").prop("disabled",false);
+
+		/* These are 'id' values of all radio buttons.
+		 * Reset them all to the unselected state. */
+		let radioIDs = ["e-nu","mu-nu","e-e","mu-mu","4-e","4-mu","2e-2mu","charged","neutral","zoo"];
+		for(var i=0; i < radioIDs.length; i++){
+		    document.getElementById(radioIDs[i]).checked = false;
+		}
+
+		/* Create a new <option> element to put into the drop-down */
+		let nopt = document.createElement("option");
+
+		/* id='SelEvent' is the currently-selected <option> in the drop-down.
+		 * Set the text of this new <option> to its text. */
+		nopt.text = $("#SelEvent").text();
+
+		/* id="EvSelOver" is the event selection drop-down menu.  Add the new 
+		 * <option> to it at the position index dropDown[1]. */
+		/* This seems wrong.  dropDown[1] is the *event* index of the second 
+		 * option in the list.  It's not a list position index.
+		 * Nonetheless, it works for now. */
+		let dropDown = document.getElementById("EvSelOver");
+		dropDown.add(nopt,dropDown[1]);
+
+		/* Set the currently-selected option to what was just deleted */
+		$("#SelEvent").html($.trim(eventID));
+		/* Set the current datagroup index to match */
+		$("#Eventid").html($.trim(datagroupID));
+
+		/* These two 'if' blocks are an updated version of what del_old() does, 
+		 * but I doubt they're needed at all - JG 15Aug2019 */
+		if(finalState && $.trim(finalState) !=""){
+				let temp = $.trim(finalState);
+				document.getElementById(temp).checked = true;
+				SelP(document.getElementById(temp),0);
+		}
+		if(primaryState && $.trim(primaryState) !=""){
+				let temp = $.trim(primaryState);
+				document.getElementById(temp).checked = true;
+				SelP(document.getElementById(temp),0);
+		}
+
+		/* Disable the [finish editing] button of templates/table.tpl that can 
+		 * appear in DataTable.php when accessed from finish.php under certain 
+		 * conditions */
+		$("#fedit").prop("disabled",true);
+}
+
+
+// This was formerly del() before WZH upgrades - Aug2019
+function del_old(element){
+
+		// Create an array of column entries as child nodes
+		// This is not recommended.  If someone unfamiliar with this function adds
+		// a comment within the element, for example, this creates a new child node
+		// that will throw off the ordering of the array cs[i].
+		// Instead, assign a class to the cell <div> that allows it to be extracted
+		// unambiguously.
+		var cs = element.childNodes;
+		/*for(var i=0; i < cs.length; i++){
+		    console.log("cs["+i+"] = " + cs[i]);
+		}*/
+
+		/* 'checked' is the semicolon-separated string of final state,
+		 * primary state, and mass */
+		var checked = cs[5].innerHTML.split(";");
+		var mass=cs[7].innerHTML;
+
+		/* Delete the row from the current Location table of the database.
+		 * If successful, replace the row's HTML with '', effectively deleting it 
+		 * from the page. */
+		$.ajax({
+				type: "POST",
+				url: "delE.php",
+				data: {
+						row : element.id
+				},
+				success: function( ) {
+						$( "#"+element.id ).html( "" );
+				}
+		});
+
+		/* jQuery to select all checkboxes and enable them.
+		 * They can become disabled by SelP(), activated when a checkbox is clicked. */
+		$(":checkbox").prop("disabled",false);
+
+		/* These are 'id' values of all checkboxes.  Uncheck them. */
+		var allC = ["e","mu","W","Wp","W-","Z","H","Zoo"];
+		for(var i=0; i < allC.length; i++){
 		    document.getElementById(allC[i]).checked = false;
-	}
-	sel=document.getElementById("EvSelOver");
-	var nopt=document.createElement("option");
-	nopt.text=$("#SelEvent").text();
-	sel.add(nopt,sel[1]);
-	$("#SelEvent").html($.trim(cs[1].innerHTML));
-	$("#Eventid").html($.trim(cs[3].innerHTML));
+		}
 
-	var s=massGlobal.split(";");
+		// id="EvSelOver" is the event selection drop-down menu
+		sel = document.getElementById("EvSelOver");
+		/*console.log("sel = "+sel.value);
+		console.log("sel[0] = "+sel[0].value);
+		console.log("sel[1] = "+sel[1].value);
+		console.log("sel[2] = "+sel[2].value);
+		console.log("sel[3] = "+sel[3].value);*/
+
+		// Create a new <option> element to put into the drop-down
+		var nopt = document.createElement("option");
+
+		// id='SelEvent' is the currently-selected <option> in the drop-down
+		// Set the text of this new <option> to its text
+		nopt.text = $("#SelEvent").text();
+
+		// Add the new <option> to the drop-down menu at the position index sel[1]
+		// This seems wrong.  sel[1] is the *event* index of the second option in
+		// the list.  It's not a list position index.
+		sel.add(nopt,sel[1]);
+
+		$("#SelEvent").html($.trim(cs[1].innerHTML));
+		$("#Eventid").html($.trim(cs[3].innerHTML));
+
+	var s = massGlobal.split(";");
 	for(var i=0;i<s.length;i++){
-		var temp=s[i].split(":");
-		if(temp[0]==element.id){
-			Mmass=temp[1];
+		var temp = s[i].split(":");
+		if(temp[0] == element.id){
+			Mmass = temp[1];
 		}
 	}
 

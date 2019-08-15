@@ -139,10 +139,10 @@ echo '<div class=row>
 										 onmouseout="nshowdel(this)"
 										 onclick="del(this)">
 						<!-- Row entries: -->
-						<div class=col-md-2>'.$tableRow[$i]["event_id"].'</div>
-						<div class=col-md-2>'.$tableRow[$i]["dg_label"].'</div>
-						<div class=col-md-2>'.htmlFilter($tableRow[$i]["final"]).'</div>
-						<div class=col-md-2>'.htmlFilter($tableRow[$i]["primary"]).'</div>
+						<div class="col-md-2 event-id">'.$tableRow[$i]["event_id"].'</div>
+						<div class="col-md-2 dg-id">'.$tableRow[$i]["dg_label"].'</div>
+						<div class="col-md-2 final-state">'.htmlFilter($tableRow[$i]["final"]).'</div>
+						<div class="col-md-2 primary-state">'.htmlFilter($tableRow[$i]["primary"]).'</div>
 						<div class=col-md-2>'.$tableRow[$i]["mass"].'</div>
 						<div class=col-md-2 align="right" 
 								 id="del-'.$tableRow[$i]["event_id"].'"></div>
@@ -156,6 +156,7 @@ echo '<div class=row>
 
 include 'templates/floor.tpl';
 
+/* TODO: I don't think this is necessary for WZH.  Try deleting it - JG 15Aug2019 */
 $s=0;
 for($i=0;$i<count($arr);$i++){
 	$s.=$arr[$i]["id"].":".$arr[$i]['mass'].";";
