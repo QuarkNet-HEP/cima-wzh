@@ -10,7 +10,8 @@
 			$t=GetTableByID($id); 
 			/* Strip the location prefix from the Location table name: */
 			//echo $t["name"].' '; }
-			echo DisplayLocation($t["name"]).' '; }
+			//echo DisplayLocation($t["name"]).' '; }
+			echo $t["displayName"].' '; }
 	?>
 			</span>
 		</div>
