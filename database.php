@@ -5,6 +5,8 @@ ini_set('display_errors', 1);
 //include "config/mc.config";
 include "../../local-settings/mc.config";
 
+
+
 function askdb($q){
 	$login = getDBConfig();
 	$con = mysqli_connect($login["db_host"], $login["db_login"], $login["db_pw"], $login["db_name"]);
@@ -289,7 +291,7 @@ function CreateHist(){
 	$num2lBins=55;
 	/* WZH 4-lepton */
 	$num4lBins=65;
-	
+
 	/* Construct semicolon-separated strings of zeroes for each kind: */
 	$zeroes="";
 	for($i=0;$i<$numBins;$i++){
@@ -365,21 +367,10 @@ function DelGroupsFromTables($tables,$groups){
 }	
 
 
-/* 1) When created, each Location table name in the database is prefixed with
- * 			$locPrefix as given by GetLocationPrefix(), e.g. '__LOC__'
- *	 	This indicates the role of these tables more clearly and cleanly
- *		separates them from the other database tables when listed.
- *		Whenever information is taken from the DB about a table, we create a
- *		separate "display name" parameter without this prefix to display the name
- *		to the user.
- * 2) The <Location>.'checked' column is a semi-colon separated list of
- * 		user selections on the fillOut.php page.  That's not normal-formed.
- *		Oct2018 upgrades added 'final_state', 'primary_state', and 'mass' columns.
- */
-/* CreateTable() creates the Location tables and associated data in the Masterclass DB.
+/* CreateTable() creates the Location tables and associated data in the
+ *   Masterclass DB.
  * Inputs: $locationName is the Location table name.  A new table will be
- * 				 	created with this name, and the name will be added to the
- *					'Tables.name' column.
+ * 				 	created with this name, and the name will be added to 'Tables.name'.
  *				 $datagroups is the set of Events.datagroup_id values that will be
  *				 	assigned to this Masterclass Group.  It can be a single value or
  *				 	an array.
@@ -388,6 +379,18 @@ function DelGroupsFromTables($tables,$groups){
  * 2) Create an (id,data) pair in 'histograms'
  * 3) Register the (locationName, histogram.id) pair as a new row in 'Tables'
  * 4) Register the (Tables.id, datagroup_id) pair as a new row in 'TableGroups'
+ */
+/* 1) When created, each Location table name in the database is prefixed with
+ * 		$locPrefix as given by GetLocationPrefix(), e.g. '__LOC__'.
+ *	 	This indicates the role of these tables more clearly and cleanly
+ *		separates them from the other database tables when listed.
+ *		Whenever information is taken from the DB about a table, we create a
+ *		separate "display name" parameter without this prefix to display the name
+ *		to the user.
+ * 2) The <Location>.'checked' column is a semicolon-separated list of
+ * 		user selections on the fillOut.php page.  That's not normal-formed.
+ *		Oct2018 upgrades added 'final_state', 'primary_state', and 'mass' columns
+ *		to store this data atomically as part of an effort to deprecate its use.
  */
 function CreateTable($locationName,$datagroups){
 	/* Prefex for names of Location tables to help identify and sort them */
@@ -406,7 +409,7 @@ function CreateTable($locationName,$datagroups){
 	$q="SELECT name FROM Tables WHERE name='".$locationName."'";
 	$res=askdb($q);
 	if($res->fetch_object()){ $nameNotFound = FALSE; }
-	
+
 	/* If the table doesn't already exist, and if $locationName is properly
 		 defined, create the Location table */
 	if($nameNotFound && isset($locationName) && $locationName!=""){
@@ -415,8 +418,8 @@ function CreateTable($locationName,$datagroups){
 		$q="CREATE TABLE `".$locPrefix.$locationName."` (event_id INT NOT NULL, checked VARCHAR(20), final_state VARCHAR(10), primary_state VARCHAR(10), mass DOUBLE, FOREIGN KEY (event_id) REFERENCES Events(event_id))";
 		askdb($q);
 
-		/* Creates all-zero data strings in 'histograms' data columns.
-			 'histograms.id' AUTO_INCREMENTs. */
+		/* Inserts a new row of all-zero data strings in the `histograms` table.
+			 `histograms.id` AUTO_INCREMENTs. */
 		CreateHist();
 
 		/* 'histograms' MAX(id) will be the value created via AUTO_INCREMENT by
