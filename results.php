@@ -81,18 +81,19 @@ $ratioHeaders = array_values($ratioColumns);
 if(!isset($_SESSION["comb"])){
 	/*** Single location ***/
 	include 'templates/navbar.tpl';
-	/* For a single location, we need tabulate only those datagroups assigned
+
+	/* For a single location, we need to tabulate only those datagroups assigned
 		 to the location */
 	$datagroups = GetDatagroupsById($_SESSION["databaseId"]);
 
 	/* TODO: If there are no assigned datagroups, $tableCells may be undefined.
-	 * Don't expect this in practice. */
+	 * We don't expect this in practice. */
 	foreach($datagroups as $row){
 		// For each row, initialize all values to zero:
 		foreach($tableLabels as $column){
 			$tableCells[$row][$column]=0;
 		}
-		/* We can go ahead and set the $tableCells[N]["datagroup"] values
+		/* We can go ahead and set the $tableCells[N]["datagroup"] values.
 	 	 * NB that $rows is a datagroup_id and not a sequence of
 		 * row numbers [1,2,3...] */
 		$tableCells[$row]["datagroup"] = $row;
