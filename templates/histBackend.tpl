@@ -35,7 +35,9 @@
 		</div>
 	</div>
 	<!-- End histogram container 1 -->
-	
+
+	<br>
+
 	<!-- Histogram container 2 -->
 	<div class=container style="display: inline-block;">
 		<div class=row style="padding-top: 5%;">
