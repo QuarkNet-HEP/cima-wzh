@@ -25,8 +25,8 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 	let maxY = Math.max(...y);
 	/* Establish the maximum value of the chart y-axis: */
 	var ymax = Math.max(maxY, suggestedMax);
-		
-	// Fill the bin index array in steps of 'ybin' 
+
+	// Fill the bin index array in steps of 'ybin'
 	var c=xmin;
 	for(var i=0;i<numbins;i++){
 		x[i]=c;
@@ -52,7 +52,7 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 			//scaleBeginAtZero : true,
 
 			/* Chart.js has terrible documentation
-			 * I've attempted to implement the 'suggestedMax' feature of Chart.js 
+			 * I've attempted to implement the 'suggestedMax' feature of Chart.js
 			 * v.2+ by hand in order to minimize the jarring effect of the y-axis
 			 * jumping when users first start entering data. - JG */
 			/* Required to manually manipulate scale settings: */
@@ -60,7 +60,7 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 			/* Manually set the number of y-axis scale steps, step size, and start: */
 			scaleSteps : ymax,
 			scaleStepWidth : 1,
-			scaleStartValue : 0, 
+			scaleStartValue : 0,
 
  			//Boolean - Whether grid lines are shown across the chart
     	scaleShowGridLines : true,
@@ -104,7 +104,7 @@ function uhist(datax,chartId){
 		let myBarChart = chartList[chartId];
 		let y=datax.split(";");
 		console.log(y);
-		
+
 		// Update the histogram bins; global 'numbins' defined in MakeHist()
 		for(let i=0;i<numbins;i++){
 				myBarChart.datasets[0].bars[i].value=y[i];
@@ -119,7 +119,7 @@ function uhist(datax,chartId){
 		// Update the y-axis
 		myBarChart.scale.steps=ymax;
 		myBarChart.scale.max=ymax;
-	
+
 		// It seems like this update() is a standard Chart.js function,
 		//   *not* the one defined below
 		myBarChart.update();
@@ -145,7 +145,6 @@ function update_auto(evt){
 						uhist(data,chartId);
 				}
 		});
-
 }
 
 
@@ -186,7 +185,7 @@ function update_manual(evt){
 				/*myBarChart.datasets[0].bars[index].value =
 					(parseInt(activeBars[0].value)+1).toString();*/
 		}
-		
+
     $.ajax({
 				type: "POST",
 				url: "AddHistData.php",
@@ -201,4 +200,3 @@ function update_manual(evt){
 				}
 		});
 }
-
