@@ -84,8 +84,9 @@ if(!isset($_SESSION["comb"])){
 						$pretemp=GetHistogramData($table["name"]);
 						$temp_2l=explode(";",$pretemp["data_2l"]);
 						$temp_4l=explode(";",$pretemp["data_4l"]);
-						/* TODO: Would be nice to put the following into a separate function to
-							 generalize to any number of datasets instead of repeating twice */
+						/* TODO: Would be nice to put the following into a separate
+						 * function to generalize to any number of datasets instead of
+						 * repeating twice */
 						if(!isset($data_2l)){
 								$data_2l=$temp_2l;
 						}else{
