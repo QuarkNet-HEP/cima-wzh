@@ -692,9 +692,11 @@ function GetMClassEvent($id){
 
 
 /* Inputs: $event is an 'MclassEventID' value from table 'Tables' */
+/* Returns the id, name, and displayName of Tables associated with the input
+ * Masterclass Event ID. */
 function GetTables($event){
 	/* SELECT tableid FROM EventTables WHERE MclassEventID=$event
-		 returns the Table.id value for the given MclassEventID */
+		 returns the Tables.id value for the given MclassEventID */
 	$q="SELECT * FROM Tables WHERE id IN (SELECT tableid FROM EventTables WHERE MclassEventID='".$event."')";
 	$res=askdb($q);	
 	while($obj = $res->fetch_object()){ 
