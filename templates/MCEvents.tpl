@@ -72,6 +72,7 @@
 			</div>
 
 			<!-- A row to select the data block for this table -->
+			<?php /*
 			<div class=row>
 				<div class=col-md-6>
 					Select data block:
@@ -86,6 +87,7 @@
 					</select>
 				</div>
 			</div>
+			*/ ?>
 
 			<!-- Two rows for the datagroup selection window -->
 			<div class=row>
@@ -110,7 +112,11 @@
 					 * where new tables are created.
 					 */
 				?>
-				<div class=col-md-6><button type="submit" class="btn btn-default" name="CreateT" value="CT">Create table</button></div>
+				<div class=col-md-6>
+					<button type="submit" class="btn btn-default" name="CreateT" value="CT">
+						Create table
+					</button>
+				</div>
 				<?php
 					/* TODO: Error handling
 					 * 1) If no table is selected in the "tableName" box, selecting
@@ -122,7 +128,11 @@
 					 *  name" message.
 					 */
 				?>
-				<div class=col-md-6><button type="submit" class="btn btn-default" name="AddG" value="AddG">Add to table</button></div>
+				<div class=col-md-6>
+					<button type="submit" class="btn btn-default" name="AddG" value="AddG">
+						Add to table
+					</button>
+				</div>
 
 			</div>
 		</div>
@@ -163,11 +173,12 @@
 						<strong>bound tables </strong>
 						</div>
 						<div class=row>
-						<select name="BTables[]" id="BTables" style="width: 100%" onclick="PostGroups()" size="13" multiple>
-						<?php for($i=0;$i<count($boundTables);$i++){
-							echo "<option value=".$boundTables[$i]["id"].">".$boundTables[$i]["displayName"]."</option>";
-						} ?>
-						</select>
+							<select name="BTables[]" id="BTables" style="width: 100%"
+											onclick="PostGroups()" size="13" multiple>
+								<?php for($i=0;$i<count($boundTables);$i++){
+												echo "<option value=".$boundTables[$i]["id"].">".$boundTables[$i]["displayName"]."</option>";
+											} ?>
+							</select>
 						</div>
 						<div class=row>
 						<button type="submit" class="btn btn-default" name="free" value="free">Remove tables</button> 
