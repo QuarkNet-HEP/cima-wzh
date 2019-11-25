@@ -18,6 +18,22 @@ function askdb($q){
 }
 
 
+/* Not a database function but I need somewhere to put it - JG 25Nov2019 */
+function makeIndices($blockArray) {
+
+	$datagroup_indices = array();
+	for($i=0; $i<count($blockArray); $i++) {
+		$N = $blocks[$i];
+		for($j=0; $j<$N; $j++) {
+			$datagroup_indices[] = ((string) $N) . "." . ((string) ($j+1));
+		}
+	}
+
+	return $datagroup_indices;
+
+}
+
+
 /* Returns event_id values for $datagroup that are not already contained
 	 in the given Location $location */
 function GetFreeEvents($datagroup,$location){
@@ -713,42 +729,23 @@ function GetTables($event){
 }
 
 
+
 /* Get all datagroups assigned to the given Location table IDs */
 function GetGroups($Tables){
-	/* In general, we expect that $Tables might be an array, with each element
- 	 * representing one Location table.  In general, each element is expected to
- 	 * be an array of 'id', 'name' and 'displayName' values for that Location
- 	 * table. */
-	$tableIds = array();
-	print_r("Tables = ");
-	print_r($Tables);
-	print_r('<br/>');
 	if(isset($Tables)){
 		if(is_array($Tables)){
-			print_r('$Tables is an array');
 			if(is_array($Tables[0])){
-				print_r('$Tables is an array of arrays');
 				for($i=0;$i<count($Tables);$i++){
-					$tableIds[]=$Tables[$i]["id"];
-					//$tables[]=$Tables[$i]["id"];
+					$tables[]=$Tables[$i]["id"];
 				}
-				print_r("tableIds = ");
-				print_r($tableIds);
-				print_r('<br>');
-				print_r(implode(",", $tableIds));
-			} else {
-				print_r('$Tables is an array of values');
-				$tableIds[] = $Tables;
+				$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",",$tables).")";
+			}else{
+				$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN (".implode(",",$Tables).")";
 			}
-		} else {
-			print_r('$Tables is not an array');
-			/* If $Tables is not an array, it's a single Table ID.  Make it an array. */
-			$tableIds[] = [$Tables];
+		}else{
+			/* If $Tables is not an array */
+			$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid=".$Tables;
 		}
-
-		/* With all relevant Table IDs defined in an array, query the DB */
-		$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",", $tableIds).")";
-		//$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",", $tableIds).")";
 		$q=$q." ORDER BY datagroup_id";
 		$res=askdb($q);
 
@@ -762,6 +759,7 @@ function GetGroups($Tables){
 		}
 	}
 }
+
 
 
 /* Same as above, but doesn't account for array input or return "postAdded" */
