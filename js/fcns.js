@@ -296,41 +296,45 @@ function GetTables(){
 
 
 function PostGroups(){
-	var selB=document.getElementById("BTables");
-	var selF=document.getElementById("Ftables");
-	var list=new Array;
-	var k=0
-	 for (var i = 0; i < selB.options.length; i++) {
-   		  if(selB.options[i].selected){
-			list[k]=selB.options[i].value;
-			k++;
-      		}
+		var selB=document.getElementById("BTables");
+		var selF=document.getElementById("Ftables");
+		var list=new Array;
+		var k=0;
+		for (var i = 0; i < selB.options.length; i++) {
+			if(selB.options[i].selected){
+				list[k]=selB.options[i].value;
+				k++;
+      }
+		}
+		for (var i = 0; i < selF.options.length; i++) {
+			if(selF.options[i].selected){
+				list[k]=selF.options[i].value;
+				k++;
+      }
   	}
-	 for (var i = 0; i < selF.options.length; i++) {
-   		  if(selF.options[i].selected){
-			list[k]=selF.options[i].value;
-			k++;
-      		}
-  	}
-	
-	$.ajax({
-	type: "POST",
-	url: "showGroups.php",
-	data: {
-	tables : list.join(),
-	source : "Backend" },
-	success: function( data ) {
-	$( "#bg" ).html( data );
-	}
-	});
+
+		$.ajax({
+				type: "POST",
+				url: "showGroups.php",
+				data: {
+						tables : list.join(),
+						source : "Backend"
+				},
+				success: function( data ) {
+						$( "#bg" ).html( data );
+				}
+		});
 
 }
+
+
 function showdel(element){
 	//alert(elstr);
 	element.style.backgroundColor = "#AAFFAA";
 	elstr="del-"+element.id;
 	$( "#"+elstr ).html("<span class='glyphicon glyphicon-pencil'></span> edit");
 }
+
 
 function nshowdel(element){
 
