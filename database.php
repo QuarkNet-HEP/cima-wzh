@@ -28,10 +28,11 @@ function makeIndices($blockArray) {
 			$datagroup_indices[] = ((string) $N) . "." . ((string) ($j+1));
 		}
 	}
-
 	return $datagroup_indices;
 
 }
+
+
 
 
 /* Returns event_id values for $datagroup that are not already contained
@@ -731,6 +732,7 @@ function GetTables($event){
 
 
 /* Get all datagroups assigned to the given Location table IDs */
+/* Reads from TableGroups */
 function GetGroups($Tables){
 	if(isset($Tables)){
 		if(is_array($Tables)){
@@ -822,6 +824,8 @@ function GetFreeTables($event,$boundGroups,$overlab){
 }
 
 
+/* Change this for data blocks - 25Nov2019 */
+/* Altered function below */
 function GetFreeGroups($boundGroups,$overlab){
 	if(isset($boundGroups) && is_array($boundGroups) && $overlab==0){
 		$q="SELECT DISTINCT datagroup_id FROM Events WHERE NOT datagroup_id IN ( ".implode(",",$boundGroups).")";
@@ -836,6 +840,30 @@ function GetFreeGroups($boundGroups,$overlab){
 		return $result;
 	}
 }
+
+
+/* Change this for data blocks - 25Nov2019 */
+/* Original function above */
+/* $boundGroups is an array of all datagroups that have been assigned. */
+function getFreeDatasets($boundSets, $overlap) {
+	if( isset($boundSets) && is_array($boundSets) && $overlap==0) {
+	
+		$q="SELECT DISTINCT dataset FROM Datasets WHERE NOT dataset IN ( ".implode(",",$boundSets).")";
+
+	}else{
+
+		$q="SELECT DISTINCT dataset FROM Datasets WHERE 1";
+
+	}
+	$res=askdb($q);
+	while($obj = $res->fetch_object()){ 
+		$result[]=$obj->datagroup_id;
+	}
+	if(isset($result)){
+		return $result;
+	}
+}
+
 
 		
 function connectGroups($tableid,$gstd,$gbackup){
