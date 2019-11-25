@@ -50,20 +50,20 @@
 	<div class=col-md-4> 
 		<div class=container-fluid>
 
-			// A row for the header
+			<!-- A row for the header -->
 			<div class=row>
 				<div class=col-md-12>
 					<strong>Enter new name -or- choose existing table</strong>
 				</div>
 			</div>
 
-			// A row to select a table
+			<!-- A row to select a table -->
 			<div class=row>
-				<div class=col-md-8>
+				<div class=col-md-6>
 					<input type="text" name="tableName" placeholder="new table name"
 								 maxlength="30" size="30">
 				</div>
-				<div class=col-md-4><select name="Tsel">
+				<div class=col-md-2><select name="Tsel">
 				<?php for($i=0;$i<count($boundTables);$i++){
 					echo '<option value="'.$boundTables[$i]["id"].'">'.$boundTables[$i]["displayName"].'</option>';
 				}?>
@@ -71,7 +71,23 @@
 				</div>
 			</div>
 
-			// A row for the datagroup selection window
+			<!-- A row to select the data block for this table -->
+			<div class=row>
+				<div class=col-md-6>
+					Select data block:
+				</div>
+				<div class=col-md-2>
+					<select name="blockSelect">
+						<option value="N5">N5</option>
+						<option value="N10">N10</option>
+						<option value="N25">N25</option>
+						<option value="N50">N50</option>
+						<option value="N100">N100</option>						
+					</select>
+				</div>
+			</div>
+
+			<!-- A row for the datagroup selection window -->
 			<div class=row>
 				<div class=col-md-12>
 					<strong> Assign Groups </strong>
@@ -99,8 +115,8 @@
 					 * Should instead give a "Please select a table" message.
 					 * 2) If no table is selected or given in the "tableName" box,
 					 * selecting "Create table" throws an error "Undefined index: Groups".
-					 * Should instead give a "Please select a table, or enter a table name"
-					 * message.
+					 * Should instead give a "Please select a table, or enter a table
+					 *  name" message.
 					 */
 				?>
 				<div class=col-md-6><button type="submit" class="btn btn-default" name="AddG" value="AddG">Add to table</button></div>
