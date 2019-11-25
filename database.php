@@ -713,21 +713,31 @@ function GetTables($event){
 }
 
 
+/* Get all datagroups assigned to the given Location table IDs */
 function GetGroups($Tables){
+	/* In general, we expect that $Tables might be an array, with each element
+ 	 * representing one Location table.  In general, each element is expected to
+ 	 * be an array of 'id', 'name' and 'displayName' values for that Location
+ 	 * table. */
+	$tableIds = array();
 	if(isset($Tables)){
 		if(is_array($Tables)){
 			if(is_array($Tables[0])){
 				for($i=0;$i<count($Tables);$i++){
-					$tables[]=$Tables[$i]["id"];
+					$tableIds[]=$Tables[$i]["id"];
+					//$tables[]=$Tables[$i]["id"];
 				}
-				$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",",$tables).")";
-			}else{
-				$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN (".implode(",",$Tables).")";
+			} else {
+				$tableIds[] = $Tables;	 
 			}
-		}else{
-			/* If $Tables is not an array */
-			$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid=".$Tables;
+		} else {
+			/* If $Tables is not an array, it's a single Table ID.  Make it an array. */
+			$tableIds[] = [$Tables];
 		}
+
+		/* With all relevant Table IDs defined in an array, query the DB */
+		$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",", $tableIds).")";
+		//$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",", $tableIds).")";
 		$q=$q." ORDER BY datagroup_id";
 		$res=askdb($q);
 
