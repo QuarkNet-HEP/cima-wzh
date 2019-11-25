@@ -49,22 +49,29 @@
 <div class=row>
 	<div class=col-md-4> 
 		<div class=container-fluid>
+
+			// A row for the header
 			<div class=row>
 				<div class=col-md-12>
 					<strong>Enter new name -or- choose existing table</strong>
 				</div>
 			</div>
+
+			// A row to select a table
 			<div class=row>
-				<div class=col-md-8><input type="text" name="tableName" placeholder="new table name" maxlength="30" size="30"></div>
+				<div class=col-md-8>
+					<input type="text" name="tableName" placeholder="new table name"
+								 maxlength="30" size="30">
+				</div>
 				<div class=col-md-4><select name="Tsel">
 				<?php for($i=0;$i<count($boundTables);$i++){
 					echo '<option value="'.$boundTables[$i]["id"].'">'.$boundTables[$i]["displayName"].'</option>';
 				}?>
 				</select>
 				</div>
-
-
 			</div>
+
+			// A row for the datagroup selection window
 			<div class=row>
 				<div class=col-md-12>
 					<strong> Assign Groups </strong>
