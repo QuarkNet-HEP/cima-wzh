@@ -720,17 +720,28 @@ function GetGroups($Tables){
  	 * be an array of 'id', 'name' and 'displayName' values for that Location
  	 * table. */
 	$tableIds = array();
+	print_r("Tables = ");
+	print_r($Tables);
+	print_r('<br/>');
 	if(isset($Tables)){
 		if(is_array($Tables)){
+			print_r('$Tables is an array');
 			if(is_array($Tables[0])){
+				print_r('$Tables is an array of arrays');
 				for($i=0;$i<count($Tables);$i++){
 					$tableIds[]=$Tables[$i]["id"];
 					//$tables[]=$Tables[$i]["id"];
 				}
+				print_r("tableIds = ");
+				print_r($tableIds);
+				print_r('<br>');
+				print_r(implode(",", $tableIds));
 			} else {
-				$tableIds[] = $Tables;	 
+				print_r('$Tables is an array of values');
+				$tableIds[] = $Tables;
 			}
 		} else {
+			print_r('$Tables is not an array');
 			/* If $Tables is not an array, it's a single Table ID.  Make it an array. */
 			$tableIds[] = [$Tables];
 		}
