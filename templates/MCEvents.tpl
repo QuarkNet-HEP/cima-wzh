@@ -87,7 +87,7 @@
 				</div>
 			</div>
 
-			<!-- A row for the datagroup selection window -->
+			<!-- Two rows for the datagroup selection window -->
 			<div class=row>
 				<div class=col-md-12>
 					<strong> Assign Groups </strong>
@@ -95,11 +95,14 @@
 			</div>
 			<div class=row>
 				<select name="Groups[]" style="width: 100%" size="10" multiple>
+				<?php /* $freeGroups is defined in MCEvents.php */ ?>
 					<?php for($i=0;$i<count($freeGroups);$i++){
 							echo "<option value=".$freeGroups[$i].">".$freeGroups[$i]."</option>";
 						} ?>
 				</select>
 			</div>
+
+			<!-- A row for the "Create table" and "Add to table" buttons -->
 			<div class=row>
 				<?php
 					/* TODO: UI layout
