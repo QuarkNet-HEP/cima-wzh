@@ -321,10 +321,10 @@ function PostGroups(){
 						source : "Backend"
 				},
 				success: function( data ) {
+						/* Refers to the "Groups" listing of templates/MCEvents.tpl */
 						$( "#bg" ).html( data );
 				}
 		});
-
 }
 
 
