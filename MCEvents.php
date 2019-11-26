@@ -74,7 +74,7 @@ if(isset($_POST["AddG"]) && $_POST["AddG"]=="AddG" && isset($_POST["Groups"])){
 if(isset($_POST["DelG"]) && $_POST["DelG"]=="DelG" && isset($_POST["Bgroups"]) && (isset($_POST["BTables"]) || isset($_POST["Ftables"]))){
 	if(isset($_POST["BTables"]) && !isset($_POST["Ftables"])){
 		$tables=$_POST["BTables"];
-	}	
+	}
 	elseif(!isset($_POST["BTables"]) && isset($_POST["Ftables"])){
 		$tables=$_POST["Ftables"];
 
@@ -83,16 +83,20 @@ if(isset($_POST["DelG"]) && $_POST["DelG"]=="DelG" && isset($_POST["Bgroups"]) &
 		$tables=array_merge($_POST["BTables"],$_POST["Ftables"]);
 
 	}
-	DelGroupsFromTables($tables,$_POST["Bgroups"]);
+	//DelGroupsFromTables($tables,$_POST["Bgroups"]);
+	unassignDatasets($tables,$_POST["Bgroups"]);
 }
 
 $boundTables=GetTables($_SESSION["EventID"]);
 
 if(is_array($boundTables)){
-	$temp=GetGroups($boundTables);
+	//$temp=GetGroups($boundTables);
+	//print_r($boundTables);
+	$temp=getDatasetsByTable($boundTables);
 	if(is_array($temp)){
 		for($j=0;$j<count($temp);$j++){
-			$boundGroups[]=$temp[$j]["dg_id"];
+			//$boundGroups[]=$temp[$j]["dg_id"];
+			$boundGroups[]=$temp[$j]["ds_id"];
 		}
 	}
 }
