@@ -386,7 +386,6 @@ function AddGroupsToTable($tableid,$Groups,$PostAdded=0){
 }
 
 
-
 /* Adapted from AddGroupsToTable() above - JG 25Nov2019 */
 /* Insert a Location's Table ID and assigned datasets into the TableGroups
  * table, one row per assigned dataset.
@@ -430,8 +429,6 @@ function addDatasetsToLocation($tableid,$Groups,$PostAdded=0){
 		}
 	}
 }
-
-
 
 
 function DelGroupsFromTables($tables,$groups){
@@ -846,6 +843,53 @@ function GetDatagroupsById($tableId){
 		return $result;
 	}
 }
+
+
+/* Adapted from GetGroups() to return Dataset indexes rather than datagroup_ids */
+/* JG 26Nov2019 */
+/* Get all datagroups assigned to the given Location table IDs */
+/* Reads from TableGroups */
+function getDatasetsByTable($Tables){
+	if(isset($Tables)){
+		if(is_array($Tables)){
+			if(is_array($Tables[0])){
+				for($i=0;$i<count($Tables);$i++){
+					$tables[]=$Tables[$i]["id"];
+				}
+				//$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",",$tables).")";
+				$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",",$tables).")";
+			}else{
+				//$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid IN (".implode(",",$Tables).")";
+				$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid IN (".implode(",",$Tables).")";
+			}
+		}else{
+			/* If $Tables is not an array */
+			//$q="SELECT datagroup_id,postAdded FROM TableGroups WHERE tableid=".$Tables;
+			$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid=".$Tables;
+		}
+		//$q=$q." ORDER BY datagroup_id";
+		$q=$q." ORDER BY dataset";
+		$res=askdb($q);
+
+		while($obj = $res->fetch_object()){
+			//$temp["dg_id"]=$obj->datagroup_id;
+			$temp["ds_id"]=$obj->dataset;
+			$temp["postAdded"]=$obj->postAdded;
+			$result[]=$temp;
+		}
+		if(isset($result)){
+			return $result;
+		}
+	}
+}
+
+
+
+
+
+
+
+
 
 function GetIndTables(){
 	$q="SELECT * FROM Tables WHERE NOT id IN (SELECT tableid FROM EventTables WHERE 1)";
