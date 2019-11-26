@@ -34,6 +34,54 @@ function makeIndices($blockArray) {
 }
 
 
+/* Added to handle converting the new dataset indexing for storage in the
+ * `event_id` column of Location tables - JG 26Nov2019 */
+function indexToId($index) {
+	/* $index is expected to be of the form N.id-X where
+	 *   N is the data block [5,10,25,50,100]
+	 *	 id is the dataset [1,N]
+	 *	 X is the individual event number [1,100]
+	 */
+	$parts = explode("-", $index);
+
+	$q="SELECT id FROM Datasets WHERE dataset='".$parts[0]."'";
+	$res=askdb($q);
+
+	if($obj=$res->fetch_object()){
+		$base=$obj->id;
+	}
+
+	$unique = ((int) $base)*100 + (int) $parts[1];
+
+	return $unique;
+}
+
+function idToIndex($id) {
+
+	// Convert to string
+	$num = (string) $id
+	$eventNo = substr($num,-3)
+	// Trim leading zeroes
+	$eventNo = ltrim($eventNo, '0');
+
+	$base = substr($num,0,-3)
+	print_r("num: ".$num);
+	print_r("eventNo: ".$eventNo);
+	print_r("base: ".$base);
+
+	$q="SELECT dataset FROM Datasets WHERE id='".$base."'";
+	$res=askdb($q);
+
+	if($obj=$res->fetch_object()){
+		$ds=$obj->dataset;
+	}
+
+	$index = $base."-".$eventNo;
+
+	return $index;
+}
+
+
 /* Added 26Nov2019 for new indexing system */
 /* Returns Datasets.id given Datasets.dataset as a string "X.Y" */
 function getDatasetId($Nid) {
