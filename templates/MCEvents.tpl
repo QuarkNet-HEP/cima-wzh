@@ -157,22 +157,26 @@
 						<strong> Free tables </strong>
 						</div>
 						<div class=row>
-						<select name="Ftables[]" id="Ftables" style="width: 100%" onclick="PostGroups()" size="13" multiple>
-						<?php for($i=0;$i<count($indTables);$i++){
-							echo "<option value=".$indTables[$i]["id"].">".$indTables[$i]["displayName"]."</option>";
-						} ?>
-						</select>
+							<select name="Ftables[]" id="Ftables" style="width: 100%"
+											onclick="PostGroups()" size="13" multiple>
+								<?php for($i=0;$i<count($indTables);$i++){
+									echo "<option value=".$indTables[$i]["id"].">".$indTables[$i]["displayName"]."</option>";
+								} ?>
+							</select>
 						</div>
 						<div class=row>
-						<button type="submit" class="btn btn-default" name="bind" value="bind">Add tables</button> 
-						</div>
-
+							<button type="submit" class="btn btn-default" name="bind"
+											value="bind">
+								Add tables
+							</button> 
 						</div>
 					</div>
+				</div>
+
 				<div class=col-md-4>
 					<div class=container-fluid>
 						<div class=row>
-						<strong>bound tables </strong>
+						<strong>Bound tables </strong>
 						</div>
 						<div class=row>
 							<select name="BTables[]" id="BTables" style="width: 100%"
@@ -187,17 +191,22 @@
 						</div>
 					</div>
 				</div>
+				
 				<div class=col-md-4>
 					<div class=container-fluid>
 						<div class=row>
-						<strong>Groups </strong>
+							<strong>Groups </strong>
 						</div>
 						<div class=row>
-						<select name="Bgroups[]" id="bg" style="width: 100%" size="13" multiple>
-						</select>
+							<select name="Bgroups[]" id="bg" style="width: 100%"
+											size="13" multiple>
+							</select>
 						</div>
 						<div class=row>
-						<button type="submit" class="btn btn-default" name="DelG" value="DelG">Remove Groups</button> 
+							<button type="submit" class="btn btn-default" name="DelG"
+											value="DelG">
+								Remove Groups
+							</button> 
 						</div>
 					</div>
 				</div>
