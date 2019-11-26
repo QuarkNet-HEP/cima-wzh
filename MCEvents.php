@@ -64,9 +64,10 @@ if(isset($_POST["finished"]) && $_POST["finished"]=="finished"){
 }
 
 
-
+/* The "Add to table" button POSTs "AddG" */
 if(isset($_POST["AddG"]) && $_POST["AddG"]=="AddG" && isset($_POST["Groups"])){
-	AddGroupsToTable($_POST["Tsel"],$_POST["Groups"]);
+	//AddGroupsToTable($_POST["Tsel"], $_POST["Groups"]);
+	addDatasetsToLocation($_POST["Tsel"], $_POST["Groups"]);
 }
 
 
@@ -101,7 +102,8 @@ if(!isset($boundGroups)){
 	$boundGroups=0;
 }
 $indTables=GetFreeTables($_SESSION["EventID"],$boundGroups,$_SESSION["overlab"]);
-$freeGroups=GetFreeGroups($boundGroups,$_SESSION["overlab"]);
+/*$freeGroups=GetFreeGroups($boundGroups,$_SESSION["overlab"]);*/
+$freeGroups = getFreeDatasets($boundGroups,$_SESSION["overlab"]);
 
 include 'templates/header.tpl';
 
