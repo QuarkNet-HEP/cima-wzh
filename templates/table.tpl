@@ -12,7 +12,7 @@
 				</div>
 				<div class=row>
 					<div class=col-md-1></div>
-					<div class=col-md-10><strong> location: </strong>
+					<div class=col-md-10><strong> Location: </strong>
 						<?php echo
 							'<span name="database"> '.$_SESSION["displayLocation"].'</span>';
 						?>
