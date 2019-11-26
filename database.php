@@ -19,6 +19,7 @@ function askdb($q){
 
 
 /* Not a database function but I need somewhere to put it - JG 25Nov2019 */
+/* Ends up not being used, I think.  Deletable - 26Nov2019 */
 function makeIndices($blockArray) {
 
 	$datagroup_indices = array();
@@ -33,6 +34,19 @@ function makeIndices($blockArray) {
 }
 
 
+/* Added 26Nov2019 for new indexing system */
+/* Returns Datasets.id given Datasets.dataset as a string "X.Y" */
+function getDatasetId($Nid) {
+
+	$q="SELECT id FROM Datasets WHERE dataset='".$Nid."'";
+	$res=askdb($q);
+
+	if($obj=$res->fetch_object()){
+		$dg_id=$obj->id;
+	}
+
+	return $dg_id;
+}
 
 
 /* Returns event_id values for $datagroup that are not already contained
@@ -168,7 +182,7 @@ function GetEvent($event_id){
 	}else{
 		print("error");
 		return 0;
-		}
+	}
 	return $result;
 }
 
@@ -346,16 +360,23 @@ function AddGroupsToTable($tableid,$Groups,$PostAdded=0){
 	if(isset($Groups) && isset($tableid)){
 		if(is_array($Groups)){
 			for($i=0;$i<count($Groups);$i++){
+
 				$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND datagroup_id=".$Groups[$i];
 				$res=askdb($q);
+
 				if(!$res->fetch_object()){
+
 					$q="INSERT INTO TableGroups (datagroup_id,tableid,postAdded) VALUES (".$Groups[$i].", ".$tableid.", $PostAdded)";
 					askdb($q);
+
 				}
 			}
-		}else{ /* If $Groups is not an array */
+		} else {
+			/* If $Groups is not an array */
+
 			$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND datagroup_id=".$Groups;
 			$res=askdb($q);
+
 			if(!$res->fetch_object()){
 				$q="INSERT INTO TableGroups (datagroup_id,tableid,postAdded) VALUES (".$Groups.", ".$tableid.", $PostAdded)";
 				askdb($q);
@@ -363,6 +384,54 @@ function AddGroupsToTable($tableid,$Groups,$PostAdded=0){
 		}
 	}
 }
+
+
+
+/* Adapted from AddGroupsToTable() above - JG 25Nov2019 */
+/* Insert a Location's Table ID and assigned datasets into the TableGroups
+ * table, one row per assigned dataset.
+ * Inputs: $tableid is the Tables.id value that indexes the name of the
+ *	 				 Group's table.
+ * 				 $Groups is the (possible array) of datagroup ID's that will be
+ *					 assigned to the Group.
+ */
+function addDatasetsToLocation($tableid,$Groups,$PostAdded=0){
+	if(isset($Groups) && isset($tableid)){
+		if(is_array($Groups)){
+			for($i=0;$i<count($Groups);$i++){
+
+				/* First check to see if the dataset has already been assigned to TableGroups: */
+				$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups[$i];
+				$res=askdb($q);
+
+				/* If not, INSERT it. */
+				if(!$res->fetch_object()){
+					/* `datagroup_id` is NOT NULL, so we have to insert it whether we're using it or not.
+				 	 * For consistency, insert the `Datagroups.id` value corresponding to the N.id given by $Groups */
+					$dg_id=getDatasetId($Groups[$i]);
+					
+					$q="INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups[$i].", ".$tableid.", $PostAdded)";
+					askdb($q);
+
+				}
+			}
+		} else {
+			/* If $Groups is not an array */
+
+			$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups;
+			$res=askdb($q);
+
+			if(!$res->fetch_object()){
+				$dg_id=getDatasetId($Groups);
+
+				$q="INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups.", ".$tableid.", $PostAdded)";
+				askdb($q);
+			}
+		}
+	}
+}
+
+
 
 
 function DelGroupsFromTables($tables,$groups){
@@ -490,7 +559,7 @@ function GetMCEvents(){
 function GetTableByID($tableid){
 	$q="SELECT * FROM Tables WHERE id=".$tableid;
 	$res=askdb($q);
-	if($obj = $res->fetch_object()){ 
+	if($obj = $res->fetch_object()){
 		$result["id"]=$obj->id;
 		$result["name"]=$obj->name;
 		/* Added Oct2018 to accommodate Location prefix: */
@@ -857,7 +926,7 @@ function getFreeDatasets($boundSets, $overlap) {
 	}
 	$res=askdb($q);
 	while($obj = $res->fetch_object()){ 
-		$result[]=$obj->datagroup_id;
+		$result[]=$obj->dataset;
 	}
 	if(isset($result)){
 		return $result;
