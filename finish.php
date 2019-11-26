@@ -58,9 +58,6 @@ if(!isset($backup)){
 	}
 }
 
-
-
-
 include "templates/header.tpl";
 include 'templates/navbar.tpl';
 
