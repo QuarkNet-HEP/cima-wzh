@@ -63,11 +63,12 @@
 					<input type="text" name="tableName" placeholder="new table name"
 								 maxlength="30" size="30">
 				</div>
-				<div class=col-md-2><select name="Tsel">
-				<?php for($i=0;$i<count($boundTables);$i++){
-					echo '<option value="'.$boundTables[$i]["id"].'">'.$boundTables[$i]["displayName"].'</option>';
-				}?>
-				</select>
+				<div class=col-md-2>
+					<select name="Tsel">
+						<?php for($i=0;$i<count($boundTables);$i++){
+							echo '<option value="'.$boundTables[$i]["id"].'">'.$boundTables[$i]["displayName"].'</option>';
+						}?>
+					</select>
 				</div>
 			</div>
 
@@ -97,10 +98,11 @@
 			</div>
 			<div class=row>
 				<select name="Groups[]" style="width: 100%" size="10" multiple>
-				<?php /* $freeGroups is defined in MCEvents.php */ ?>
-					<?php for($i=0;$i<count($freeGroups);$i++){
+				<?php
+					/* $freeGroups is defined in MCEvents.php */ ?>
+					<?php for($i=0; $i<count($freeGroups); $i++){
 							echo "<option value=".$freeGroups[$i].">".$freeGroups[$i]."</option>";
-						} ?>
+					} ?>
 				</select>
 			</div>
 
