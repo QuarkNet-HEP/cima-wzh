@@ -59,12 +59,12 @@ function indexToId($index) {
 function idToIndex($id) {
 
 	// Convert to string
-	$num = (string) $id
-	$eventNo = substr($num,-3)
+	$num = (string) $id;
+	$eventNo = substr($num,-3);
 	// Trim leading zeroes
 	$eventNo = ltrim($eventNo, '0');
 
-	$base = substr($num,0,-3)
+	$base = substr($num,0,-3);
 	print_r("num: ".$num);
 	print_r("eventNo: ".$eventNo);
 	print_r("base: ".$base);
@@ -227,6 +227,10 @@ function GetEvent($event_id){
 		$result["g"]=$obj->datagroup_id;
 		$result["mass"]=$obj->mass;
 		/* 'g_index', 'ev_no' are also available in the query output */
+		/* Add a conversion to dataset index */
+		$temp = $obj->event_id;
+		$temp = idToIndex($temp);
+		$result["dset"] = $temp;
 	}else{
 		print("error");
 		return 0;
@@ -257,6 +261,10 @@ function GetNext($finEvents,$dg_id){
 		$result["id"]=$obj->event_id;
 		$result["g"]=$obj->datagroup_id;
 		$result["mass"]=$obj->mass;
+		/* Add a conversion to dataset index */
+		$temp = $obj->event_id;
+		$temp = idToIndex($temp);
+		$result["dset"] = $temp;
 	}
 	if(isset($result)){
 		return $result;
