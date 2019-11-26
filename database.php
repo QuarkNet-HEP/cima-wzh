@@ -450,6 +450,29 @@ function DelGroupsFromTables($tables,$groups){
 }	
 
 
+/* Adapted from DelGroupsFromTables() above to use Datasets instead of Groups - JG 26Nov2019 */
+function unassignDatasets($tables,$groups){
+	/* $groups should be an array of dataset indexes */
+	if(isset($tables) && isset($groups)){
+		if(is_array($tables)){
+			$tstr=implode(",",$tables);
+		}else{
+			$tstr=$tables;
+		}
+		if(is_array($groups)){
+			$gstr=implode(",",$groups);
+		}else{
+			$gstr=$groups;
+		}
+
+		//$q="DELETE FROM TableGroups WHERE tableid IN (".$tstr.") AND datagroup_id IN (".$gstr.")";
+		$q="DELETE FROM TableGroups WHERE tableid IN (".$tstr.") AND dataset IN (".$gstr.")";
+		askdb($q);
+	}
+}	
+
+
+
 /* CreateTable() creates the Location tables and associated data in the
  *   Masterclass DB.
  * Inputs: $locationName is the Location table name.  A new table will be
