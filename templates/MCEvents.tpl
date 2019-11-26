@@ -72,7 +72,11 @@
 				</div>
 			</div>
 
-			<!-- A row to select the data block for this table -->
+			<?php /* A row to select the data block for this table */ ?>
+			<?php /* Awaiting time to write new JavaScript to update the
+						 * "Assign Groups" table in response to this selection
+						 *					   		 			 						 		- JG 25Nov2019
+						 */ ?>
 			<?php /*
 			<div class=row>
 				<div class=col-md-6>
