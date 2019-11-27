@@ -65,9 +65,9 @@ function idToIndex($id) {
 	$eventNo = ltrim($eventNo, '0');
 
 	$base = substr($num,0,-3);
-	print_r("num: ".$num);
-	print_r("eventNo: ".$eventNo);
-	print_r("base: ".$base);
+	//print_r("num: ".$num);
+	//print_r("eventNo: ".$eventNo);
+	//print_r("base: ".$base);
 
 	$q="SELECT dataset FROM Datasets WHERE id='".$base."'";
 	$res=askdb($q);
@@ -83,7 +83,7 @@ function idToIndex($id) {
 
 
 /* Added 26Nov2019 for new indexing system */
-/* Returns Datasets.id given Datasets.dataset as a string "X.Y" */
+/* Returns Datasets.id [1,190] given Datasets.dataset as a string "X.Y" */
 function getDatasetId($Nid) {
 
 	$q="SELECT id FROM Datasets WHERE dataset='".$Nid."'";
@@ -94,6 +94,22 @@ function getDatasetId($Nid) {
 	}
 
 	return $dg_id;
+}
+
+
+/* Added 27Nov2018 for new indexing system */
+/* Returns an array of all unique event id's for the input $dataset X.Y */
+function getEventsIdsForDataset($dataset) {
+
+	$startingDsIndex = ((string) $dataset)."-1";
+	$startingDsId = indexToId($startingDsIndex);
+
+	$eventIds = array();
+	for($i=0; $i<100; $i++) {
+		$eventIds[] = $startingDsId + $i;
+	}
+
+	return $eventIds;
 }
 
 
@@ -120,14 +136,8 @@ function GetFreeEvents($datagroup,$location){
 	 in the given Location $location */
 function getUncompletedEventsIds($dataset,$location){
 
-	// Create an array of all possible unique id values for this dataset
-	$startingDsIndex = ((string) $dataset)."-1";
-	$startingDsId = indexToId($startingDsIndex);
-
-	$allEventIds = array();
-	for($i=0; $i<100; $i++) {
-		$allEventsIds[] = $startingDsId + $i;
-	}
+	/* Get an array of all possible unique id values for this dataset */
+	$allEventsIds = getEventsIdsForDataset($dataset);
 
 	/* Initialize an empty array for completedEvents.  This is important
 	 * so that if the DB query returns nothing (no completed events have been
@@ -257,6 +267,44 @@ function GetEventTableRows($datagroup,$location){
 		return $result;
 	}
 }
+
+
+/* Adapted from GetEventTableRows() for use with dataset indexing
+ * - JG 27Nov2019 */
+/* For each event assigned to a Location $location, return the unique event_id,
+ * the dataset index, and the user-entered final state, primary
+	 state, and mass. */
+/* Inputs: $datagroup is a datagroup number.
+ *	 			 $location is a Location table in the Masterclass database.
+ */
+function getEventsTableRows($datagroup,$location){
+
+	$q="SELECT `".$location."`.event_id, Events.datagroup_id, Events.g_index, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` INNER JOIN Events ON `".$location."`.event_id=Events.event_id WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
+
+	$q="SELECT `".$location."`.event_id, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
+
+
+
+
+
+	$res=askdb($q);
+	while($obj=$res->fetch_object()){ 
+		$temp["event_id"]=$obj->event_id;
+		/* 'datagroup_id' and 'g_index' are in the table, but aren't used directly
+				to create rows.  Uncomment these lines to make them available: */
+		//$temp["dg_id"]=$obj->datagroup_id;
+		//$temp["dg_index"]=$obj->g_index;
+		$temp["dg_label"]=$obj->datagroup_id."-".$obj->g_index;
+		$temp["final"]=$obj->final_state;
+		$temp["primary"]=$obj->primary_state;
+		$temp["mass"]=$obj->mass;
+		$result[]=$temp;
+	}
+	if(isset($result)){
+		return $result;
+	}
+}
+
 
 
 function GetEvent($event_id){
