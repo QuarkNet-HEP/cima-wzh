@@ -298,7 +298,6 @@ function getEventsTableRows($datagroup,$location){
 }
 
 
-
 function GetEvent($event_id){
 	$q="SELECT * FROM Events WHERE event_id=".$event_id;
 	$res=askdb($q);
@@ -349,6 +348,42 @@ function GetNext($finEvents,$dg_id){
 	if(isset($result)){
 		return $result;
 	}
+}
+
+
+/* New, more readable version of GetNext() created for dataset indexing
+ * - JG 27Nov2019 */
+function getNextUncompletedEvent($tabData,$dataset) {
+
+	// Get and sort an array containing all expected event_id's for this dataset
+	$allEventsIds = getEventsIdsForDataset($dataset);
+	$allEventsIds = sort($allEventsIds);
+	$firstEventsId = $allEventsIds[0];
+
+	// Make sure that $tabData is sorted by the value of its rows' event_id values
+	$tabData = usort($tabData, function($a, $b) {
+		return $a["event_id"] - $b["event_id"];
+	});
+
+	/* Step through the rows of $tabData, look for the first out-of-sequence
+	 * event_id, and capture that row index */
+	/* $k will track rows.  All rows less than $k are confirmed to be in-sequence */
+	$k=0;
+	$expectedEventsId=$firstEventsId;
+	for($i=0; $i<count($tabData); $i++) {
+		/* If there's a discrepancy, we've found the first missing row.
+		 * If there's not, move to the next row and next expected event_id. */
+		if ( !($tabData[$i]["event_id"] == $expectedEventsId) ) {
+			$firstMissingRow = $k;
+			break;
+		} else {
+			 $k++;
+			 $expectedEventsId++;
+		}
+	}
+
+	return $tabData[$k];
+
 }
 
 
