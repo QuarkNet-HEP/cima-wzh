@@ -121,7 +121,7 @@ function GetFreeEvents($datagroup,$location){
 function getUncompletedEventsIds($dataset,$location){
 
 	// Create an array of all possible unique id values for this dataset
-	$startingDsIndex = ((str) $dataset)."-1";
+	$startingDsIndex = ((string) $dataset)."-1";
 	$startingDsId = indexToId($startingDsIndex);
 
 	$allEventIds = array();
