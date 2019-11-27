@@ -132,8 +132,8 @@ function GetFreeEvents($datagroup,$location){
 
 /* Adapted from GetFreeEvents() above to work with datasets
  * JG 26Nov2019 */
-/* Returns unique id values for ass events in $datagroup that are not already contained
-	 in the given Location $location */
+/* Returns unique id values for ass events in $datagroup that are not already
+ * contained in the given Location $location */
 function getUncompletedEventsIds($dataset,$location){
 
 	/* Get an array of all possible unique id values for this dataset */
@@ -274,31 +274,23 @@ function GetEventTableRows($datagroup,$location){
 /* For each event assigned to a Location $location, return the unique event_id,
  * the dataset index, and the user-entered final state, primary
 	 state, and mass. */
+/* In CIMA-WZH, this is basically just reading out the Location table. */	 
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
 function getEventsTableRows($datagroup,$location){
 
-	$q="SELECT `".$location."`.event_id, Events.datagroup_id, Events.g_index, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` INNER JOIN Events ON `".$location."`.event_id=Events.event_id WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
-
-	$q="SELECT `".$location."`.event_id, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
-
-
-
-
-
+	$q="SELECT event_id, final_state, primary_state, mass FROM `".$location."` ORDER BY event_id";
 	$res=askdb($q);
+
 	while($obj=$res->fetch_object()){ 
-		$temp["event_id"]=$obj->event_id;
-		/* 'datagroup_id' and 'g_index' are in the table, but aren't used directly
-				to create rows.  Uncomment these lines to make them available: */
-		//$temp["dg_id"]=$obj->datagroup_id;
-		//$temp["dg_index"]=$obj->g_index;
-		$temp["dg_label"]=$obj->datagroup_id."-".$obj->g_index;
-		$temp["final"]=$obj->final_state;
-		$temp["primary"]=$obj->primary_state;
-		$temp["mass"]=$obj->mass;
-		$result[]=$temp;
+		$temp["event_id"] = $obj->event_id;
+		//$temp["dg_label"] = $obj->datagroup_id."-".$obj->g_index;
+		$temp["dg_label"] = idToIndex($obj->event_id);
+		$temp["final"] = $obj->final_state;
+		$temp["primary"] = $obj->primary_state;
+		$temp["mass"] = $obj->mass;
+		$result[] = $temp;
 	}
 	if(isset($result)){
 		return $result;
