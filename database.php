@@ -114,6 +114,42 @@ function GetFreeEvents($datagroup,$location){
 }
 
 
+/* Adapted from GetFreeEvents() above to work with datasets
+ * JG 26Nov2019 */
+/* Returns unique id values for ass events in $datagroup that are not already contained
+	 in the given Location $location */
+function getUncompletedEventsIds($dataset,$location){
+
+	// Create an array of all possible unique id values for this dataset
+	$startingDsIndex = ((str) $dataset)."-1";
+	$startingDsId = indexToId($startingDsIndex);
+
+	$allEventIds = array();
+	for($i=0; $i<100; $i++) {
+		$allEventsIds[] = $startingDsId + $i;
+	}
+
+	/* Now find what unique id's are stored in the given Location table.
+	 * We're storing these in the `event_id` column now, which means that those
+	 * values will no longer line up with Events.event_id.
+	 */
+	$q="SELECT event_id FROM `".$location."`";
+	$res=askdb($q);
+	while($obj=$res->fetch_object()){ 
+		$completedEventsIds[]=$obj->event_id;
+	}
+
+	// Set-wise subtract completedEvents from allEvents:
+	$uncompletedEventsIds = array_diff($allEventsIds, $completedEventsIds);
+
+	
+	if(isset($result)){
+		return $result;
+	}
+}
+
+
+
 /* Once a Masterclass is created, associate one or more Location tables to it by
 	 creating entries in 'EventTables'.  The Location tables must already exist and
 	 be registered in 'Tables'. */
