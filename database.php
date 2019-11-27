@@ -129,13 +129,18 @@ function getUncompletedEventsIds($dataset,$location){
 		$allEventsIds[] = $startingDsId + $i;
 	}
 
+	/* Initialize an empty array for completedEvents.  This is important
+	 * so that if the DB query returns nothing (no completed events have been
+	 * recorded to the Location table yet), there's still an array to diff. */
+	$completedEventsIds=array();
+
 	/* Now find what unique id's are stored in the given Location table.
 	 * We're storing these in the `event_id` column now, which means that those
 	 * values will no longer line up with Events.event_id.
 	 */
 	$q="SELECT event_id FROM `".$location."`";
 	$res=askdb($q);
-	while($obj=$res->fetch_object()){ 
+	while($obj=$res->fetch_object()){
 		$completedEventsIds[]=$obj->event_id;
 	}
 

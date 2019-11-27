@@ -61,10 +61,11 @@ if(isset($_POST["fedit"])&&$_POST["fedit"]!=""){
  */
 $arr=GetEvents($_SESSION["groupNo"],$_SESSION["database"]);
 
-/* GetFreeEvents() returns Events.event_id in datagroup_id but not in Location.event_id */
+/* getUncompletedEventsIds() returns unique id's for events in the given
+ * $dataset = $_SESSION["groupNo"] but not listed in the given Location
+ * table $_SESSION["database"] */
 //$freeEvents=GetFreeEvents($_SESSION["groupNo"],$_SESSION["database"]);
 $freeEvents=getUncompletedEventsIds($_SESSION["groupNo"],$_SESSION["database"]);
-
 
 /* If there are no more freeEvents, and if we're not editing already-existing
 	 events, then redirect to finish.php */
