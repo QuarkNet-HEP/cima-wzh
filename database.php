@@ -142,9 +142,8 @@ function getUncompletedEventsIds($dataset,$location){
 	// Set-wise subtract completedEvents from allEvents:
 	$uncompletedEventsIds = array_diff($allEventsIds, $completedEventsIds);
 
-	
-	if(isset($result)){
-		return $result;
+	if(isset($uncompletedEventsIds)){
+		return $uncompletedEventsIds;
 	}
 }
 
