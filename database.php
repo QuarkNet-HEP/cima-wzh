@@ -597,7 +597,7 @@ function addDatasetsToLocation($tableid,$Groups,$PostAdded=0){
 				 	 * For consistency, insert the `Datagroups.id` value corresponding to
 					 * the N.id given by $Groups */
 					$dg_id=getDatasetId($Groups[$i]);
-					
+
 					$q="INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups[$i].", ".$tableid.", $PostAdded)";
 					askdb($q);
 
@@ -1264,6 +1264,21 @@ function GetDatagroupId($event){
 		return mysqli_fetch_assoc($result)["datagroup_id"];
 	}
 }
+
+
+/* Added Dec2019 to get the dataset ID [1,190] associated with a particular
+ * datset */
+function getDatasetId($dataset){
+  $q="SELECT id FROM Datasets WHERE dataset='".$dataset."'";
+	$result=askdb($q);
+	if(isset($result)){
+		return mysqli_fetch_assoc($result)["dataset_id"];
+	}
+}
+
+
+
+
 
 
 
