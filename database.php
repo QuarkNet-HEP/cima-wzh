@@ -1013,7 +1013,6 @@ function GetTables($event){
 }
 
 
-
 /* Get all datagroups assigned to the given Location table IDs */
 /* Reads from TableGroups */
 function GetGroups($Tables){
@@ -1059,6 +1058,28 @@ function GetDatagroupsById($tableId){
 	if(isset($result)){
 		return $result;
 	}
+}
+
+
+/* Adapted from GetDatagroupsById() to return datasets instead of datagroup IDs
+ * for the new indexing system for CIMA-WZH */
+function getDatasetsForLocation($tableId) {
+
+	// Can't order these like we could for datagroup_id
+	$q="SELECT dataset FROM TableGroups WHERE tableid=".$tableId;
+	$res=askdb($q);
+
+	$result = array();
+	while($obj = $res->fetch_object()){
+		//$result[] = $obj->datagroup_id;
+		$result[] = $obj->dataset;
+	}
+	if(isset($result)){
+		return $result;
+	}
+
+	// Can define ordering function here if needed
+
 }
 
 
