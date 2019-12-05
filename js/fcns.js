@@ -428,9 +428,17 @@ function del(element){
 		let finalState = element.getElementsByClassName("final-state")[0].innerHTML;
 		let primaryState = element.getElementsByClassName("primary-state")[0].innerHTML;
 		//console.log("eventID = "+eventID);
-		//console.log("datagroupID = "+datagroupID);
+		console.log("datagroupID = "+datagroupID);
 		//console.log("finalState = "+finalState);
 		//console.log("primaryState = "+primaryState);
+
+		// Derived values:
+		// The dataset ID is the last three digits of the eventID
+		let datasetID = eventID.toString().substr(-3);
+		// There is no function to trim leading or trailing characters from
+		// a string in Javascript
+		datasetID = parseInt(datasetID, 10).toString();
+		console.log("datasetID = "+datasetID);
 
 		// Delete the row from the current Location table of the database.
 		// If successful, replace the row's HTML with '', deleting it from the page.
@@ -457,25 +465,35 @@ function del(element){
 		    document.getElementById(radioIDs[i]).checked = false;
 		}
 
-		/* Create a new <option> element to put into the drop-down */
+		/* On deletion, we replace the event that's currently selected in the
+		 * 'Event index' drop-down with the just-deleted event.
+		 * First, we create a new <option> element to hold the current
+		 * selection when it goes back into the drop-down menu. */
 		let nopt = document.createElement("option");
 
 		/* id='SelEvent' is the currently-selected <option> in the drop-down.
-		 * Set the text of this new <option> to its text. */
+		 * Set its text to the new <option>.  This should be the [1-100] 
+		 * dataset number of the event. */
 		nopt.text = $("#SelEvent").text();
 
-		/* id="EvSelOver" is the event selection drop-down menu.  Add the new 
-		 * <option> to it at the position index dropDown[1]. */
-		/* This seems wrong.  dropDown[1] is the *event* index of the second 
-		 * option in the list.  It's not a list position index.
+		/* id="EvSelOver" is the event selection drop-down menu, a <select>
+		 * element.  Add the new <option> to it at the position index
+		 * before the <object> dropDown[1]. */
+		/* This seems wrong.  dropDown[1] is the 2nd <option> in the drop-down.
+		 * Placing the new <option> there makes it the new 2nd <option> in the
+		 * drop-down.  Don't we want to put it wherever it goes according to the
+		 * numeric ordering of the dataset numbers?  And if we don't, don't we
+		 * want to make the the new *1st* <option>?  Why 2nd?
 		 * Nonetheless, it works for now. */
 		let dropDown = document.getElementById("EvSelOver");
 		dropDown.add(nopt,dropDown[1]);
 
-		/* Set the currently-selected option to what was just deleted */
-		$("#SelEvent").html($.trim(eventID));
+		/* Now, make the deleted event be the currently-selected option */
+		//$("#SelEvent").html($.trim(eventID));
+		$("#SelEvent").html($.trim(datasetID));
 		/* Set the current datagroup index to match */
 		$("#Eventid").html($.trim(datagroupID));
+		//$("#Eventid").html($.trim(eventID));
 
 		/* These two 'if' blocks are an updated version of what del_old() does, 
 		 * but I doubt they're needed at all - JG 15Aug2019 */

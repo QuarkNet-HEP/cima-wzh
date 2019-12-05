@@ -33,7 +33,8 @@ if(!isset($_SESSION["database"]) || !isset($_SESSION["groupNo"])){
 
 /* "fin" and "CustomEvent" are set on submission of the table.tpl form.
  * If they're present, then we want to write the just-POSTed values to
- * the DB.  "CustomEvent" is the event_id of the submitted event.
+ * the DB.  "CustomEvent" is the dataset number [1-100] of the submitted event,
+ * what's shown in the "Event index" drop-down menu.
  */
 if(isset($_POST["fin"]) && $_POST["CustomEvent"]!=""){
 	/* New version (WZH upgrades Nov 2018) */
@@ -46,8 +47,26 @@ if(isset($_POST["fin"]) && $_POST["CustomEvent"]!=""){
 	} else {
 		$mass=$_POST["massEntry"];
 	}
-	
-	WriteRow($_SESSION["database"],$_POST["CustomEvent"],$fState,$pState,$mass);
+
+	/* Convert dataset number to unique event id for storage */
+	$ds_no = (string) $_POST["CustomEvent"];
+	$ds_no = str_pad($ds_no, 3, "0", STR_PAD_LEFT);
+	$ds = (string) $_SESSION["groupNo"];
+	//$unique_id = $ds."-".$ds_no;
+	$ds_index = $ds."-".$ds_no;
+	$unique_id = indexToId($ds_index);
+
+	/*
+	print_r('<br>');
+	print_r('ds_no: '.((string) $ds_no));
+	print_r('<br>');
+	print_r('ds: '.((string) $ds));
+	print_r('<br>');
+	print_r('unique_id: '.((string) $unique_id));
+	print_r('<br>');
+	*/
+	//WriteRow($_SESSION["database"],$_POST["CustomEvent"],$fState,$pState,$mass);
+	WriteRow($_SESSION["database"],$unique_id,$fState,$pState,$mass);
 }
 
 if(isset($_POST["fedit"])&&$_POST["fedit"]!=""){
@@ -59,7 +78,8 @@ if(isset($_POST["fedit"])&&$_POST["fedit"]!=""){
  * GetEvents() returns Location.event_id, Location.checked, Events.mass
  * Note that this is the "canonical" mass from CMS, not the user-entered mass.
  */
-$arr=GetEvents($_SESSION["groupNo"],$_SESSION["database"]);
+//$arr=GetEvents($_SESSION["groupNo"],$_SESSION["database"]);
+$arr=getEventsTableRows($_SESSION["groupNo"],$_SESSION["database"]);
 
 /* getUncompletedEventsIds() returns unique id's for events in the given
  * $dataset = $_SESSION["groupNo"] but not listed in the given Location
@@ -73,10 +93,33 @@ if(!isset($freeEvents) && !isset($_SESSION["edit"])){
 	header("Location: finish.php");
 }
 
+/* "CustomEvent" is the name of the drop-down event selector in the data entry
+ * panel.  It submits as POST every time an event is selected.  */
+/*
+print_r('<br>');
+print_r('$_POST["CustomEvent"]: ');
+print_r('<br>');
+print_r($_POST["CustomEvent"]);
+print_r('<br>');
+print_r('$_SESSION["current"]: ');
+print_r('<br>');
+print_r($_SESSION["current"]);
+print_r('<br>');
+print_r('$_SESSION["current"]["id"]: ');
+print_r('<br>');
+print_r($_SESSION["current"]["id"]);
+print_r('<br>');
+print_r('$_POST["fin"]: ');
+print_r('<br>');
+print_r($_POST["fin"]);
+*/
 if(isset($_POST["CustomEvent"]) && isset($_SESSION["current"]) && $_SESSION["current"]["id"]!=$_POST["CustomEvent"] && !isset($_POST["fin"])){
+	//print_r("Accessing GetEvent");
 	$event=GetEvent($_POST["CustomEvent"]);
 }else{
-	$event=GetNext($arr,$_SESSION["groupNo"]);
+	//print_r("Accessing GetNext");
+	//$event=GetNext($arr,$_SESSION["groupNo"]);
+	$event=getNextUncompletedEvent($arr,$_SESSION["groupNo"]);
 }
 
 
@@ -119,7 +162,8 @@ include 'templates/navbar.tpl';
 include 'templates/table.tpl';
 
 $tableHeaders = ["Event index","Event number","Final state","Primary state","Mass",""];
-$tableRow = GetEventTableRows($_SESSION["groupNo"],$_SESSION["database"]);
+//$tableRow = GetEventTableRows($_SESSION["groupNo"],$_SESSION["database"]);
+$tableRow = getEventsTableRows($_SESSION["groupNo"],$_SESSION["database"]);
 
 /* The Events Table */
 echo '<div class=row>
@@ -162,7 +206,8 @@ include 'templates/floor.tpl';
 /* TODO: I don't think this is necessary for WZH.  Try deleting it - JG 15Aug2019 */
 $s=0;
 for($i=0;$i<count($arr);$i++){
-	$s.=$arr[$i]["id"].":".$arr[$i]['mass'].";";
+	//$s.=$arr[$i]["id"].":".$arr[$i]['mass'].";";
+	$s.=$arr[$i]["event_id"].":".$arr[$i]['mass'].";";
 }
 
 /*

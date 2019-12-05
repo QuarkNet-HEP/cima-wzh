@@ -5,8 +5,6 @@ ini_set('display_errors', 1);
 //include "config/mc.config";
 include "../../local-settings/mc.config";
 
-
-
 function askdb($q){
 	$login = getDBConfig();
 	$con = mysqli_connect($login["db_host"], $login["db_login"], $login["db_pw"], $login["db_name"]);
@@ -51,11 +49,12 @@ function indexToId($index) {
 		$base=$obj->id;
 	}
 
-	$unique = ((int) $base)*100 + (int) $parts[1];
+	$unique = ((int) $base)*1000 + (int) $parts[1];
 
 	return $unique;
 }
 
+/* Returns the full dataset index (i.e. 10.6-3 or 50.7-45) for a given unique $id */
 function idToIndex($id) {
 
 	// Convert to string
@@ -65,9 +64,17 @@ function idToIndex($id) {
 	$eventNo = ltrim($eventNo, '0');
 
 	$base = substr($num,0,-3);
-	//print_r("num: ".$num);
-	//print_r("eventNo: ".$eventNo);
-	//print_r("base: ".$base);
+	/*
+	print_r('<br>');
+	print_r('input id: ');
+	print_r('<br>');
+	print_r($id);
+	print_r('<br>');
+	print_r('base: ');
+	print_r('<br>');
+	print_r($base);
+	print_r('<br>');
+	*/
 
 	$q="SELECT dataset FROM Datasets WHERE id='".$base."'";
 	$res=askdb($q);
@@ -76,24 +83,22 @@ function idToIndex($id) {
 		$ds=$obj->dataset;
 	}
 
-	$index = $base."-".$eventNo;
+	$index = $ds."-".$eventNo;
 
 	return $index;
 }
 
 
-/* Added 26Nov2019 for new indexing system */
-/* Returns Datasets.id [1,190] given Datasets.dataset as a string "X.Y" */
-function getDatasetId($Nid) {
+/* Returns an event's number within its dataset [1-100] given its unique $id */
+function idToDsNumber($id) {
 
-	$q="SELECT id FROM Datasets WHERE dataset='".$Nid."'";
-	$res=askdb($q);
+	// Convert to string
+	$num = (string) $id;
+	$eventNo = substr($num,-3);
+	// Trim leading zeroes
+	$eventNo = ltrim($eventNo, '0');
 
-	if($obj=$res->fetch_object()){
-		$dg_id=$obj->id;
-	}
-
-	return $dg_id;
+	return $eventNo;
 }
 
 
@@ -102,6 +107,7 @@ function getDatasetId($Nid) {
 function getEventsIdsForDataset($dataset) {
 
 	$startingDsIndex = ((string) $dataset)."-1";
+
 	$startingDsId = indexToId($startingDsIndex);
 
 	$eventIds = array();
@@ -161,7 +167,6 @@ function getUncompletedEventsIds($dataset,$location){
 		return $uncompletedEventsIds;
 	}
 }
-
 
 
 /* Once a Masterclass is created, associate one or more Location tables to it by
@@ -278,20 +283,21 @@ function GetEventTableRows($datagroup,$location){
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
-function getEventsTableRows($datagroup,$location){
+function getEventsTableRows($datagroup,$location) {
 
 	$q="SELECT event_id, final_state, primary_state, mass FROM `".$location."` ORDER BY event_id";
 	$res=askdb($q);
 
-	while($obj=$res->fetch_object()){ 
+	$result=array();
+	while($obj=$res->fetch_object()){
 		$temp["event_id"] = $obj->event_id;
-		//$temp["dg_label"] = $obj->datagroup_id."-".$obj->g_index;
 		$temp["dg_label"] = idToIndex($obj->event_id);
 		$temp["final"] = $obj->final_state;
 		$temp["primary"] = $obj->primary_state;
 		$temp["mass"] = $obj->mass;
 		$result[] = $temp;
 	}
+
 	if(isset($result)){
 		return $result;
 	}
@@ -354,20 +360,27 @@ function GetNext($finEvents,$dg_id){
 /* New, more readable version of GetNext() created for dataset indexing
  * - JG 27Nov2019 */
 function getNextUncompletedEvent($tabData,$dataset) {
-
 	// Get and sort an array containing all expected event_id's for this dataset
 	$allEventsIds = getEventsIdsForDataset($dataset);
-	$allEventsIds = sort($allEventsIds);
+
+	/* If a location has not entered data into their Location table yet, then
+	 * $tabData will be an empty array. */
+
+	sort($allEventsIds);
+
 	$firstEventsId = $allEventsIds[0];
 
 	// Make sure that $tabData is sorted by the value of its rows' event_id values
-	$tabData = usort($tabData, function($a, $b) {
+	usort($tabData, function($a, $b) {
 		return $a["event_id"] - $b["event_id"];
 	});
 
 	/* Step through the rows of $tabData, look for the first out-of-sequence
 	 * event_id, and capture that row index */
 	/* $k will track rows.  All rows less than $k are confirmed to be in-sequence */
+	/* We want the event_id for the table.tpl drop-down menu.  If that's all we
+	 * need, then $k is superfluous here and can be deleted.  Leaving it for now
+	 * in case row number is needed somewhere else - JG 2Dec2019 */
 	$k=0;
 	$expectedEventsId=$firstEventsId;
 	for($i=0; $i<count($tabData); $i++) {
@@ -382,7 +395,9 @@ function getNextUncompletedEvent($tabData,$dataset) {
 		}
 	}
 
-	return $tabData[$k];
+	//return idToIndex($expectedEventsId);
+	//return idToDsNumber($expectedEventsId);
+	return $expectedEventsId;
 
 }
 
@@ -403,7 +418,7 @@ function WriteRow($location,$event_id,$finalState,$primaryState,$mass){
 	/* Check to see if this event_id already has an entry in the Location table: */
 	$q="SELECT event_id FROM `".$location."` WHERE event_id=".$event_id;
 	$res=askdb($q);
-	
+
 	/* if $res is truthy, event_id already exists, and INSERT should fail */
 	if(!$res->fetch_object()){
 		$q="INSERT INTO `".$location."` (event_id,final_state,primary_state,mass) VALUES (".$event_id.",'".$finalState."','".$primaryState."',".$mass.")";
@@ -570,14 +585,17 @@ function addDatasetsToLocation($tableid,$Groups,$PostAdded=0){
 		if(is_array($Groups)){
 			for($i=0;$i<count($Groups);$i++){
 
-				/* First check to see if the dataset has already been assigned to TableGroups: */
+				/* First check to see if the dataset has already been assigned to
+				 * TableGroups: */
 				$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups[$i];
 				$res=askdb($q);
 
 				/* If not, INSERT it. */
 				if(!$res->fetch_object()){
-					/* `datagroup_id` is NOT NULL, so we have to insert it whether we're using it or not.
-				 	 * For consistency, insert the `Datagroups.id` value corresponding to the N.id given by $Groups */
+					/* `datagroup_id` is NOT NULL, so we have to insert it whether we're
+					 * using it or not.
+				 	 * For consistency, insert the `Datagroups.id` value corresponding to
+					 * the N.id given by $Groups */
 					$dg_id=getDatasetId($Groups[$i]);
 					
 					$q="INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups[$i].", ".$tableid.", $PostAdded)";
@@ -636,7 +654,6 @@ function unassignDatasets($tables,$groups){
 			$gstr=$groups;
 		}
 
-		//$q="DELETE FROM TableGroups WHERE tableid IN (".$tstr.") AND datagroup_id IN (".$gstr.")";
 		$q="DELETE FROM TableGroups WHERE tableid IN (".$tstr.") AND dataset IN (".$gstr.")";
 		askdb($q);
 	}
@@ -692,7 +709,13 @@ function CreateTable($locationName,$datagroups){
 	if($nameNotFound && isset($locationName) && $locationName!=""){
 
 		// Should final_state and primary_state be NOT NULL?
+		/*
 		$q="CREATE TABLE `".$locPrefix.$locationName."` (event_id INT NOT NULL, checked VARCHAR(20), final_state VARCHAR(10), primary_state VARCHAR(10), mass DOUBLE, FOREIGN KEY (event_id) REFERENCES Events(event_id))";
+		*/
+		/* Removing FK to allow Location tables to store unique id's for datasets.
+		 *   JG 2Dec2019 */
+		$q="CREATE TABLE `".$locPrefix.$locationName."` (event_id INT NOT NULL, checked VARCHAR(20), final_state VARCHAR(10), primary_state VARCHAR(10), mass DOUBLE)";
+
 		askdb($q);
 
 		/* Inserts a new row of all-zero data strings in the `histograms` table.
@@ -730,8 +753,8 @@ function CreateTable($locationName,$datagroups){
 
 function GetMCEvents(){
 	/* 'WHERE 1' is typically used so that the query can be appended to later.
-		 I don't think we have a case for that here; probably deletable
-		 	 - JG 25Oct2018 */
+	 * I don't think we have a case for that here; probably deletable
+	 *		 	 - JG 25Oct2018 */
 	$q="SELECT * FROM MclassEvents WHERE 1";
 	$res=askdb($q);
 	while($obj = $res->fetch_object()){ 
@@ -764,8 +787,8 @@ function GetTableByID($tableid){
 
 
 /* Returns the histogram id and data string for the histogram belonging
-	 to Location table $location.  Return value is a 2-element array
-	 [id,datastring] */
+ * to Location table $location.  Return value is a 2-element array
+ * [id,datastring] */
 function GetHistDataForTable($location){
 	/* `SELECT histogram_id FROM Tables WHERE name=$location`
 	 *	returns the histogram id for the input table.
@@ -1131,7 +1154,7 @@ function GetFreeTables($event,$boundGroups,$overlab){
 }
 
 
-/* Change this for data blocks - 25Nov2019 */
+/* Change this for datasets - 25Nov2019 */
 /* Altered function below */
 function GetFreeGroups($boundGroups,$overlab){
 	if(isset($boundGroups) && is_array($boundGroups) && $overlab==0){
@@ -1149,8 +1172,7 @@ function GetFreeGroups($boundGroups,$overlab){
 }
 
 
-/* Change this for data blocks - 25Nov2019 */
-/* Original function above */
+/* Adapted from GetFreeGroups() for use with dataset indexing - 25Nov2019 */
 /* $boundGroups is an array of all datagroups that have been assigned. */
 function getFreeDatasets($boundSets, $overlap) {
 	if( isset($boundSets) && is_array($boundSets) && $overlap==0) {

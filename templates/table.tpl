@@ -43,27 +43,51 @@
 		</div>
 	</div>
 
+	<?php
+		/*
+		print_r('<br>');
+		print_r($freeEvents);
+		print_r('<br>');
+		*/
+	?>
+
 	<!-- Data Entry Panel -->
 	<div class="panel-container container-fluid">
 		<div class="col-md-3 subpanel" id="eventdata">
 			<div class="panelheader">Select Event</div>
+				<?php
+					/*
+					print_r('<br>');
+					print_r("event = " + ((string) $event));
+					print_r('<br>');
+					print_r("idToDsNumber(event) = " + ((string) idToDsNumber($event)));
+					print_r('<br>');
+					*/
+				?>
 			<div id="indexSelect" style="border:1px solid transparent;">
 				Event index:
 				<select id="EvSelOver" name="CustomEvent" onchange="this.form.submit()">
 		 			<option id="SelEvent" selected>
-					<?php
-						if(isset($event)){
-							echo $event['id']."";
-						}
-					echo ' </option>';
-						if(isset($event)){
-							for($i=0;$i<count($freeEvents);$i++){
-								if($freeEvents[$i]!=$event['id']){
-									echo '<option> '.$freeEvents[$i].'</option>';
+						<?php
+							if(isset($event)){
+								//echo $event['id']."";
+								echo idToDsNumber($event)."";
+							}
+							echo ' </option>';
+							if(isset($event)){
+								//for($i=0; $i<count($freeEvents); $i++){
+									//if($freeEvents[$i]!=$event['id']){
+									//if ($freeEvents[$i] != $event) {
+									//	echo '<option> '.idToDsNumber($freeEvents[$i]).'</option>';
+									//}
+								//}
+								foreach($freeEvents as $freeEvent){
+									if ($freeEvent != $event) {
+										echo '<option> '.idToDsNumber($freeEvent).'</option>';
+									}
 								}
 							}
-						}
-					?>
+						?>
 				</select>
 			</div><!-- End indexSelect -->
 			<div id="eventNumber" style="border:1px solid transparent;">
@@ -71,7 +95,8 @@
 				<span id="Eventid">
 				<?php
 					if(isset($event)){
-						echo calcEv($event['id'])."";
+						//echo calcEv($event['id'])."";
+						echo idToIndex($event)."";
 					}
 				?>
 				</span>
