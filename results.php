@@ -66,15 +66,15 @@ $ratioColumns = array(
 $ratioHeaders = array_values($ratioColumns);
 
 /* Define table array $tableCells[][] */
-/* Rows are datagroup_id values and columns are selectable particle states.
+/* Rows are indexed by dataset values and columns are selectable particle states.
  * Entries are the number of times users identified the given
- * particle state within the given datagroup.  Construction is based on
+ * particle state within the given dataset.  Construction is based on
  * whether we're showing a single location's data or combined data.
  */
-/* The datagroup_id = N row of the table is $tableCells[N].
- * $tableCells[N] will have columns corresponding to each entry in $tableLabels
- * as well as $tableCells[N]["datagroup"] to give the leftmost column of
- * datagroup_id values as well as $tableCells[N]["total"] to give the rightmost
+/* The dataset = X (10.6, for example) row of the table is $tableCells[X].
+ * $tableCells[X] will have columns corresponding to each entry in $tableLabels
+ * as well as $tableCells[X]["datagroup"] to give the leftmost column of
+ * datagroup_id values as well as $tableCells[X]["total"] to give the rightmost
  * column of row totals.
  */
 
@@ -84,7 +84,8 @@ if(!isset($_SESSION["comb"])){
 
 	/* For a single location, we need to tabulate only those datagroups assigned
 		 to the location */
-	$datagroups = GetDatagroupsById($_SESSION["databaseId"]);
+	//$datagroups = GetDatagroupsById($_SESSION["databaseId"]);
+	$datagroups = getDatasetsForLocation($_SESSION["databaseId"]);
 
 	/* TODO: If there are no assigned datagroups, $tableCells may be undefined.
 	 * We don't expect this in practice. */
@@ -105,18 +106,19 @@ if(!isset($_SESSION["comb"])){
 	/* First, identify of all Location tables for this event.
 	 * These are all `Tables`.`id` values assigned to the current
 	 * `MclassEvents`.`id` in the `EventTables` table.
-	 * $_SESSION["tables"], set in Classes.php, contains these `Tables`.`id` values.
-	 *
+	 * $_SESSION["tables"], set in Classes.php, already contains these
+	 * `Tables`.`id` values, so that's done.
 	 */
 
 	/* Get the datagroups assigned to this Masterclass's Location tables */
 	/* GetGroups() returns datagroup_id (as "dg_id") and "postAdded" from
 	 * the TableGroups table */
-	$g = GetGroups($_SESSION["tables"]);
+	//$g = GetGroups($_SESSION["tables"]);
+	$g = getDatasetsByTable($_SESSION["tables"]);
 
 	/* The starting value of rows is the "dg_id" of the first entry in $g */
 	$start = $g[0]["dg_id"];
-	
+
 	$numGroups=count($g);
 
 	for($i=0; $i<$numGroups; $i++){
@@ -293,7 +295,8 @@ if(isset($_SESSION["tables"])){
 
 	if(isset($events)){
 		foreach($events as $event){
-			$i=GetDatagroupId($event["id"]);
+			//$i=GetDatagroupId($event["id"]);
+			$i=eventDataset($event["id"]);
 			$tableCells[$i]["total"]++;
 
 			// Tally the "final" states
