@@ -159,7 +159,9 @@ if(isset($_SESSION["tables"])){
 			foreach($events as $event){
 				// $event is the array ["event_id", "checked", "final", "primary", "mass"]
 				// $i is the datagroup_id [1,100] that the chosen event is assigned to.
-				$i=GetDatagroupId($event["id"]);
+				//$i=GetDatagroupId($event["id"]);
+				$i=eventDataset($event["id"]);
+
 				// Increment the 'total' column for this datagroup:
 				$tableCells[$i]["total"]++;
 
