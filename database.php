@@ -1266,6 +1266,15 @@ function GetDatagroupId($event){
 }
 
 
+function eventDataset($event_id) {
+
+	$dataset_index = idToIndex($event_id);
+	$dataset = explode("-", $dataset_index)[0];
+
+	return $dataset;
+}
+
+
 /* Added Dec2019 to get the dataset ID [1,190] associated with a particular
  * datset */
 function getDatasetId($dataset){
