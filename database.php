@@ -127,7 +127,7 @@ function GetFreeEvents($datagroup,$location){
 	/*$q="SELECT event_id FROM Events WHERE datagroup_id=".$datagroup." AND NOT event_id IN (SELECT event_id FROM `".$location."` WHERE datagroup_id=".$datagroup.")";*/
 	$q="SELECT event_id FROM Events WHERE datagroup_id=".$datagroup." AND NOT event_id IN (SELECT event_id FROM `".$location."`)";
 	$res=askdb($q);
-	while($obj=$res->fetch_object()){ 
+	while($obj=$res->fetch_object()){
 		$result[]=$obj->event_id;
 	}
 	if(isset($result)){
@@ -208,7 +208,7 @@ function RemoveTablesFromEvent($tables,$eventID){
 function GetAllEvents($location){
 	$q="SELECT * FROM `".$location."`";
 	$res=askdb($q);
-	while($obj=$res->fetch_object()){ 
+	while($obj=$res->fetch_object()){
 			$temp["id"]=$obj->event_id;
 			$temp["checked"]=$obj->checked;
 			/* Before the Oct2018 upgrade, Location tables had only 'event_id'
@@ -254,7 +254,7 @@ function GetEvents($datagroup,$location){
 function GetEventTableRows($datagroup,$location){
 
 	$q="SELECT `".$location."`.event_id, Events.datagroup_id, Events.g_index, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` INNER JOIN Events ON `".$location."`.event_id=Events.event_id WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
-	
+
 	$res=askdb($q);
 	while($obj=$res->fetch_object()){ 
 		$temp["event_id"]=$obj->event_id;
@@ -636,7 +636,7 @@ function DelGroupsFromTables($tables,$groups){
 		$q="DELETE FROM TableGroups WHERE tableid IN (".$tstr.") AND datagroup_id IN (".$gstr.")";
 		askdb($q);
 	}
-}	
+}
 
 
 /* Adapted from DelGroupsFromTables() above to use Datasets instead of Groups - JG 26Nov2019 */
@@ -657,8 +657,7 @@ function unassignDatasets($tables,$groups){
 		$q="DELETE FROM TableGroups WHERE tableid IN (".$tstr.") AND dataset IN (".$gstr.")";
 		askdb($q);
 	}
-}	
-
+}
 
 
 /* CreateTable() creates the Location tables and associated data in the
@@ -696,7 +695,7 @@ function CreateTable($locationName,$datagroups){
 	// New-style names:
 	$q="SELECT name FROM Tables WHERE name='".$locPrefix.$locationName."'";
 	$res=askdb($q);
-	if($res->fetch_object()){ $nameNotFound = FALSE; }	
+	if($res->fetch_object()){ $nameNotFound = FALSE; }
 
 	// Old-style names:
 	/* This should be deletable after upgrades are complete */
@@ -744,7 +743,7 @@ function CreateTable($locationName,$datagroups){
 		if(isset($datagroups)){
 			AddGroupsToTable($tableid,$datagroups);
 		}
-		
+
 		/* Return Table.id for the new Group */
 		return $tableid;
 	}
@@ -757,7 +756,7 @@ function GetMCEvents(){
 	 *		 	 - JG 25Oct2018 */
 	$q="SELECT * FROM MclassEvents WHERE 1";
 	$res=askdb($q);
-	while($obj = $res->fetch_object()){ 
+	while($obj = $res->fetch_object()){
 		$temp["id"]=$obj->id;
 		$temp["name"]=$obj->name;
 		$temp["active"]=$obj->active;
@@ -799,7 +798,7 @@ function GetHistDataForTable($location){
 	 */
 	$q="SELECT id,data FROM histograms WHERE id=(SELECT histogram_id FROM Tables WHERE name='".$location."')";
 	$res=askdb($q);
-	if($obj = $res->fetch_object()){ 
+	if($obj = $res->fetch_object()){
 		$result["id"]=$obj->id;
 		$result["data"]=$obj->data;
 	}
@@ -823,7 +822,7 @@ function GetHistogramData($location){
 	 */
 	$q="SELECT id,data_2l,data_4l FROM histograms WHERE id=(SELECT histogram_id FROM Tables WHERE name='".$location."')";
 	$res=askdb($q);
-	if($obj = $res->fetch_object()){ 
+	if($obj = $res->fetch_object()){
 		$result["id"]=$obj->id;
 		$result["data_2l"]=$obj->data_2l;
 		$result["data_4l"]=$obj->data_4l;
@@ -953,7 +952,7 @@ function CreateEvent($name){
 	$res=askdb($q);
 	/* if $res->fetch_object() returns a "truthy" value, set $test equal to
 		 that value's 'name' */
-	if($obj = $res->fetch_object()){ 
+	if($obj = $res->fetch_object()){
 		$test=$obj->name;
 	}
 	if(!isset($test)){
@@ -975,12 +974,12 @@ function GetLastEvent(){
 		return GetMClassEvent($obj->id);
 	}
 }
-	
+
 
 function GetMClassEvent($id){
 	$q="SELECT * FROM MclassEvents WHERE id='".$id."'";
 	$res=askdb($q);
-	if($obj = $res->fetch_object()){ 
+	if($obj = $res->fetch_object()){
 		$result["name"]=$obj->name;
 		$result["id"]=$obj->id;
 		$result["active"]=$obj->active;
@@ -998,8 +997,8 @@ function GetTables($event){
 	/* SELECT tableid FROM EventTables WHERE MclassEventID=$event
 		 returns the Tables.id value for the given MclassEventID */
 	$q="SELECT * FROM Tables WHERE id IN (SELECT tableid FROM EventTables WHERE MclassEventID='".$event."')";
-	$res=askdb($q);	
-	while($obj = $res->fetch_object()){ 
+	$res=askdb($q);
+	while($obj = $res->fetch_object()){
 		$temp["id"]=$obj->id;
 		$temp["name"]=$obj->name;
 		/* Added Oct2018 to accommodate Location prefix: */
@@ -1045,7 +1044,6 @@ function GetGroups($Tables){
 }
 
 
-
 /* Same as above, but doesn't account for array input or return "postAdded" */
 function GetDatagroupsById($tableId){
 	$q="SELECT datagroup_id FROM TableGroups WHERE tableid=".$tableId." ORDER BY datagroup_id";
@@ -1085,7 +1083,7 @@ function getDatasetsForLocation($tableId) {
 
 /* Adapted from GetGroups() to return Dataset indexes rather than datagroup_ids */
 /* JG 26Nov2019 */
-/* Get all datagroups assigned to the given Location table IDs */
+/* Get all datasets (5.3, 10.6, etc.) assigned to the given Location table IDs */
 /* Reads from TableGroups */
 function getDatasetsByTable($Tables){
 	if(isset($Tables)){
@@ -1146,7 +1144,7 @@ function GetIndTables(){
 function GetFreeTables($event,$boundGroups,$overlab){
 
 		$q="SELECT * FROM Tables WHERE NOT id IN (SELECT tableid FROM EventTables WHERE MclassEventID='".$event."')";
-		
+
 		if($overlab==1){
 				/* I don't see the purpose here.  Query strings don't end in semicolons,
 				 * the SQL driver takes care of that. - JG 13Dec2019 */
@@ -1154,12 +1152,12 @@ function GetFreeTables($event,$boundGroups,$overlab){
 		} else {
 				if(isset($boundGroups) && is_array($boundGroups)){
 
-						$q=$q." AND NOT id IN (SELECT tableid FROM TableGroups WHERE datagroup_id IN (".$boundGroups[0];
+						$q=$q." AND NOT id IN (SELECT tableid FROM TableGroups WHERE dataset IN (".$boundGroups[0];
 
+						/* What's with the indexing here?  Why not $i=0?
+						 * Assume it's an error and fix */
+						//for($i=1; $i<count($boundGroups); $i++){
 						for($i=1; $i<count($boundGroups); $i++){
-								/*if(isset($boundGroups[$i]["id"])){
-										$q=$q.", ".$boundGroups[$i]["id"];
-								}*/
 								if(isset($boundGroups[$i]["ds_id"])){
 										$q=$q.", ".$boundGroups[$i]["ds_id"];
 								}
@@ -1167,8 +1165,8 @@ function GetFreeTables($event,$boundGroups,$overlab){
 						$q=$q." ) )";
 				}
 		}
-		$res=askdb($q);	
-		while($obj = $res->fetch_object()){ 
+		$res=askdb($q);
+		while($obj = $res->fetch_object()){
 				$temp["id"]=$obj->id;
 				$temp["name"]=$obj->name;
 				$locPrefix=GetLocationPrefix();
@@ -1179,6 +1177,64 @@ function GetFreeTables($event,$boundGroups,$overlab){
 				return $result;
 		}
 }
+
+
+/* Adapted from GetFreeTables() because I found that function difficult to parse;
+ * also updating to work with datasets. - JG 19Dec2019 */
+function getUnassignedTables($event,$boundGroups,$overlap){
+
+		/* The query will have the structure
+		 * 	SELECT * FROM Tables WHERE NOT id IN (A) AND NOT id IN (B)
+		 *
+		 *	A = SELECT tableid FROM EventTables WHERE MclassEventID='1'
+		 *	B = SELECT tableid FROM TableGroups WHERE dataset IN ( )
+		 *
+		 * That is, we select all Location tables that have not been assigned to
+		 * this Masterclass, and that have no data groups that have been assigned
+		 * to this Masterclass.
+		 * The condition B is optional, based on whether or not we allow dataset
+		 * overlap as a SESSION variable.
+		 */
+
+		$q="SELECT * FROM Tables WHERE NOT id IN (SELECT tableid FROM EventTables WHERE MclassEventID='".$event."')";
+
+		/* If overlap is NOT allowed, we have an additional restriction */
+		if ( !($overlap==1) ) {
+			 	/* The input $boundGroups is the array of datasets assigned to this
+			 	 * Masterclass.  It might be an array of NULL values, in which case
+				 * the additional condition is moot. */
+				/* Construct the condition as the string $boundSet
+				$boundSet = '1';
+			 	if(isset($boundGroups) && is_array($boundGroups)){
+						/* '1' is not a valid dataset and will match nothing.  It's used
+						 * here to construct the comma-separated set of datasets cleanly
+						 * and to prevent an all-NULL array from causing a SQL error. */
+						for($i=0; $i<count($boundGroups); $i++){
+								if(isset($boundGroups[$i]["ds_id"])){
+										$boundSet = $boundSet.",".$boundGroups[$i]["ds_id"];
+								}
+						}
+
+						$q=$q." AND NOT id IN (SELECT tableid FROM TableGroups WHERE dataset IN (".$boundSet.") )";
+
+				}
+		}
+
+		$res=askdb($q);
+		while($obj = $res->fetch_object()){
+				$temp["id"]=$obj->id;
+				$temp["name"]=$obj->name;
+				$locPrefix=GetLocationPrefix();
+				$temp["displayName"]=str_replace($locPrefix, '', $temp["name"]);
+				$result[]=$temp;
+		}
+		if(isset($result)){
+				return $result;
+		}
+}
+
+
+
 
 
 /* Change this for datasets - 25Nov2019 */
