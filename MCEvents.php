@@ -40,8 +40,8 @@ if(isset($_POST["CreateT"])){
 	if(isset($_POST["tableName"])){
 		/* TODO: User ought to be able to create a table without assigning
 		 * datagroups to it.
-		 * Currently, selecting "Create table" on MCEvents.php with no groups selected
-		 * throws an error at the following call.*/
+		 * Currently, selecting "Create table" on MCEvents.php with no groups
+		 * selected throws an error at the following call.*/
 		$id=CreateTable($_POST["tableName"],$_POST["Groups"]);
 		AddTablesToEvent($id,$_SESSION["EventID"]);
 	}
@@ -87,6 +87,13 @@ if(isset($_POST["DelG"]) && $_POST["DelG"]=="DelG" && isset($_POST["Bgroups"]) &
 	unassignDatasets($tables,$_POST["Bgroups"]);
 }
 
+/*
+print_r('<br/>');
+print_r('SESSION["EventID"]: ');
+print_r('<br/>');
+print_r($_SESSION["EventID"]);
+print_r('<br/>');
+*/
 $boundTables=GetTables($_SESSION["EventID"]);
 
 if(is_array($boundTables)){
