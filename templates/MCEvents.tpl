@@ -6,18 +6,27 @@
 <form action="MCEvents.php" method="post">
 
 <div class=row>
-	<div class=col-md-2>Event name:<strong> <?php echo "".$_SESSION["EventName"]; ?> </strong></div>
-	<div class=col-md-2>Event id:<strong> <?php echo "".$_SESSION["EventID"]; ?></strong></div>
-	<div class=col-md-2>Allow data overlab  
-	<?php if($_SESSION["overlab"]==1){ 
+	<div class=col-md-2>
+		Event name:<strong> <?php echo "".$_SESSION["EventName"]; ?> </strong>
+	</div>
+	<div class=col-md-2>
+		Event id:<strong> <?php echo "".$_SESSION["EventID"]; ?></strong>
+	</div>
+	<div class=col-md-2>Allow data overlab
+	<?php if($_SESSION["overlab"]==1){
 		echo '<input type="checkbox" name="overlab" onclick="this.form.submit() "value="o" checked="true">';
 			}else{
 				echo '<input type="checkbox" name="overlab" onclick="this.form.submit()" value="o">';
 			}
 	?> </div>
-	<div class=col-md-6><button type="submit" class="btn btn-default" name="finished" value="finished">finished</button></div>
-
+	<div class=col-md-6>
+		<button type="submit" class="btn btn-default" name="finished"
+						value="finished">
+			finished
+		</button>
+	</div>
 </div>
+
 <!--
 <div class=row>
 	<div class=col-md-12>
