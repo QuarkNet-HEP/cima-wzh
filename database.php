@@ -1355,7 +1355,7 @@ function getDatasetId($dataset){
   $q="SELECT id FROM Datasets WHERE dataset='".$dataset."'";
 	$result=askdb($q);
 	if(isset($result)){
-		return mysqli_fetch_assoc($result)["dataset_id"];
+		return mysqli_fetch_assoc($result)["id"];
 	}
 }
 
