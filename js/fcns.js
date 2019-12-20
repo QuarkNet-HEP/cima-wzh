@@ -296,22 +296,28 @@ function GetTables(){
 
 
 function PostGroups(){
+		/* Bound Tables and Free Tables selectors on MCEvents.php */
 		var selB=document.getElementById("BTables");
 		var selF=document.getElementById("Ftables");
 		var list=new Array;
 		var k=0;
-		for (var i = 0; i < selB.options.length; i++) {
+		/* For each selected option in the Bound Tables selector, add it to 
+		 * 'list' and increment 'k' */
+		for (var i=0; i < selB.options.length; i++) {
 			if(selB.options[i].selected){
 				list[k]=selB.options[i].value;
 				k++;
       }
 		}
-		for (var i = 0; i < selF.options.length; i++) {
+		/* Do the exact same for the Free Tables selector */
+		for (var i=0; i < selF.options.length; i++) {
 			if(selF.options[i].selected){
 				list[k]=selF.options[i].value;
 				k++;
       }
   	}
+		/* 'list' now contains all selected values (Free and Bound), and 'k' is
+		 * its length */
 
 		$.ajax({
 				type: "POST",
@@ -321,7 +327,8 @@ function PostGroups(){
 						source : "Backend"
 				},
 				success: function( data ) {
-						/* Refers to the "Groups" listing of templates/MCEvents.tpl */
+						/* Refers to the name="Bgroups[]" listing of 
+						 * templates/MCEvents.tpl */
 						$( "#bg" ).html( data );
 				}
 		});
