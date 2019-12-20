@@ -1181,13 +1181,14 @@ function GetFreeTables($event,$boundGroups,$overlab){
 
 /* Adapted from GetFreeTables() because I found that function difficult to parse;
  * also updating to work with datasets. - JG 19Dec2019 */
+/* $boundGroups = ['5.3', '10.6', ...], for example */
 function getUnassignedTables($event,$boundGroups,$overlap){
 
 		/* The query will have the structure
 		 * 	SELECT * FROM Tables WHERE NOT id IN (A) AND NOT id IN (B)
 		 *
 		 *	A = SELECT tableid FROM EventTables WHERE MclassEventID='1'
-		 *	B = SELECT tableid FROM TableGroups WHERE dataset IN ( )
+		 *	B = SELECT tableid FROM TableGroups WHERE dataset IN ($boundGroups["id"]'s )
 		 *
 		 * That is, we select all Location tables that have not been assigned to
 		 * this Masterclass, and that have no data groups that have been assigned
@@ -1204,16 +1205,19 @@ function getUnassignedTables($event,$boundGroups,$overlap){
 			 	 * Masterclass.  It might be an array of NULL values, in which case
 				 * the additional condition is moot. */
 				/* Construct the condition as the string $boundSet */
+				/* '1' is not a valid dataset and will match nothing.  It's used
+				 * here to construct the comma-separated set of datasets cleanly
+				 * and to prevent an all-NULL array from causing a SQL error. */
 				$boundSet = '1';
 			 	if(isset($boundGroups) && is_array($boundGroups)){
-						/* '1' is not a valid dataset and will match nothing.  It's used
-						 * here to construct the comma-separated set of datasets cleanly
-						 * and to prevent an all-NULL array from causing a SQL error. */
 						for($i=0; $i<count($boundGroups); $i++){
-								if(isset($boundGroups[$i]["ds_id"])){
-										$boundSet = $boundSet.",".$boundGroups[$i]["ds_id"];
+								if(isset($boundGroups[$i])){
+										$boundSet = $boundSet.",".$boundGroups[$i];
 								}
 						}
+
+						/* NULL values can cause problems with this approach: */
+						/*$boundSet = "1,".implode(",",$boundGroups)*/
 
 						$q=$q." AND NOT id IN (SELECT tableid FROM TableGroups WHERE dataset IN (".$boundSet.") )";
 
@@ -1253,28 +1257,39 @@ function GetFreeGroups($boundGroups,$overlab){
 
 
 /* Adapted from GetFreeGroups() for use with dataset indexing - 25Nov2019 */
+/* Updated 20Dec2019 to account for NULL $boundSets values */
 /* $boundGroups is an array of all datagroups that have been assigned. */
 function getFreeDatasets($boundSets, $overlap) {
-	if( isset($boundSets) && is_array($boundSets) && $overlap==0) {
-	
-		$q="SELECT DISTINCT dataset FROM Datasets WHERE NOT dataset IN ( ".implode(",",$boundSets).")";
 
-	}else{
+		if( isset($boundSets) && is_array($boundSets) && $overlap==0 ) {
 
-		$q="SELECT DISTINCT dataset FROM Datasets WHERE 1";
+				/* Construct the comma-separated list of assigned datasets as the
+				 * string $boundSet (it's a "set of datasets", hence the singular) */
+				$boundSet = '1';
+				for($i=0; $i<count($boundSets); $i++){
+						if( isset($boundSets[$i]) ){
+								$boundSet = $boundSet.",".$boundSets[$i];
+						}
+				}
 
-	}
-	$res=askdb($q);
-	while($obj = $res->fetch_object()){ 
-		$result[]=$obj->dataset;
-	}
-	if(isset($result)){
-		return $result;
-	}
+				$q="SELECT DISTINCT dataset FROM Datasets WHERE NOT dataset IN ( ".$boundSet.")";
+
+		}else{
+
+				$q="SELECT DISTINCT dataset FROM Datasets";
+
+		}
+
+		$res=askdb($q);
+		while($obj = $res->fetch_object()){
+				$result[]=$obj->dataset;
+		}
+		if(isset($result)){
+				return $result;
+		}
 }
 
 
-		
 function connectGroups($tableid,$gstd,$gbackup){
 	$q="INSERT INTO groupConnect (gstd,gbackup,tableid) VALUES (".$gstd.",".$gbackup.",".$tableid.")";
 	askdb($q);
