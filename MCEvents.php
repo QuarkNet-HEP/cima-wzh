@@ -112,7 +112,8 @@ if(is_array($boundTables)){
 if(!isset($boundGroups)){
 	$boundGroups=0;
 }
-$indTables=GetFreeTables($_SESSION["EventID"],$boundGroups,$_SESSION["overlab"]);
+/*$indTables=GetFreeTables($_SESSION["EventID"],$boundGroups,$_SESSION["overlab"]);*/
+$indTables=getUnassignedTables($_SESSION["EventID"],$boundGroups,$_SESSION["overlab"]);
 /*$freeGroups=GetFreeGroups($boundGroups,$_SESSION["overlab"]);*/
 $freeGroups = getFreeDatasets($boundGroups,$_SESSION["overlab"]);
 
