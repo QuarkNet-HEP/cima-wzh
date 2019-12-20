@@ -1093,32 +1093,32 @@ function getDatasetsByTable($Tables){
 					$tables[]=$Tables[$i]["id"];
 				}
 
-				$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",",$tables).")";
+				$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid IN ( ".implode(",",$tables).") AND dataset IS NOT NULL";
 
 			}else{
 
-				$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid IN (".implode(",",$Tables).")";
+				$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid IN (".implode(",",$Tables).") AND dataset IS NOT NULL";
 
 			}
 
 		}else{
 			/* If $Tables is not an array */
-			$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid=".$Tables;
+			$q="SELECT dataset,postAdded FROM TableGroups WHERE tableid=".$Tables." AND dataset IS NOT NULL";
 		}
+
 		$q=$q." ORDER BY dataset";
 		$res=askdb($q);
 
 		/* If a Location table or set of tables has no assigned datasets,
 		 * $obj->dataset will return NULL.  If all tables have none, $result["ds_id"]
-		 * will be a null array, which can cause problems.  */
+		 * will be a null array, which can cause problems. */
 		while($obj = $res->fetch_object()){
-			//$temp["dg_id"]=$obj->datagroup_id;
-			$temp["ds_id"]=$obj->dataset;
-			$temp["postAdded"]=$obj->postAdded;
-			$result[]=$temp;
+				$temp["ds_id"]=$obj->dataset;
+				$temp["postAdded"]=$obj->postAdded;
+				$result[]=$temp;
 		}
 		if(isset($result)){
-			return $result;
+				return $result;
 		}
 	}
 }
