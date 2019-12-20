@@ -1234,9 +1234,6 @@ function getUnassignedTables($event,$boundGroups,$overlap){
 }
 
 
-
-
-
 /* Change this for datasets - 25Nov2019 */
 /* Altered function below */
 function GetFreeGroups($boundGroups,$overlab){
