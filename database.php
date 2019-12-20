@@ -452,6 +452,7 @@ function DeleteTable($tableid){
 	
 	$q="DELETE FROM TableGroups WHERE tableid=".$tableid;
 	askdb($q);
+
 	$q="DELETE FROM EventTables WHERE tableid=".$tableid;
 	askdb($q);
 	
