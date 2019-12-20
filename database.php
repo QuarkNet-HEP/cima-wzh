@@ -1203,7 +1203,7 @@ function getUnassignedTables($event,$boundGroups,$overlap){
 			 	/* The input $boundGroups is the array of datasets assigned to this
 			 	 * Masterclass.  It might be an array of NULL values, in which case
 				 * the additional condition is moot. */
-				/* Construct the condition as the string $boundSet
+				/* Construct the condition as the string $boundSet */
 				$boundSet = '1';
 			 	if(isset($boundGroups) && is_array($boundGroups)){
 						/* '1' is not a valid dataset and will match nothing.  It's used
