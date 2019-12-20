@@ -200,11 +200,11 @@
 							</select>
 						</div>
 						<div class=row>
-						<button type="submit" class="btn btn-default" name="free" value="free">Remove tables</button> 
+						<button type="submit" class="btn btn-default" name="free" value="free">Remove tables</button>
 						</div>
 					</div>
 				</div>
-				
+
 				<div class=col-md-4>
 					<div class=container-fluid>
 						<div class=row>
@@ -219,7 +219,7 @@
 							<button type="submit" class="btn btn-default" name="DelG"
 											value="DelG">
 								Remove Groups
-							</button> 
+							</button>
 						</div>
 					</div>
 				</div>
