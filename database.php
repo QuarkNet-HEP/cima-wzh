@@ -17,26 +17,29 @@ function askdb($q){
 
 
 /* Added to handle converting the new dataset indexing for storage in the
- * `event_id` column of Location tables - JG 26Nov2019 */
+ * `event_id` column of Location tables - JG 26Nov2019
+ */
 function indexToId($index) {
-	/* $index is expected to be of the form N.id-X where
-	 *   N is the data block [5,10,25,50,100]
-	 *	 id is the dataset [1,N]
-	 *	 X is the individual event number [1,100]
-	 */
-	$parts = explode("-", $index);
 
-	$q="SELECT id FROM Datasets WHERE dataset='".$parts[0]."'";
-	$res=askdb($q);
+		/* $index is expected to be of the form N.id-X where
+	 	 *   N is the data block [5,10,25,50,100]
+	 	 *	 id is the dataset [1,N]
+		 *	 X is the individual event number [1,100]
+	 	 */
+		$parts = explode("-", $index);
 
-	if($obj=$res->fetch_object()){
-		$base=$obj->id;
-	}
+		$q="SELECT id FROM Datasets WHERE dataset='".$parts[0]."'";
+		$res=askdb($q);
 
-	$unique = ((int) $base)*1000 + (int) $parts[1];
+		if($obj=$res->fetch_object()){
+				$base=$obj->id;
+		}
 
-	return $unique;
+		$unique = ((int) $base)*1000 + (int) $parts[1];
+
+		return $unique;
 }
+
 
 /* Returns the full dataset index (i.e. 10.6-3 or 50.7-45) for a given
  * unique $id */
@@ -55,6 +58,8 @@ function idToIndex($id) {
 
 	if($obj=$res->fetch_object()){
 		$ds=$obj->dataset;
+	}else{
+		$ds="0";
 	}
 
 	$index = $ds."-".$eventNo;
