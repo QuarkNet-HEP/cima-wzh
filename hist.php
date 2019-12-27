@@ -5,23 +5,6 @@ include "database.php";
 
 session_start();
 
-/*
-print_r('<br/>');
-print_r('$_SESSION: ');
-print_r($_SESSION);
-print_r('<br/>');
-print_r('<br/>');
-print_r('$_POST: ');
-print_r($_POST);
-print_r('<br/>');
-*/
-/*
-$debugData = GenerateHistogramData($_SESSION["database"]);
-print_r('$debugData_2l = '.$debugData['data_2l']);
-print_r('<br/>');
-print_r('$debugData_4l = '.$debugData['data_4l']);
-*/
-
 $script=1;
 
 include 'templates/header.tpl';
@@ -124,19 +107,9 @@ echo '<script> MakeHist("'.$datax["data_2l"].'",2,"chart1"); </script>';
 echo '<script> MakeHist("'.$datax["data_4l"].'",2,"chart2"); </script>';
 */
 
-/*
-print_r('<br/>');
-print_r('$data_2l = '.$datax["data_2l"]);
-print_r('<br/>');
-print_r('$data_4l = '.$datax["data_4l"]);
-print_r('<br/>');
-*/
-
 # NB Chart boundaries are also hard-coded in the GenerateHistogramData()
 #   function of database.php
-echo '<script> MakeHist("'.$datax["data_2l"].'",51,111,2,"chart1"); </script>';
-#echo '<script> MakeHist("'.$datax["data_4l"].'",81,211,2,"chart2"); </script>';
-#echo '<script> MakeHist("'.$datax["data_4l"].'",81,400,2,"chart2"); </script>';
+echo '<script> MakeHist("'.$datax["data_2l"].'",1,111,2,"chart1"); </script>';
 echo '<script> MakeHist("'.$datax["data_4l"].'",81,400,3,"chart2"); </script>';
 
 include 'templates/floor.tpl';
