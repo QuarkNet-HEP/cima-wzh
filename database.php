@@ -16,22 +16,6 @@ function askdb($q){
 }
 
 
-/* Not a database function but I need somewhere to put it - JG 25Nov2019 */
-/* Ends up not being used, I think.  Deletable - 26Nov2019 */
-function makeIndices($blockArray) {
-
-	$datagroup_indices = array();
-	for($i=0; $i<count($blockArray); $i++) {
-		$N = $blocks[$i];
-		for($j=0; $j<$N; $j++) {
-			$datagroup_indices[] = ((string) $N) . "." . ((string) ($j+1));
-		}
-	}
-	return $datagroup_indices;
-
-}
-
-
 /* Added to handle converting the new dataset indexing for storage in the
  * `event_id` column of Location tables - JG 26Nov2019 */
 function indexToId($index) {
@@ -54,7 +38,8 @@ function indexToId($index) {
 	return $unique;
 }
 
-/* Returns the full dataset index (i.e. 10.6-3 or 50.7-45) for a given unique $id */
+/* Returns the full dataset index (i.e. 10.6-3 or 50.7-45) for a given
+ * unique $id */
 function idToIndex($id) {
 
 	// Convert to string
@@ -64,17 +49,6 @@ function idToIndex($id) {
 	$eventNo = ltrim($eventNo, '0');
 
 	$base = substr($num,0,-3);
-	/*
-	print_r('<br>');
-	print_r('input id: ');
-	print_r('<br>');
-	print_r($id);
-	print_r('<br>');
-	print_r('base: ');
-	print_r('<br>');
-	print_r($base);
-	print_r('<br>');
-	*/
 
 	$q="SELECT dataset FROM Datasets WHERE id='".$base."'";
 	$res=askdb($q);
@@ -120,11 +94,14 @@ function getEventsIdsForDataset($dataset) {
 
 
 /* Returns event_id values for $datagroup that are not already contained
-	 in the given Location $location */
+ * in the given Location $location
+ */
 function GetFreeEvents($datagroup,$location){
-	/* Location tables don't have a 'datagroup_id' column.  The WHERE clause in
-		 the subquery doesn't throw an error, but what does it accomplish? */
+
+	/* Location tables don't have a 'datagroup_id' column.  The WHERE clause
+	 * in the subquery doesn't throw an error, but what does it accomplish? */
 	/*$q="SELECT event_id FROM Events WHERE datagroup_id=".$datagroup." AND NOT event_id IN (SELECT event_id FROM `".$location."` WHERE datagroup_id=".$datagroup.")";*/
+	
 	$q="SELECT event_id FROM Events WHERE datagroup_id=".$datagroup." AND NOT event_id IN (SELECT event_id FROM `".$location."`)";
 	$res=askdb($q);
 	while($obj=$res->fetch_object()){
@@ -169,78 +146,99 @@ function getUncompletedEventsIds($dataset,$location){
 }
 
 
-/* Once a Masterclass is created, associate one or more Location tables to it by
-	 creating entries in 'EventTables'.  The Location tables must already exist and
-	 be registered in 'Tables'. */
+/* Once a Masterclass is created, associate one or more Location tables to
+ * it by creating entries in 'EventTables'.  The Location tables must
+ * already exist and be registered in 'Tables'.
+ */
 /* Inputs: $tables is a tableid value (or array of values) that should
  *	 				 match Tables.id.
  * 				 $eventID is a MclassEventID value that should match MclassEvents.id.
  */
+/* Used only in MCEvents.php */
 function AddTablesToEvent($tables,$eventID){
-	if(isset($tables) && isset($eventID)){
-		if(!is_array($tables)){
-			$q="INSERT INTO EventTables (tableid,MclassEventID) VALUES (".$tables.",".$eventID.")";
-			askdb($q);
-		}else{
-			for($i=0;$i<count($tables);$i++){
-				$q="INSERT INTO EventTables (tableid,MclassEventID) VALUES (".$tables[$i].",".$eventID.")";
-				askdb($q);
-			}
+
+		if(isset($tables) && isset($eventID)){
+				if(!is_array($tables)){
+
+						$q="INSERT INTO EventTables (tableid,MclassEventID) VALUES (".$tables.",".$eventID.")";
+
+						askdb($q);
+				}else{
+						for($i=0;$i<count($tables);$i++){
+
+								$q="INSERT INTO EventTables (tableid,MclassEventID) VALUES (".$tables[$i].",".$eventID.")";
+
+								askdb($q);
+						}
+				}
 		}
-	}
 }
 
 
 /* The reverse of the above.  De-associate a given Location table or tables
  * identified by $tables from the Masterclass identified by $eventID by deleting
- * the relevant entry in 'EventTables'. */
+ * the relevant entry in 'EventTables'.
+ */
+/* Used only in MCEvents.php */ 
 function RemoveTablesFromEvent($tables,$eventID){
-	if(isset($tables) && is_array($tables) && isset($eventID)){
-		for($i=0;$i<count($tables);$i++){
-			$q="DELETE FROM EventTables WHERE tableid=".$tables[$i]." AND MclassEventID=".$eventID;
-			askdb($q);
+
+		if(isset($tables) && is_array($tables) && isset($eventID)){
+				for($i=0;$i<count($tables);$i++){
+
+						$q="DELETE FROM EventTables WHERE tableid=".$tables[$i]." AND MclassEventID=".$eventID;
+
+						askdb($q);
+				}
 		}
-	}
 }
 
 
 /* Get all events associated with a Location table $location */
+/* Used only in results.php */
 function GetAllEvents($location){
-	$q="SELECT * FROM `".$location."`";
-	$res=askdb($q);
-	while($obj=$res->fetch_object()){
-			$temp["id"]=$obj->event_id;
-			$temp["checked"]=$obj->checked;
-			/* Before the Oct2018 upgrade, Location tables had only 'event_id'
-			 * (as 'o_no') and 'checked' columns.  The following were added as
-			 * part of the upgrade: */
-			$temp["final"]=$obj->final_state;
-			$temp["primary"]=$obj->primary_state;
-			$temp["mass"]=$obj->mass;
-			$result[]=$temp;
+
+		$q="SELECT * FROM `".$location."`";
+		$res=askdb($q);
+
+		while($obj=$res->fetch_object()){
+				$temp["id"]=$obj->event_id;
+				$temp["checked"]=$obj->checked;
+				/* Before the Oct2018 upgrade, Location tables had only 'event_id'
+			 	 * (as 'o_no') and 'checked' columns.  The following were added as
+			 	 * part of the upgrade: */
+				$temp["final"]=$obj->final_state;
+				$temp["primary"]=$obj->primary_state;
+				$temp["mass"]=$obj->mass;
+				$result[]=$temp;
 		}
-	if(isset($result)){
-		return $result;
-	}
+		if(isset($result)){
+				return $result;
+		}
 }
 
 
-/* For each event assigned to a Location $location, return the event_id, the
-	 Location 'checked' list, and the canonical mass */
+/* For each event assigned to a Location $location, return the event_id,
+ * the Location 'checked' list, and the canonical mass.
+ */
 /* Inputs: $datagroup is a datagroup number.
-	 				 $location is a Location table in the Masterclass database. */
+ * 				 $location is a Location table in the Masterclass database.
+ */
+/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */ 
 function GetEvents($datagroup,$location){
-	$q="SELECT `".$location."`.event_id, `".$location."`.checked, Events.mass FROM `".$location."` INNER JOIN Events WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") AND `".$location."`.event_id=Events.event_id ORDER BY `".$location."`.event_id";
-	$res=askdb($q);
-	while($obj=$res->fetch_object()){
-			$temp["id"]=$obj->event_id;
-			$temp["checked"]=$obj->checked;
-			$temp["mass"]=$obj->mass;
-			$result[]=$temp;
-	}
-	if(isset($result)){
-		return $result;
-	}
+
+		$q="SELECT `".$location."`.event_id, `".$location."`.checked, Events.mass FROM `".$location."` INNER JOIN Events WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") AND `".$location."`.event_id=Events.event_id ORDER BY `".$location."`.event_id";
+
+		$res=askdb($q);
+
+		while($obj=$res->fetch_object()){
+				$temp["id"]=$obj->event_id;
+				$temp["checked"]=$obj->checked;
+				$temp["mass"]=$obj->mass;
+				$result[]=$temp;
+		}
+		if(isset($result)){
+				return $result;
+		}
 }
 
 
@@ -251,216 +249,207 @@ function GetEvents($datagroup,$location){
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
+/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */ 
 function GetEventTableRows($datagroup,$location){
 
-	$q="SELECT `".$location."`.event_id, Events.datagroup_id, Events.g_index, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` INNER JOIN Events ON `".$location."`.event_id=Events.event_id WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
+		$q="SELECT `".$location."`.event_id, Events.datagroup_id, Events.g_index, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` INNER JOIN Events ON `".$location."`.event_id=Events.event_id WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
 
-	$res=askdb($q);
-	while($obj=$res->fetch_object()){ 
-		$temp["event_id"]=$obj->event_id;
-		/* 'datagroup_id' and 'g_index' are in the table, but aren't used directly
-				to create rows.  Uncomment these lines to make them available: */
-		//$temp["dg_id"]=$obj->datagroup_id;
-		//$temp["dg_index"]=$obj->g_index;
-		$temp["dg_label"]=$obj->datagroup_id."-".$obj->g_index;
-		$temp["final"]=$obj->final_state;
-		$temp["primary"]=$obj->primary_state;
-		$temp["mass"]=$obj->mass;
-		$result[]=$temp;
-	}
-	if(isset($result)){
-		return $result;
-	}
+		$res=askdb($q);
+
+		while($obj=$res->fetch_object()){ 
+				$temp["event_id"]=$obj->event_id;
+				/* 'datagroup_id' and 'g_index' are in the table, but aren't used
+				 * directly to create rows.  Uncomment these lines to make them
+				 * available: */
+				//$temp["dg_id"]=$obj->datagroup_id;
+				//$temp["dg_index"]=$obj->g_index;
+				$temp["dg_label"]=$obj->datagroup_id."-".$obj->g_index;
+				$temp["final"]=$obj->final_state;
+				$temp["primary"]=$obj->primary_state;
+				$temp["mass"]=$obj->mass;
+				$result[]=$temp;
+		}
+		if(isset($result)){
+				return $result;
+		}
 }
 
 
 /* Adapted from GetEventTableRows() for use with dataset indexing
  * - JG 27Nov2019 */
-/* For each event assigned to a Location $location, return the unique event_id,
- * the dataset index, and the user-entered final state, primary
-	 state, and mass. */
+/* For each event assigned to a Location $location, return the unique
+ * event_id, the dataset index, and the user-entered final state, primary
+ * state, and mass.
+ */
 /* In CIMA-WZH, this is basically just reading out the Location table. */	 
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
+/* Used only in DataTable.php. */ 
 function getEventsTableRows($datagroup,$location) {
 
-	$q="SELECT event_id, final_state, primary_state, mass FROM `".$location."` ORDER BY event_id";
-	$res=askdb($q);
+		$q="SELECT event_id, final_state, primary_state, mass FROM `".$location."` ORDER BY event_id";
+		$res=askdb($q);
 
-	$result=array();
-	while($obj=$res->fetch_object()){
-		$temp["event_id"] = $obj->event_id;
-		$temp["dg_label"] = idToIndex($obj->event_id);
-		$temp["final"] = $obj->final_state;
-		$temp["primary"] = $obj->primary_state;
-		$temp["mass"] = $obj->mass;
-		$result[] = $temp;
-	}
-
-	if(isset($result)){
-		return $result;
-	}
-}
-
-
-function GetEvent($event_id){
-	$q="SELECT * FROM Events WHERE event_id=".$event_id;
-	$res=askdb($q);
-	if($obj = $res->fetch_object()){
-		$result["id"]=$obj->event_id;
-		$result["g"]=$obj->datagroup_id;
-		$result["mass"]=$obj->mass;
-		/* 'g_index', 'ev_no' are also available in the query output */
-		/* Add a conversion to dataset index */
-		$temp = $obj->event_id;
-		$temp = idToIndex($temp);
-		$result["dset"] = $temp;
-	}else{
-		print("error");
-		return 0;
-	}
-	return $result;
-}
-
-
-function GetNext($finEvents,$dg_id){
-	$k=0;
-	$c=0;
-	if(isset($finEvents) && is_array($finEvents) && (($dg_id-1)*100+1) == $finEvents[0]["id"]){
-		for($i=$finEvents[0]["id"];$c<200;$i++){
-			$k=$i;
-			if(!array_key_exists(($i-$finEvents[0]["id"]),$finEvents)){
-				break;
-			}
-			if($i<$finEvents[($i-$finEvents[0]["id"])]["id"]){
-				break;
-			}
+		$result=array();
+		while($obj=$res->fetch_object()){
+				$temp["event_id"] = $obj->event_id;
+				$temp["dg_label"] = idToIndex($obj->event_id);
+				$temp["final"] = $obj->final_state;
+				$temp["primary"] = $obj->primary_state;
+				$temp["mass"] = $obj->mass;
+				$result[] = $temp;
 		}
-		$q="SELECT * from Events WHERE datagroup_id=".$dg_id." AND event_id=".$k;
-	}else{
-		$q="SELECT * from Events WHERE datagroup_id=".$dg_id." AND event_id=".((($dg_id-1)*100)+1);
-	}
-	$res=askdb($q);
-	if($obj = $res->fetch_object()){
-		$result["id"]=$obj->event_id;
-		$result["g"]=$obj->datagroup_id;
-		$result["mass"]=$obj->mass;
-		/* Add a conversion to dataset index */
-		$temp = $obj->event_id;
-		$temp = idToIndex($temp);
-		$result["dset"] = $temp;
-	}
-	if(isset($result)){
-		return $result;
-	}
+		if(isset($result)){
+				return $result;
+		}
+}
+
+
+/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */ 
+function GetNext($finEvents,$dg_id){
+
+		$k=0;
+		$c=0;
+		if(isset($finEvents) && is_array($finEvents) && (($dg_id-1)*100+1) == $finEvents[0]["id"]){
+				for($i=$finEvents[0]["id"];$c<200;$i++){
+						$k=$i;
+						if(!array_key_exists(($i-$finEvents[0]["id"]),$finEvents)){
+								break;
+						}
+						if($i<$finEvents[($i-$finEvents[0]["id"])]["id"]){
+								break;
+						}
+				}
+				
+				$q="SELECT * from Events WHERE datagroup_id=".$dg_id." AND event_id=".$k;
+
+		}else{
+
+				$q="SELECT * from Events WHERE datagroup_id=".$dg_id." AND event_id=".((($dg_id-1)*100)+1);
+
+		}
+
+		$res=askdb($q);
+		if($obj = $res->fetch_object()){
+				$result["id"]=$obj->event_id;
+				$result["g"]=$obj->datagroup_id;
+				$result["mass"]=$obj->mass;
+				/* Add a conversion to dataset index */
+				$temp = $obj->event_id;
+				$temp = idToIndex($temp);
+				$result["dset"] = $temp;
+		}
+		if(isset($result)){
+				return $result;
+		}
 }
 
 
 /* New, more readable version of GetNext() created for dataset indexing
  * - JG 27Nov2019 */
 function getNextUncompletedEvent($tabData,$dataset) {
-	// Get and sort an array containing all expected event_id's for this dataset
-	$allEventsIds = getEventsIdsForDataset($dataset);
 
-	/* If a location has not entered data into their Location table yet, then
-	 * $tabData will be an empty array. */
+		/* Get and sort an array containing all expected event_id's for this
+		 * dataset */
+		$allEventsIds = getEventsIdsForDataset($dataset);
 
-	sort($allEventsIds);
+		/* If a location has not entered data into their Location table yet,
+	 	 * then $tabData will be an empty array. */
 
-	$firstEventsId = $allEventsIds[0];
+		sort($allEventsIds);
 
-	// Make sure that $tabData is sorted by the value of its rows' event_id values
-	usort($tabData, function($a, $b) {
-		return $a["event_id"] - $b["event_id"];
-	});
+		$firstEventsId = $allEventsIds[0];
 
-	/* Step through the rows of $tabData, look for the first out-of-sequence
-	 * event_id, and capture that row index */
-	/* $k will track rows.  All rows less than $k are confirmed to be in-sequence */
-	/* We want the event_id for the table.tpl drop-down menu.  If that's all we
-	 * need, then $k is superfluous here and can be deleted.  Leaving it for now
-	 * in case row number is needed somewhere else - JG 2Dec2019 */
-	$k=0;
-	$expectedEventsId=$firstEventsId;
-	for($i=0; $i<count($tabData); $i++) {
-		/* If there's a discrepancy, we've found the first missing row.
-		 * If there's not, move to the next row and next expected event_id. */
-		if ( !($tabData[$i]["event_id"] == $expectedEventsId) ) {
-			$firstMissingRow = $k;
-			break;
-		} else {
-			 $k++;
-			 $expectedEventsId++;
+		/* Make sure that $tabData is sorted by the value of its rows' event_id
+		 * values */
+		usort($tabData, function($a, $b) {
+				return $a["event_id"] - $b["event_id"];
+		});
+
+		/* Step through the rows of $tabData, look for the first out-of-sequence
+	 	 * event_id, and capture that row index */
+		/* $k will track rows.  All rows less than $k are confirmed to
+		 * be in-sequence */
+		/* We want the event_id for the table.tpl drop-down menu.  If that's all
+	   * we need, then $k is superfluous here and can be deleted.  Leaving it
+		 * for now in case row number is needed somewhere else - JG 2Dec2019 */
+		$k=0;
+		$expectedEventsId=$firstEventsId;
+		for($i=0; $i<count($tabData); $i++) {
+				/* If there's a discrepancy, we've found the first missing row.
+		 		 * If there's not, move to the next row and next expected event_id. */
+				if ( !($tabData[$i]["event_id"] == $expectedEventsId) ) {
+					 	$firstMissingRow = $k;
+						break;
+				} else {
+			 			$k++;
+			 			$expectedEventsId++;
+				}
 		}
-	}
 
-	//return idToIndex($expectedEventsId);
-	//return idToDsNumber($expectedEventsId);
 	return $expectedEventsId;
-
 }
 
 
-function WriteEntry($table,$event_id,$checked){
-	$q="SELECT event_id FROM `".$table."` WHERE event_id=".$event_id;
-	$res=askdb($q);
-	if(!$res->fetch_object()){
-		$q="INSERT INTO `".$table."` (event_id,checked) VALUES (".$event_id.",'".$checked."')";
-		askdb($q);
-	}
-}
-
-
-/* Added Oct2018 as expansion of WriteEntry() to handle new data format */
+/* Added Oct2018 as expansion of WriteEntry(), since removed, to handle
+ * new data format */
+/* Used only in DataTable.php. */ 
 function WriteRow($location,$event_id,$finalState,$primaryState,$mass){
 
-	/* Check to see if this event_id already has an entry in the Location table: */
-	$q="SELECT event_id FROM `".$location."` WHERE event_id=".$event_id;
-	$res=askdb($q);
+		/* Check to see if this event_id already has an entry in the Location
+	 	 * table: */
+		$q="SELECT event_id FROM `".$location."` WHERE event_id=".$event_id;
+		$res=askdb($q);
 
-	/* if $res is truthy, event_id already exists, and INSERT should fail */
-	if(!$res->fetch_object()){
-		$q="INSERT INTO `".$location."` (event_id,final_state,primary_state,mass) VALUES (".$event_id.",'".$finalState."','".$primaryState."',".$mass.")";
-		askdb($q);
-	}
+		/* if $res is truthy, event_id already exists, and INSERT should fail */
+		if(!$res->fetch_object()){
+				$q="INSERT INTO `".$location."` (event_id,final_state,primary_state,mass) VALUES (".$event_id.",'".$finalState."','".$primaryState."',".$mass.")";
+
+				askdb($q);
+		}
 }
 
 
-/* Deletes the row identified by the given event_id from the given Location table */
+/* Deletes the row identified by the given event_id from the given Location
+ * table.
+ */
+/* Used only in DelE.php. */ 
 function DelRow($id,$location){
-	$q="DELETE FROM `".$location."` WHERE event_id=".$id;
-	askdb($q);
+		$q="DELETE FROM `".$location."` WHERE event_id=".$id;
+		askdb($q);
 }
 
 
+/* Used only in Classes.php. */ 
 function DeleteTable($tableid){
-	$locPrefix = '_LOC_';
 
-	$q="SELECT histogram_id,name FROM Tables WHERE id=".$tableid;
-	$res=askdb($q);
-	if($obj = $res->fetch_object()){
-		$histid=$obj->histogram_id;
-		$name=$obj->name;
-	}
+		$locPrefix = '_LOC_';
 
-	$q="DROP TABLE `".$name."`";
-	askdb($q);
+		$q="SELECT histogram_id,name FROM Tables WHERE id=".$tableid;
+		$res=askdb($q);
+		if($obj = $res->fetch_object()){
+				$histid=$obj->histogram_id;
+				$name=$obj->name;
+		}
 
-	$q="DELETE FROM Tables WHERE id='".$tableid."'";
-	askdb($q);
+		$q="DROP TABLE `".$name."`";
+		askdb($q);
+
+		$q="DELETE FROM Tables WHERE id='".$tableid."'";
+		askdb($q);
 	
-	$q="DELETE FROM TableGroups WHERE tableid=".$tableid;
-	askdb($q);
+		$q="DELETE FROM TableGroups WHERE tableid=".$tableid;
+		askdb($q);
 
-	$q="DELETE FROM EventTables WHERE tableid=".$tableid;
-	askdb($q);
+		$q="DELETE FROM EventTables WHERE tableid=".$tableid;
+		askdb($q);
 	
-	$q="DELETE FROM groupConnect WHERE tableid=".$tableid;
-	askdb($q);
+		$q="DELETE FROM groupConnect WHERE tableid=".$tableid;
+		askdb($q);
 
-	$q="DELETE FROM histograms WHERE id=".$histid;
-	askdb($q);
+		$q="DELETE FROM histograms WHERE id=".$histid;
+		askdb($q);
 }
 
 
@@ -469,24 +458,6 @@ function DeleteMClassEvent($MClassid){
 	askdb($q);
 	$q="DELETE FROM EventTables WHERE MclassEventID=".$MClassid;
 	askdb($q);
-}
-
-
-/* As of Oct2018, this function appears to be used nowhere */
-/* This function returns Tables.name; be aware that this value will
-	 include the location prefix used for Location tables. */
-function GetAllTables(){
-	$q="SELECT * FROM Tables";
-	$res=askdb($q);
-	while($obj = $res->fetch_object()){ 
-		$temp["hist"]=$obj->histogram_id;
-		$temp["name"]=$obj->name;
-		$temp["active"]=$obj->active;
-		$result[]=$temp;
-	}
-	if(isset($result)){
-		return $result;
-	}
 }
 
 
