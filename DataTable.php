@@ -24,7 +24,7 @@ print_r('<br/>');
 print_r('<br/>');
 */
 
-/* We'll need a Location table "database" and a datagroup_id "groupNo" set
+/* We'll need a Location table "database" and a dataset "groupNo" set
  * to the SESSION.  If they aren't, redirect to index.php where these are
  * selected. */
 if(!isset($_SESSION["database"]) || !isset($_SESSION["groupNo"])){
@@ -52,7 +52,6 @@ if(isset($_POST["fin"]) && $_POST["CustomEvent"]!=""){
 	$ds_no = (string) $_POST["CustomEvent"];
 	$ds_no = str_pad($ds_no, 3, "0", STR_PAD_LEFT);
 	$ds = (string) $_SESSION["groupNo"];
-	//$unique_id = $ds."-".$ds_no;
 	$ds_index = $ds."-".$ds_no;
 	$unique_id = indexToId($ds_index);
 
@@ -73,12 +72,9 @@ if(isset($_POST["fedit"])&&$_POST["fedit"]!=""){
 	unset($_SESSION["edit"]);
 }
 
-/* $_SESSION["groupNo"] is the datagroup_id
- * $_SESSION["database"] is the Location table
- * GetEvents() returns Location.event_id, Location.checked, Events.mass
- * Note that this is the "canonical" mass from CMS, not the user-entered mass.
+/* $_SESSION["groupNo"] is the dataset.
+ * $_SESSION["database"] is the Location table.
  */
-//$arr=GetEvents($_SESSION["groupNo"],$_SESSION["database"]);
 $arr=getEventsTableRows($_SESSION["groupNo"],$_SESSION["database"]);
 
 /* getUncompletedEventsIds() returns unique id's for events in the given
@@ -123,15 +119,10 @@ if(isset($_POST["CustomEvent"]) && isset($_SESSION["current"]) && $_SESSION["cur
 }
 
 
-/* A function to construct "<datagroup_id>-<datagroup_index>" for display in
-	 the Event Table.  I think I wrote this when I was less familiar with the
-	 databases.  This can be replaced by data pulled from the Events table. */
-function calcEv($id){
-	return $_SESSION["groupNo"].'-'.($id-(100*($_SESSION["groupNo"]-1)));
-}
-
-/* A function to convert 'final_state' values as stored in Location tables and
-	 originating as 'value' attributes in templates/table.tpl in HTML for display. */
+/* A function to convert 'final_state' values as stored in Location tables
+ * and originating as 'value' attributes in templates/table.tpl in HTML for
+ * display.
+ */
 function htmlFilter($value) {
 	$map = array(
 		"e_nu" => "e&nu;",
