@@ -68,10 +68,12 @@ if(!isset($_SESSION["comb"])){
 		/* For automatic histogram construction: */
 		$datax=GenerateHistogramData($_SESSION["database"]);
 
+		/*
 		print_r('<br>');
-		//print_r($datax);
+		print_r($datax);
 		print_r($datax['data_2l']);
 		print_r('<br>');
+		*/
 
 		// Set the given data to the Session:
 		$_SESSION["currentHist"]=$datax;
