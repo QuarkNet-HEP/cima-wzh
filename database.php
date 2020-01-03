@@ -846,18 +846,7 @@ function GenerateHistogramData($location){
 	$twoLeptonList = ["2e", "mu_mu"];
 	$fourLeptonList = ["4e", "4mu", "2e_2mu"];
 
-	# TODO: find a better way to configure these than hard-coding
-	# NB These values are also hard-coded in the MakeHist() calls in hist.php
-	# histogram parameters:
-	/*
-	$x_min_2l = 1;
-	$x_max_2l = 111;
-	$x_min_4l = 81;
-	$x_max_4l = 400;
-	$bin_2l = 2;
-	$bin_4l = 3;
-	*/
-
+	/* This is to resolve the hard-coding issue: */
 	$params = getHistogramParams();
 
 	$x_min_2l = $params['x_min_2l'];
@@ -873,37 +862,37 @@ function GenerateHistogramData($location){
 	# Create arrays to hold data for each chart
 	# Initialized to all zeroes
 	$data_2l = array();
-	for($i = 0;$i < $numBins_2l;$i++) {
+	for($i=0; $i<$numBins_2l; $i++) {
     $data_2l[$i] = 0;
 	}
 	$data_4l = array();
-	for($i = 0;$i < $numBins_4l;$i++) {
+	for($i=0; $i<$numBins_4l; $i++) {
     $data_4l[$i] = 0;
 	}
 
 	/* Get masses for this location */
 	$q="SELECT final_state, mass FROM `".$location."` WHERE mass IS NOT NULL";
 	$result=askdb($q);
-	if($obj = $result->fetch_assoc()){
-		while($row = $result->fetch_array()){
-			$final = $row['final_state'];
-			$mass = $row['mass'];
 
-			/* Calculate the bin number */
-			if ( in_array($final, ["2e", "mu_mu"]) ) {
-				# Find the bin the mass belongs in
-				# bin counting is *zero-indexed*
-				$binNo = floor( ($mass - $x_min_2l)/$bin_2l );
-				# The bin might be outside of the bounds we've set for the chart
-				if ( ($binNo >= 0) and ($binNo < $numBins_2l) ) {
-					 $data_2l[$binNo]++;
-				}
-			} elseif ( in_array($final, ["4e", "4mu", "2e_2mu"]) ) {
-				#$chart="data_4l";
-				$binNo = floor( ($mass - $x_min_4l)/$bin_4l );
-				if ( ($binNo >= 0) and ($binNo < $numBins_4l) ) {
-					 $data_4l[$binNo]++;
-				}
+	while($row = $result->fetch_array()){
+		$final = $row['final_state'];
+		$mass = $row['mass'];
+
+		/* Calculate the bin number */
+		if ( in_array($final, $twoLeptonList) ) {
+			# Find the bin the mass belongs in
+			# bin counting is *zero-indexed*
+			$binNo = floor( ($mass - $x_min_2l)/$bin_2l );
+			# The bin might be outside of the bounds we've set for the chart
+			if ( ($binNo >= 0) and ($binNo < $numBins_2l) ) {
+				/* Add to the bin */
+				$data_2l[$binNo]++;
+			}
+		} elseif ( in_array($final, $fourLeptonList) ) {
+			$binNo = floor( ($mass - $x_min_4l)/$bin_4l );
+			if ( ($binNo >= 0) and ($binNo < $numBins_4l) ) {
+				/* Add to the bin */
+				$data_4l[$binNo]++;
 			}
 		}
 	}
