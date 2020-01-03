@@ -823,6 +823,20 @@ function UpdateHistogram($chart,$data,$id){
 }
 
 
+function getHistogramParams() {
+
+	$params = array();
+	$params['x_min_2l'] = 1;
+	$params['x_max_2l'] = 111;
+	$params['x_min_4l'] = 81;
+	$params['x_max_4l'] = 400;
+	$params['bin_2l'] = 2;
+	$params['bin_4l'] = 3;
+
+	return $params;
+}
+
+
 /* Pulls mass data entered by a Location on the DataTable.php page, generates a
  * semicolon-separated string of histogram data for each chart, and stores this
  * generated data to the DB.
@@ -835,13 +849,23 @@ function GenerateHistogramData($location){
 	# TODO: find a better way to configure these than hard-coding
 	# NB These values are also hard-coded in the MakeHist() calls in hist.php
 	# histogram parameters:
+	/*
 	$x_min_2l = 1;
 	$x_max_2l = 111;
 	$x_min_4l = 81;
-	#$x_max_4l = 211;
 	$x_max_4l = 400;
 	$bin_2l = 2;
 	$bin_4l = 3;
+	*/
+
+	$params = getHistogramParams();
+
+	$x_min_2l = $params['x_min_2l'];
+	$x_max_2l = $params['x_max_2l'];
+	$x_min_4l = $params['x_min_4l'];
+	$x_max_4l = $params['x_max_4l'];
+	$bin_2l = $params['bin_2l'];
+	$bin_4l = $params['bin_4l'];
 
 	$numBins_2l = ceil( ($x_max_2l - $x_min_2l)/$bin_2l );
 	$numBins_4l = ceil( ($x_max_4l - $x_min_4l)/$bin_4l );
@@ -867,7 +891,6 @@ function GenerateHistogramData($location){
 
 			/* Calculate the bin number */
 			if ( in_array($final, ["2e", "mu_mu"]) ) {
-				#$chart="data_2l";
 				# Find the bin the mass belongs in
 				# bin counting is *zero-indexed*
 				$binNo = floor( ($mass - $x_min_2l)/$bin_2l );
@@ -909,16 +932,44 @@ function GenerateHistogramData($location){
 }
 
 
-function GetTestData(){
-	$data_2l = "0;0;0;1;1;2;1;3;2;1;3;5;9;12;7;4;1;3;0;2;1;0;2;3;1;0;1;0;0;0;0;0;0;0;1;2;0;3;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0";
+/* Return meaningless data constructed to fill histogram bins for testing */
+function GetTestData($bins_2l, $bins_4l){
 
-	$data_4l = "0;0;0;0;0;0;0;0;0;0;0;1;0;0;2;1;1;1;4;2;3;5;9;11;10;6;3;4;3;2;2;1;0;1;0;2;0;1;0;1;2;4;2;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0";
+	/* We'll construct test data by repeating these seed strings until the
+	 * bins are filled.  Each has 6 bins. */
+	$seed_2l = "1;5;7;0;2;4";
+	$seed_4l = "2;2;10;0;3;8";
+
+	$seed_array_2l = explode(';', $seed_2l);
+	$seed_array_4l = explode(';', $seed_4l);
+
+	$fullReps_2l = intdiv($bins_2l, count($seed_2l));
+	$extra_2l = $bins_2l % count($seed_2l);
+	
+	$fullReps_4l = intdiv($bins_4l, count($seed_4l));
+	$extra_4l = $bins_4l % count($seed_4l);
+
+	/* Construct the data strings */
+	$data_2l = "";
+	for($i=0; $i<$fullReps_2l; $i++) {
+		$data_2l = $data_2l.";".$seed_2l;
+	}
+	for($i=0; $i<$extra_2l; $i++) {
+		$data_2l = $data_2l.";".$seed_array_2l[$i];
+	}
+	
+	$data_4l = "";
+	for($i=0; $i<$fullReps_4l; $i++) {
+		$data_4l = $data_4l.";".$seed_4l;
+	}
+	for($i=0; $i<$extra_4l; $i++) {
+		$data_4l = $data_4l.";".$seed_array_4l[$i];
+	}
 
 	$dataList = ["data_2l" => $data_2l,
 							 "data_4l" => $data_4l];
 
 	return $dataList;
-
 }
 
 
