@@ -41,6 +41,34 @@ function indexToId($index) {
 }
 
 
+
+/* Returns the dataset (i.e. 10.6 or 50.7) for a given unique $id */
+function idToDataset($id) {
+
+	// Convert to string
+	$num = (string) $id;
+	$eventNo = substr($num,-3);
+	// Trim leading zeroes
+	$eventNo = ltrim($eventNo, '0');
+
+	$base = substr($num,0,-3);
+
+	$q="SELECT dataset FROM Datasets WHERE id='".$base."'";
+	$res=askdb($q);
+
+	if($obj=$res->fetch_object()){
+		$ds=$obj->dataset;
+	}else{
+		$ds="0";
+	}
+
+	//$index = $ds."-".$eventNo;
+
+	return $ds;
+}
+
+
+/* TODO: make this use idToIndex() */
 /* Returns the full dataset index (i.e. 10.6-3 or 50.7-45) for a given
  * unique $id */
 function idToIndex($id) {
@@ -291,19 +319,23 @@ function GetEventTableRows($datagroup,$location){
  *	 			 $location is a Location table in the Masterclass database.
  */
 /* Used only in DataTable.php. */ 
-function getEventsTableRows($datagroup,$location) {
+function getEventsTableRows($dataset,$location) {
 
 		$q="SELECT event_id, final_state, primary_state, mass FROM `".$location."` ORDER BY event_id";
 		$res=askdb($q);
 
 		$result=array();
 		while($obj=$res->fetch_object()){
-				$temp["event_id"] = $obj->event_id;
-				$temp["dg_label"] = idToIndex($obj->event_id);
-				$temp["final"] = $obj->final_state;
-				$temp["primary"] = $obj->primary_state;
-				$temp["mass"] = $obj->mass;
-				$result[] = $temp;
+				$ds = idToDataset($obj->event_id);
+				if ($dataset == $ds) {
+					 $temp["event_id"] = $obj->event_id;
+					 $temp["dg_label"] = idToIndex($obj->event_id);
+					 //$temp["dataset"] = idToDataset($obj->event_id);
+					 $temp["final"] = $obj->final_state;
+					 $temp["primary"] = $obj->primary_state;
+					 $temp["mass"] = $obj->mass;
+					 $result[] = $temp;
+				}
 		}
 		if(isset($result)){
 				return $result;
