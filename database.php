@@ -384,6 +384,21 @@ function GetNext($finEvents,$dg_id){
 }
 
 
+/* New version of GetEvent() created for dataset indexing.
+ * - JG 27Nov2019 */
+/* Used only in DataTable.php */
+function getParticularEvent($dataset, $datasetNumber) {
+
+	// Form the dataset index as a string
+	$datasetIndex = $dataset."-".((string) $datasetNumber);
+
+	// Convert to unique id
+	$eventId = indexToId($datasetIndex);
+
+	return $eventId;
+}
+
+
 /* New, more readable version of GetNext() created for dataset indexing
  * - JG 27Nov2019 */
 function getNextUncompletedEvent($tabData,$dataset) {
