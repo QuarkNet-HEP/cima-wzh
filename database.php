@@ -101,6 +101,7 @@ function idToDsNumber($id) {
 
 	// Convert to string
 	$num = (string) $id;
+	// Take the last three digits
 	$eventNo = substr($num,-3);
 	// Trim leading zeroes
 	$eventNo = ltrim($eventNo, '0');
