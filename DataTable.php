@@ -111,11 +111,12 @@ print_r($_POST["fin"]);
 */
 if(isset($_POST["CustomEvent"]) && isset($_SESSION["current"]) && $_SESSION["current"]["id"]!=$_POST["CustomEvent"] && !isset($_POST["fin"])){
 	//print_r("Accessing GetEvent");
-	$event=GetEvent($_POST["CustomEvent"]);
+	//$event=GetEvent($_POST["CustomEvent"]);
+	$event = getParticularEvent($_SESSION["groupNo"],$_POST["CustomEvent"]);
 }else{
 	//print_r("Accessing GetNext");
 	//$event=GetNext($arr,$_SESSION["groupNo"]);
-	$event=getNextUncompletedEvent($arr,$_SESSION["groupNo"]);
+	$event = getNextUncompletedEvent($arr,$_SESSION["groupNo"]);
 }
 
 
