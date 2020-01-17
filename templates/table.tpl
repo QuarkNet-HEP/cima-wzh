@@ -70,17 +70,10 @@
 		 			<option id="SelEvent" selected>
 						<?php
 							if(isset($event)){
-								//echo $event['id']."";
 								echo idToDsNumber($event)."";
 							}
 							echo ' </option>';
 							if(isset($event)){
-								//for($i=0; $i<count($freeEvents); $i++){
-									//if($freeEvents[$i]!=$event['id']){
-									//if ($freeEvents[$i] != $event) {
-									//	echo '<option> '.idToDsNumber($freeEvents[$i]).'</option>';
-									//}
-								//}
 								foreach($freeEvents as $freeEvent){
 									if ($freeEvent != $event) {
 										echo '<option> '.idToDsNumber($freeEvent).'</option>';
