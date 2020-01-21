@@ -116,14 +116,14 @@ if(!isset($_SESSION["comb"])){
 	//$g = GetGroups($_SESSION["tables"]);
 	$g = getDatasetsByTable($_SESSION["tables"]);
 
-	/* The starting value of rows is the "dg_id" of the first entry in $g */
-	$start = $g[0]["dg_id"];
+	/* The starting value of rows is the "ds_id" of the first entry in $g */
+	$start = $g[0]["ds_id"];
 
 	$numGroups=count($g);
 
 	for($i=0; $i<$numGroups; $i++){
-		// $row is the datagroup_id, not the index of the row in the table
-		$row=$g[$i]["dg_id"];
+		// $row is the dataset_id, not the index of the row in the table
+		$row=$g[$i]["ds_id"];
 		foreach($tableLabels as $column){
 			// $tableLabels = ["e", "mu", "wplus", ...]
 			$tableCells[$row][$column]=0;
