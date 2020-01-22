@@ -879,7 +879,7 @@ function getHistogramParams() {
 	$params['x_min_4l'] = 81;
 	$params['x_max_4l'] = 400;
 	$params['bin_2l'] = 2;
-	$params['bin_4l'] = 3;
+	$params['bin_4l'] = 6;
 
 	return $params;
 }
