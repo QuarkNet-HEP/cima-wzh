@@ -1,20 +1,19 @@
 <?php
 include "database.php";
 
-
 $tables=explode(",",$_POST["tables"]);
 //$groups=GetGroups($tables);
 $groups = getDatasetsByTable($tables);
 
 if($_POST["source"]=="index"){
 		echo '<div class=row align="center">
-				 		<strong>Choose your group</strong>
+				 		<strong>Choose your data file</strong>
 					</div>';
 }
 
 for($i=0;$i<count($groups);$i++){
 		if($_POST["source"]=="Backend"){
-		
+
 				echo '<option>'.$groups[$i]["ds_id"].'</option>';
 
 		} elseif($_POST["source"]=="index") {
