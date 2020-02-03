@@ -14,10 +14,16 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav" style="width: 95%;">
-         <?php echo '<li '; if($script==0){ echo 'class="active"';} echo "><a href='DataTable.php'>Events Table (Group ".$_SESSION["groupNo"].")</a></li>";?>
-         <?php echo '<li '; if($script==1){ echo 'class="active"';} echo "><a href='hist.php'>Mass Histogram (".$_SESSION["displayLocation"].")</a></li>";?>
-         <?php echo '<li '; if($script==2){ echo 'class="active"';} echo "><a href='results.php'>Results (".$_SESSION["displayLocation"].")</a></li>";?>
-	<li style="float: right !important; align : right;"> <a href="https://www.i2u2.org/elab/cms/ispy-webgl/" target="_blank"><span class="glyphicon glyphicon-share-alt"></span> Event Display</a> </li>
+        <?php echo '<li '; if($script==0){ echo 'class="active"';} echo "><a href='DataTable.php'>Events Table (Group ".$_SESSION["groupNo"].")</a></li>";?>
+        <?php echo '<li '; if($script==1){ echo 'class="active"';} echo "><a href='hist.php'>Mass Histogram (".$_SESSION["displayLocation"].")</a></li>";?>
+        <?php echo '<li '; if($script==2){ echo 'class="active"';} echo "><a href='results.php'>Results (".$_SESSION["displayLocation"].")</a></li>";?>
+
+				<li style="float: right !important; align : right;">
+				 	<a href="<?= getISpyUrl() ?>" target="_blank">
+						<span class="glyphicon glyphicon-share-alt"></span>
+							Event Display
+					</a>
+				</li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
