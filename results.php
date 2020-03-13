@@ -22,20 +22,6 @@ include 'database.php';
 include 'templates/header.tpl';
 
 /* Keys are *code* labels for the table columns.  Values are actual HTML labels */
-/*
-$tableColumns = array("datagroup" => "Group",
-	"e" => "e",
-	"mu" => "&mu;",
-	"wplus" => "W+",
-	"wminus" => "W-",
-	"wplain" => "W",
-	"zed" => "Z",
-	"twogam" => "2&gamma;",
-	"zoo" => "Zoo",
-	"higgs" => "H",
-	"total" => "Total"
-	);
-*/
 /* For CIMA-WZH: */
 $tableColumns = array("datagroup" => "Group",
 	"e" => "e",
@@ -51,13 +37,6 @@ $tableColumns = array("datagroup" => "Group",
 $tableLabels = array_keys($tableColumns);
 $tableHeaders = array_values($tableColumns);
 
-/*
-$ratioColumns = array(
-	"e-mu" => "e/&mu;",
-	"Wp-Wm" => "W+/W-",
-	"W-Z" => "W/Z"
-	);
-*/
 /* For CIMA-WZH: */
 $ratioColumns = array(
 	"e-mu" => "e/&mu;",
@@ -212,47 +191,10 @@ if(isset($_SESSION["tables"])){
 						//$eCount+=2;
 						//$muCount+=2;
 						break;
-			 		/*case "2gam":
-			 			$tableCells[$i]["twogam"]++;
-						break;
-					case "Zoo":
-			 			$tableCells[$i]["zoo"]++;
-						break;*/
 				}
 
 				// Tally the "primary" states
 				$primary=htmlentities($event["primary"]);
-				/*
-				switch ($primary) {
-			 		case "W":
-			 			$tableCells[$i]["wplain"]++;
-						$WCount+=1;
-						break;
-			 		case "W+":
-			 			$tableCells[$i]["wplus"]++;
-						$WCount+=1;
-						$WplusCount+=1;
-						break;
-			 		case "W-":
-			 			$tableCells[$i]["wminus"]++;
-						$WCount+=1;
-						$WminusCount+=1;
-						break;
-			 		case "Z":
-			 			$tableCells[$i]["zed"]++;
-						$ZCount+=1;
-						break;
-			 		case "H":
-			 			$tableCells[$i]["higgs"]++;
-						break;
-			 		//case "NP":
-			 		//	$tableCells[$i]["np"]++;
-					//	break;
-			 		case "Zoo":
-			 			$tableCells[$i]["zoo"]++;
-						break;
-				}
-				*/
 				/* For CIMA-WZH: */
 				switch ($primary) {
 			 		//case "charged":
@@ -358,39 +300,6 @@ if(isset($_SESSION["tables"])){
 
 			// Tally the "primary" states
 			$primary=htmlentities($event["primary"]);
-			/*
-			switch ($primary) {
-		 		case "W":
-		 			$tableCells[$i]["wplain"]++;
-					$WCount+=1;
-					break;
-		 		case "W+":
-		 			$tableCells[$i]["wplain"]++;
-		 			$tableCells[$i]["wplus"]++;
-					$WCount+=1;
-					$WplusCount+=1;
-					break;
-		 		case "W-":
-		 			$tableCells[$i]["wplain"]++;
-		 			$tableCells[$i]["wminus"]++;
-					$WCount+=1;
-					$WminusCount+=1;
-					break;
-		 		case "Z":
-		 			$tableCells[$i]["zed"]++;
-					$ZCount+=1;
-					break;
-		 		case "H":
-		 			$tableCells[$i]["higgs"]++;
-					break;
-		 		//case "NP":
-		 		//	$tableCells[$i]["np"]++;
-				//	break;
-		 		case "Zoo":
-		 			$tableCells[$i]["zoo"]++;
-					break;
-			}
-			*/
 			/* For CIMA-WZH: */
 			switch ($primary) {
 				//case "charged":
