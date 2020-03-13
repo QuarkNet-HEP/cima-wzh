@@ -66,8 +66,14 @@ if(!isset($_SESSION["comb"])){
 	//$datagroups = GetDatagroupsById($_SESSION["databaseId"]);
 	$datagroups = getDatasetsForLocation($_SESSION["databaseId"]);
 	if(!isset($datagroups)){
-		echo "ERROR: No datasets found for location ".$_SESSION["databaseId"];
+		$err_msg = "ERROR: No datasets found for location ".$_SESSION["databaseId"];
+		print_r('<br/>');
+		print_r($err_msg);
+		print_r('<br/>');
 	}
+	print_r('<br/>');
+	print_r($datagroups);
+	print_r('<br/>');
 
 	/* TODO: If there are no assigned datagroups, $tableCells may be undefined.
 	 * We don't expect this in practice. */
