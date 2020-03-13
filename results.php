@@ -80,6 +80,13 @@ if(!isset($_SESSION["comb"])){
 	foreach($datagroups as $row){
 		// For each row, initialize all values to zero:
 		foreach($tableLabels as $column){
+			print_r('<br/>');
+			print_r("row: ");
+			print_r($row);
+			print_r('<br/>');
+			print_r("column: ");
+			print_r($column);
+			print_r('<br/>');
 			$tableCells[$row][$column]=0;
 		}
 		/* We can go ahead and set the $tableCells[N]["datagroup"] values.
