@@ -23,17 +23,17 @@ include 'templates/header.tpl';
 
 /* Keys are *code* labels for the table columns.  Values are actual HTML labels */
 /* For CIMA-WZH: */
-$tableColumns = array("datagroup" => "Group",
-	"e" => "e",
-	"mu" => "&mu;",
-	//"charged" => "Charged",
-	"wplus" => "W+",
-	"wminus" => "W-",
-	"wpm" => "W&#177;",
-	"neutral" => "Neutral",
-	"zoo" => "Zoo",
-	"total" => "Total"
-	);
+$tableColumns = array(
+	"datagroup" => "Group",
+	"e" 				=> "e",
+	"mu" 				=> "&mu;",
+	"wplus" 		=> "W+",
+	"wminus" 		=> "W-",
+	"wpm" 			=> "W&#177;",
+	"neutral" 	=> "Neutral",
+	"zoo" 			=> "Zoo",
+	"total" 		=> "Total"
+);
 $tableLabels = array_keys($tableColumns);
 $tableHeaders = array_values($tableColumns);
 
@@ -41,7 +41,7 @@ $tableHeaders = array_values($tableColumns);
 $ratioColumns = array(
 	"e-mu" => "e/&mu;",
 	"Wp-Wm" => "W+/W-"
-	);
+);
 $ratioHeaders = array_values($ratioColumns);
 
 /* Define table array $tableCells[][] */
@@ -65,6 +65,9 @@ if(!isset($_SESSION["comb"])){
 		 to the location */
 	//$datagroups = GetDatagroupsById($_SESSION["databaseId"]);
 	$datagroups = getDatasetsForLocation($_SESSION["databaseId"]);
+	if(!isset($datagroups)){
+		echo "ERROR: No datasets found for location ".$_SESSION["databaseId"];
+	}
 
 	/* TODO: If there are no assigned datagroups, $tableCells may be undefined.
 	 * We don't expect this in practice. */
