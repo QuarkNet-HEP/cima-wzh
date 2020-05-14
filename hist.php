@@ -80,7 +80,7 @@ if(!isset($_SESSION["comb"])){
 
 		include 'templates/hist.tpl';
 
-}else{
+} else {
 		/* If "comb" *is* set: */
 		include 'templates/Resnav.tpl';
 		include 'templates/histBackend.tpl';
@@ -135,16 +135,14 @@ echo '<script> MakeHist("'.$datax["data_2l"].'",2,"chart1"); </script>';
 echo '<script> MakeHist("'.$datax["data_4l"].'",2,"chart2"); </script>';
 */
 
-# NB Chart boundaries are also hard-coded in the GenerateHistogramData()
-#   function of database.php
-/* An attempt to remove the duplicate hard-coding: */
+/* Get the histogram binning parameters */
 $params = getHistogramParams();
 
 echo '<script>
-MakeHist("'.$datax["data_2l"].'",'.$params["x_min_2l"].','.$params["x_max_2l"].','.$params["bin_2l"].',"chart1"); </script>';
+MakeHist("'.$datax["data_2l"].'",'.$params["x_min_2l"].','.$params["x_max_2l"].','.$params["bin_2l"].','.$params["numBins_2l"].',"chart1"); </script>';
 
 echo '<script>
-MakeHist("'.$datax["data_4l"].'",'.$params["x_min_4l"].','.$params["x_max_4l"].','.$params["bin_4l"].',"chart2"); </script>';
+MakeHist("'.$datax["data_4l"].'",'.$params["x_min_4l"].','.$params["x_max_4l"].','.$params["bin_4l"].','.$params["numBins_2l"].',"chart2"); </script>';
 
 include 'templates/floor.tpl';
 ?>

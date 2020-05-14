@@ -5,7 +5,7 @@ let suggestedMax = 5;
 
 //debugger;
 
-function MakeHist(dataString, xmin, xmax, ybin, chartId){
+function MakeHist(dataString, xmin, xmax, ybin, numbins, chartId){
 	/* Updates 3Oct2018
 	 * 'ybin' is the size in GeV of the individual bins.
 	 *   Shouldn't that be 'xbin'?  We're binning the x-axis.
@@ -17,20 +17,26 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 	 * 2- and 4- lepton plots need different axis parameters, so have to lose the
 	 * hard-coded 68 and pass parameters in as arguments
 	 */
-	numbins = Math.ceil((xmax-xmin)/ybin);
-	var x=new Array(numbins);
-	var y=dataString.split(";");
+	//numbins = Math.ceil((xmax-xmin)/ybin);
+	/* 'x[]' will be the array of tick mark labels (in GeV) on the x-axis.
+	 * By default, the tick marks are centered on the bins rather than on the
+	 * divisions.
+	 * TODO: Upgrade Chart.js to where we can put labels on divisions.
+	 * When that's done, there should be one more label than numbins, since the  
+	 * right edge needs a label, too. */
+	var x = new Array(numbins);
+	var y = dataString.split(";");
 	/* Find the greatest data value in order to set the height of the y-axis.
 	 * '...' is the "spread operator" */
 	let maxY = Math.max(...y);
 	/* Establish the maximum value of the chart y-axis: */
 	var ymax = Math.max(maxY, suggestedMax);
 
-	// Fill the bin index array in steps of 'ybin'
-	var c=xmin;
-	for(var i=0;i<numbins;i++){
-		x[i]=c;
-		c+=ybin;
+	/* Fill the bin index array in steps of 'ybin'. */
+	var c = xmin;
+	for(var i=0; i<numbins; i++){
+		x[i] = c;
+		c += ybin;
 	}
 
 	var chartData = {
@@ -97,16 +103,15 @@ function MakeHist(dataString, xmin, xmax, ybin, chartId){
 }
 
 
-///function uhist(datax){
-function uhist(datax,chartId){
+function uhist(datax, chartId){
 
 		// Global 'chartList[]' defined in MakeHist()
 		let myBarChart = chartList[chartId];
-		let y=datax.split(";");
+		let y = datax.split(";");
 		console.log(y);
 
 		// Update the histogram bins; global 'numbins' defined in MakeHist()
-		for(let i=0;i<numbins;i++){
+		for(let i=0; i<numbins; i++){
 				myBarChart.datasets[0].bars[i].value=y[i];
 		}
 
@@ -127,8 +132,8 @@ function uhist(datax,chartId){
 
 
 function update_auto(evt){
-		// evt.target.id is the 'id' attribute of the clicked canvas,
-		//   'chart1' or 'chart2'
+		/* evt.target.id is the 'id' attribute of the clicked canvas,
+		 * 'chart1' or 'chart2' */
 		let chartId = evt.target.id;
 
 		// Get the Chart object from the global 'chartList[]' defined in MakeHist()
@@ -148,12 +153,12 @@ function update_auto(evt){
 }
 
 
-// This used to be called update() and is used when we want to update the
-// histogram bar-by-bar on user clicks.
+/* This used to be called update() and is used when we want to update the
+ * histogram bar-by-bar on user clicks. */
 function update_manual(evt){
-		// Start by getting chart data we'll need:
-		// evt.target.id is the 'id' attribute of the clicked canvas,
-		//   'chart1' or 'chart2'
+		/* Start by getting chart data we'll need:
+		 * evt.target.id is the 'id' attribute of the clicked canvas,
+		 *   'chart1' or 'chart2' */
 		let chartId = evt.target.id;
 
 		// Get the Chart object from the global 'chartList[]' defined in MakeHist()
@@ -196,7 +201,6 @@ function update_manual(evt){
 				},
 				success: function( data ) {
 						uhist(data,chartId);
-						///uhist(data);
 				}
 		});
 }

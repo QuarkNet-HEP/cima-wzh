@@ -873,13 +873,34 @@ function UpdateHistogram($chart,$data,$id){
 
 function getHistogramParams() {
 
+	/* This should be the only place these values are hardcoded.
+	 * TODO: Have these entered through the Admin panel into the DB */
+	$x_min_2l = 1;
+	$x_max_2l = 111;
+	$bin_2l = 2;
+
+	$x_min_4l = 81;
+	$x_max_4l = 400;
+	$bin_4l = 6;
+
+	/* In case (max-min)/(bin size) doesn't give an integer number of bins
+	 * naturally, use ceil() to round up.
+	 * This means the upper bin limit isn't necessarily fixed to x_max,
+	 * so avoid measuring anything against x_max */
+	$numBins_2l = ceil( ($x_max_2l - $x_min_2l)/$bin_2l );
+	$numBins_4l = ceil( ($x_max_4l - $x_min_4l)/$bin_4l );
+
+	/* Define the params[] return array from these values */
 	$params = array();
-	$params['x_min_2l'] = 1;
-	$params['x_max_2l'] = 111;
-	$params['x_min_4l'] = 81;
-	$params['x_max_4l'] = 400;
-	$params['bin_2l'] = 2;
-	$params['bin_4l'] = 6;
+	$params['x_min_2l'] = $x_min_2l;
+	$params['x_max_2l'] = $x_max_2l;
+	$params['bin_2l'] = $bin_2l;
+	$params['numBins_2l'] = $numBins_2l;
+
+	$params['x_min_4l'] = $x_min_4l;
+	$params['x_max_4l'] = $x_max_4l;
+	$params['bin_4l'] = $bin_4l;
+	$params['numBins_4l'] = $numBins_4l;
 
 	return $params;
 }
@@ -891,21 +912,21 @@ function getHistogramParams() {
  */
 function GenerateHistogramData($location){
 
+	/* These need to match the 'final_state' entries in the DB Location tables */
 	$twoLeptonList = ["2e", "mu_mu"];
 	$fourLeptonList = ["4e", "4mu", "2e_2mu"];
 
-	/* This is to resolve the hard-coding issue: */
 	$params = getHistogramParams();
 
 	$x_min_2l = $params['x_min_2l'];
 	$x_max_2l = $params['x_max_2l'];
+	$bin_2l = $params['bin_2l'];
+	$numBins_2l = $params['numBins_2l'];
+
 	$x_min_4l = $params['x_min_4l'];
 	$x_max_4l = $params['x_max_4l'];
-	$bin_2l = $params['bin_2l'];
 	$bin_4l = $params['bin_4l'];
-
-	$numBins_2l = ceil( ($x_max_2l - $x_min_2l)/$bin_2l );
-	$numBins_4l = ceil( ($x_max_4l - $x_min_4l)/$bin_4l );
+	$numBins_4l = $params['numBins_4l'];
 
 	# Create arrays to hold data for each chart
 	# Initialized to all zeroes
@@ -943,6 +964,7 @@ function GenerateHistogramData($location){
 				$data_4l[$binNo]++;
 			}
 		}
+
 	}
 
 	/* Create semicolon-separated strings out of the data */
