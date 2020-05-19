@@ -2,8 +2,11 @@
 include "database.php";
 
 
+/* This file is the target of AJAX calls in the js/fcns.js functions `EvSel()`
+ * and `GetTables()`.  The calls POST Masterclass Events as a comma-separated
+ * list "MCE" */
 $MCEvts=explode(",",$_POST["MCE"]);
-for($i=0;$i<count($MCEvts);$i++){
+for($i=0; $i<count($MCEvts); $i++){
 	/* 'notA' means "not assigned in AA.tpl" */
 	if($MCEvts[$i]=="notA"){
 		$tables=GetIndTables();
