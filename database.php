@@ -11,6 +11,9 @@ function askdb($q){
 	if (mysqli_connect_errno($con)){
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
+
+	/* $res is FALSE on query failure and TRUE or a `mysqli_result` object
+	 * on success, depending on the type of query */
 	$res=$con->query($q);
 	return $res;
 }
@@ -153,30 +156,31 @@ function GetFreeEvents($datagroup,$location){
  * contained in the given Location $location */
 function getUncompletedEventsIds($dataset,$location){
 
-	/* Get an array of all possible unique id values for this dataset */
-	$allEventsIds = getEventsIdsForDataset($dataset);
+		/* Get an array of all possible unique id values for this dataset */
+		$allEventsIds = getEventsIdsForDataset($dataset);
 
-	/* Initialize an empty array for completedEvents.  This is important
-	 * so that if the DB query returns nothing (no completed events have been
-	 * recorded to the Location table yet), there's still an array to diff. */
-	$completedEventsIds=array();
+		/* Initialize an empty array for completedEvents.  This is important
+	 	 * so that if the DB query returns nothing (no completed events have been
+	 	 * recorded to the Location table yet), there's still an array to diff. */
+		$completedEventsIds=array();
 
-	/* Now find what unique id's are stored in the given Location table.
-	 * We're storing these in the `event_id` column now, which means that those
-	 * values will no longer line up with Events.event_id.
-	 */
-	$q="SELECT event_id FROM `".$location."`";
-	$res=askdb($q);
-	while($obj=$res->fetch_object()){
-		$completedEventsIds[]=$obj->event_id;
-	}
+		/* Now find what unique id's are stored in the given Location table.
+	 	 * We're storing these in the `event_id` column now, which means that those
+	 	 * values will no longer line up with Events.event_id.
+	 	 */
+		$q="SELECT event_id FROM `".$location."`";
 
-	// Set-wise subtract completedEvents from allEvents:
-	$uncompletedEventsIds = array_diff($allEventsIds, $completedEventsIds);
+		if( $res=askdb($q) ) {
+				while( $obj=$res->fetch_object() ){
+						$completedEventsIds[]=$obj->event_id;
+				}
+		}
 
-	if(isset($uncompletedEventsIds)){
+		// Set-wise subtract completedEvents from allEvents:
+		$uncompletedEventsIds = array_diff($allEventsIds, $completedEventsIds);
+
 		return $uncompletedEventsIds;
-	}
+
 }
 
 
@@ -232,22 +236,22 @@ function RemoveTablesFromEvent($tables,$eventID){
 function GetAllEvents($location){
 
 		$q="SELECT * FROM `".$location."`";
-		$res=askdb($q);
 
-		while($obj=$res->fetch_object()){
-				$temp["id"]=$obj->event_id;
-				$temp["checked"]=$obj->checked;
-				/* Before the Oct2018 upgrade, Location tables had only 'event_id'
-			 	 * (as 'o_no') and 'checked' columns.  The following were added as
-			 	 * part of the upgrade: */
-				$temp["final"]=$obj->final_state;
-				$temp["primary"]=$obj->primary_state;
-				$temp["mass"]=$obj->mass;
-				$result[]=$temp;
+		$result=array();
+		if( $res=askdb($q) ) {
+				while($obj=$res->fetch_object()){
+						$temp["id"]=$obj->event_id;
+						$temp["checked"]=$obj->checked;
+						/* Before the Oct2018 upgrade, Location tables had only 'event_id'
+			 	 		 * (as 'o_no') and 'checked' columns.  The following were added as
+			 	 		 * part of the upgrade: */
+						$temp["final"]=$obj->final_state;
+						$temp["primary"]=$obj->primary_state;
+						$temp["mass"]=$obj->mass;
+						$result[]=$temp;
+				}
 		}
-		if(isset($result)){
-				return $result;
-		}
+		return $result;
 }
 
 
@@ -319,28 +323,31 @@ function GetEventTableRows($datagroup,$location){
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
-/* Used only in DataTable.php. */ 
+/* Used only in DataTable.php. */
 function getEventsTableRows($dataset,$location) {
 
 		$q="SELECT event_id, final_state, primary_state, mass FROM `".$location."` ORDER BY event_id";
-		$res=askdb($q);
 
 		$result=array();
-		while($obj=$res->fetch_object()){
-				$ds = idToDataset($obj->event_id);
-				if ($dataset == $ds) {
-					 $temp["event_id"] = $obj->event_id;
-					 $temp["dg_label"] = idToIndex($obj->event_id);
-					 //$temp["dataset"] = idToDataset($obj->event_id);
-					 $temp["final"] = $obj->final_state;
-					 $temp["primary"] = $obj->primary_state;
-					 $temp["mass"] = $obj->mass;
-					 $result[] = $temp;
+		if( $res=askdb($q) ) {
+				while( $obj=$res->fetch_object() ) {
+						/* Find the dataset (i.e. 10.6 or 50.7) for the returned
+						 * unique event_id.  If it matches what's requested, add data
+						 * to the return array */
+						$ds = idToDataset($obj->event_id);
+						if ($dataset == $ds) {
+					 	 	 	$temp["event_id"] = $obj->event_id;
+					 	 		$temp["dg_label"] = idToIndex($obj->event_id);
+					 	 		//$temp["dataset"] = idToDataset($obj->event_id);
+					 	 		$temp["final"] = $obj->final_state;
+					 	 		$temp["primary"] = $obj->primary_state;
+					 	 		$temp["mass"] = $obj->mass;
+					 	 		$result[] = $temp;
+						}
 				}
 		}
-		if(isset($result)){
-				return $result;
-		}
+		return $result;
+
 }
 
 
