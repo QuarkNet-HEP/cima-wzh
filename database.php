@@ -948,30 +948,30 @@ function GenerateHistogramData($location){
 
 	/* Get masses for this location */
 	$q="SELECT final_state, mass FROM `".$location."` WHERE mass IS NOT NULL";
-	$result=askdb($q);
 
-	while($row = $result->fetch_array()){
-		$final = $row['final_state'];
-		$mass = $row['mass'];
+	if( $result=askdb($q) ) {
+			while($row = $result->fetch_array()){
+					$final = $row['final_state'];
+					$mass = $row['mass'];
 
-		/* Calculate the bin number */
-		if ( in_array($final, $twoLeptonList) ) {
-			# Find the bin the mass belongs in
-			# bin counting is *zero-indexed*
-			$binNo = floor( ($mass - $x_min_2l)/$bin_2l );
-			# The bin might be outside of the bounds we've set for the chart
-			if ( ($binNo >= 0) and ($binNo < $numBins_2l) ) {
-				/* Add to the bin */
-				$data_2l[$binNo]++;
+					/* Calculate the bin number */
+					if ( in_array($final, $twoLeptonList) ) {
+						 	# Find the bin the mass belongs in
+							# bin counting is *zero-indexed*
+							$binNo = floor( ($mass - $x_min_2l)/$bin_2l );
+							# The bin might be outside of the bounds we've set for the chart
+							if ( ($binNo >= 0) and ($binNo < $numBins_2l) ) {
+								 	/* Add to the bin */
+									$data_2l[$binNo]++;
+							}
+					} elseif ( in_array($final, $fourLeptonList) ) {
+							$binNo = floor( ($mass - $x_min_4l)/$bin_4l );
+							if ( ($binNo >= 0) and ($binNo < $numBins_4l) ) {
+								 	/* Add to the bin */
+									$data_4l[$binNo]++;
+							}
+					}
 			}
-		} elseif ( in_array($final, $fourLeptonList) ) {
-			$binNo = floor( ($mass - $x_min_4l)/$bin_4l );
-			if ( ($binNo >= 0) and ($binNo < $numBins_4l) ) {
-				/* Add to the bin */
-				$data_4l[$binNo]++;
-			}
-		}
-
 	}
 
 	/* Create semicolon-separated strings out of the data */
