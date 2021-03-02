@@ -138,7 +138,7 @@ function GetFreeEvents($datagroup,$location){
 	/* Location tables don't have a 'datagroup_id' column.  The WHERE clause
 	 * in the subquery doesn't throw an error, but what does it accomplish? */
 	/*$q="SELECT event_id FROM Events WHERE datagroup_id=".$datagroup." AND NOT event_id IN (SELECT event_id FROM `".$location."` WHERE datagroup_id=".$datagroup.")";*/
-	
+
 	$q="SELECT event_id FROM Events WHERE datagroup_id=".$datagroup." AND NOT event_id IN (SELECT event_id FROM `".$location."`)";
 	$res=askdb($q);
 	while($obj=$res->fetch_object()){
@@ -287,14 +287,14 @@ function GetEvents($datagroup,$location){
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
-/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */ 
+/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */
 function GetEventTableRows($datagroup,$location){
 
 		$q="SELECT `".$location."`.event_id, Events.datagroup_id, Events.g_index, `".$location."`.final_state, `".$location."`.primary_state, `".$location."`.mass FROM `".$location."` INNER JOIN Events ON `".$location."`.event_id=Events.event_id WHERE `".$location."`.event_id IN (SELECT event_id FROM Events WHERE datagroup_id=".$datagroup.") ORDER BY `".$location."`.event_id";
 
 		$res=askdb($q);
 
-		while($obj=$res->fetch_object()){ 
+		while($obj=$res->fetch_object()){
 				$temp["event_id"]=$obj->event_id;
 				/* 'datagroup_id' and 'g_index' are in the table, but aren't used
 				 * directly to create rows.  Uncomment these lines to make them
@@ -319,7 +319,7 @@ function GetEventTableRows($datagroup,$location){
  * event_id, the dataset index, and the user-entered final state, primary
  * state, and mass.
  */
-/* In CIMA-WZH, this is basically just reading out the Location table. */	 
+/* In CIMA-WZH, this is basically just reading out the Location table. */
 /* Inputs: $datagroup is a datagroup number.
  *	 			 $location is a Location table in the Masterclass database.
  */
@@ -351,7 +351,7 @@ function getEventsTableRows($dataset,$location) {
 }
 
 
-/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */ 
+/* Used only in DataTable.php.  Currently unused? - JG 23Dec2019 */
 function GetNext($finEvents,$dg_id){
 
 		$k=0;
@@ -366,7 +366,7 @@ function GetNext($finEvents,$dg_id){
 								break;
 						}
 				}
-				
+
 				$q="SELECT * from Events WHERE datagroup_id=".$dg_id." AND event_id=".$k;
 
 		}else{
@@ -454,7 +454,8 @@ function getNextUncompletedEvent($tabData,$dataset) {
 
 /* Added Oct2018 as expansion of WriteEntry(), since removed, to handle
  * new data format */
-/* Used only in DataTable.php. */ 
+/* Used only in DataTable.php.  When called from that page, $location WILL
+ * include the Location Table prefix. */
 function WriteRow($location,$event_id,$finalState,$primaryState,$mass){
 
 		/* Check to see if this event_id already has an entry in the Location
@@ -498,13 +499,13 @@ function DeleteTable($tableid){
 
 		$q="DELETE FROM Tables WHERE id='".$tableid."'";
 		askdb($q);
-	
+
 		$q="DELETE FROM TableGroups WHERE tableid=".$tableid;
 		askdb($q);
 
 		$q="DELETE FROM EventTables WHERE tableid=".$tableid;
 		askdb($q);
-	
+
 		$q="DELETE FROM groupConnect WHERE tableid=".$tableid;
 		askdb($q);
 
