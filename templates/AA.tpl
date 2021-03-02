@@ -1,7 +1,7 @@
 <!-- This template consists of three forms.  The first two POST to MCEvents.php.
 		 The third POSTs to Classes.php, which includes this file. -->
 
-<div class=Cnt>
+<div class="Cnt">
 	<!-- First form: Create a New Masterclass Event -->
 	<form action="MCEvents.php" method="post">
 		<div class=row>
@@ -62,8 +62,8 @@
 		<div class=col-md-10>
 			<h3>Manage Tables:</h3>
 		</div>
-	</div><!-- Extraneous close div? -->
-	<!-- Techically, this seems to close the class=Cnt div while leaving the <form> open -->
+	<!--</div>--><!-- Extraneous close div? -->
+	<!-- Techically, this seems to close the .Cnt div while leaving the <form> open -->
 	<!-- Or maybe it closes the <div class=row> above.  Not sure how interlaced blocks work -->
 	<!-- Still, seems like an error on the whole -->
 
