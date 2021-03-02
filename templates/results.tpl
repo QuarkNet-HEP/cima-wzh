@@ -1,6 +1,6 @@
-<div class=row>
-	<div class=col-md-1></div>
-	<div class=col-md-10><?php 
+<div class="row">
+	<div class="col-md-1"></div>
+	<div class="col-md-10"><?php
 		if(isset($_SESSION["comb"])){
 			/* If we are combining data: */
 			echo'<strong> Tables: </strong>  <span name="database"> '; 
@@ -20,8 +20,8 @@
 if(!isset($_SESSION["comb"])){
 	/* If we aren't combining data: */
 	echo'<div class=row>
-		<div class=col-md-1></div>
-		<div class=col-md-10>
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
 			<strong> location: </strong>
 			<span name="database"> '.$_SESSION["displayLocation"].'</span>
 		</div>';
@@ -29,10 +29,10 @@ if(!isset($_SESSION["comb"])){
 }?>
 
 
-<div class=Cnt>
-	<div class=row>
-		<div class=col-md-2></div>
-		<div class=col-md-8>
+<div class="Cnt">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
 			<table class="table">
 				<thead>
 					<tr>
