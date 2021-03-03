@@ -294,7 +294,7 @@ function GetEventTableRows($datagroup,$location){
 
 		$res=askdb($q);
 
-		while($obj=$res->fetch_object()){
+		while( $obj=$res->fetch_object() ){
 				$temp["event_id"]=$obj->event_id;
 				/* 'datagroup_id' and 'g_index' are in the table, but aren't used
 				 * directly to create rows.  Uncomment these lines to make them
@@ -460,12 +460,14 @@ function WriteRow($location,$event_id,$finalState,$primaryState,$mass){
 
 		/* Check to see if this event_id already has an entry in the Location
 	 	 * table: */
-		$q="SELECT event_id FROM `".$location."` WHERE event_id=".$event_id;
-		$res=askdb($q);
+		$q = "SELECT event_id FROM `".$location."` WHERE event_id=".$event_id;
+		$result = askdb($q);
 
-		/* if $res is truthy, event_id already exists, and INSERT should fail */
-		if(!$res->fetch_object()){
-				$q="INSERT INTO `".$location."` (event_id,final_state,primary_state,mass) VALUES (".$event_id.",'".$finalState."','".$primaryState."',".$mass.")";
+		/* If the above query finds zero rows, $result = mysqli_connect->query()
+		 * will return FALSE, a boolean.  We use this as a test. */
+		if ( is_bool($result) || mysqli_num_rows($result) == 0 ) {
+
+        $q="INSERT INTO `".$location."` (event_id,final_state,primary_state,mass) VALUES (".$event_id.",'".$finalState."','".$primaryState."',".$mass.")";
 
 				askdb($q);
 		}
@@ -580,10 +582,13 @@ function AddGroupsToTable($tableid,$Groups,$PostAdded=0){
 		if(is_array($Groups)){
 			for($i=0;$i<count($Groups);$i++){
 
-				$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND datagroup_id=".$Groups[$i];
-				$res=askdb($q);
+				/* Check to see if the datagroup is already assigned to the table */
+				$q = "SELECT * FROM TableGroups WHERE tableid=".$tableid." AND datagroup_id=".$Groups[$i];
+				$result = askdb($q);
 
-				if(!$res->fetch_object()){
+				/* If the above query finds zero rows, $result = mysqli_connect->query()
+		 		 * will return FALSE, a boolean.  We use this as a test. */
+				if ( is_bool($result) || mysqli_num_rows($result) == 0 ) {
 
 					$q="INSERT INTO TableGroups (datagroup_id,tableid,postAdded) VALUES (".$Groups[$i].", ".$tableid.", $PostAdded)";
 					askdb($q);
@@ -593,11 +598,14 @@ function AddGroupsToTable($tableid,$Groups,$PostAdded=0){
 		} else {
 			/* If $Groups is not an array */
 
-			$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND datagroup_id=".$Groups;
-			$res=askdb($q);
+			$q = "SELECT * FROM TableGroups WHERE tableid=".$tableid." AND datagroup_id=".$Groups;
+			$result = askdb($q);
 
-			if(!$res->fetch_object()){
-				$q="INSERT INTO TableGroups (datagroup_id,tableid,postAdded) VALUES (".$Groups.", ".$tableid.", $PostAdded)";
+			/* If the above query finds zero rows, $result = mysqli_connect->query()
+		 	 * will return FALSE, a boolean.  We use this as a test. */
+			if ( is_bool($result) || mysqli_num_rows($result) == 0 ) {
+
+				$q = "INSERT INTO TableGroups (datagroup_id,tableid,postAdded) VALUES (".$Groups.", ".$tableid.", $PostAdded)";
 				askdb($q);
 			}
 		}
@@ -620,32 +628,34 @@ function addDatasetsToLocation($tableid,$Groups,$PostAdded=0){
 
 				/* First check to see if the dataset has already been assigned to
 				 * TableGroups: */
-				$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups[$i];
-				$res=askdb($q);
+				$q = "SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups[$i];
+				$result = askdb($q);
 
-				/* If not, INSERT it. */
-				if(!$res->fetch_object()){
+		 		/* If the above query finds zero rows, $result = mysqli_connect->query()
+		  	 * will return FALSE, a boolean.  We use this as a test. */
+				if ( is_bool($result) || mysqli_num_rows($result) == 0 ) {
 					/* `datagroup_id` is NOT NULL, so we have to insert it whether we're
 					 * using it or not.
 				 	 * For consistency, insert the `Datagroups.id` value corresponding to
 					 * the N.id given by $Groups */
-					$dg_id=getDatasetId($Groups[$i]);
+					$dg_id = getDatasetId($Groups[$i]);
 
-					$q="INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups[$i].", ".$tableid.", $PostAdded)";
+					$q = "INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups[$i].", ".$tableid.", $PostAdded)";
 					askdb($q);
-
 				}
 			}
 		} else {
 			/* If $Groups is not an array */
 
-			$q="SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups;
-			$res=askdb($q);
+			$q = "SELECT * FROM TableGroups WHERE tableid=".$tableid." AND dataset=".$Groups;
+			$result = askdb($q);
 
-			if(!$res->fetch_object()){
-				$dg_id=getDatasetId($Groups);
+			/* If the above query finds zero rows, $result = mysqli_connect->query()
+		 	 * will return FALSE, a boolean.  We use this as a test. */
+			if ( is_bool($result) || mysqli_num_rows($result) == 0 ) {
+				$dg_id = getDatasetId($Groups);
 
-				$q="INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups.", ".$tableid.", $PostAdded)";
+				$q = "INSERT INTO TableGroups (datagroup_id,dataset,tableid,postAdded) VALUES (".$dg_id.", ".$Groups.", ".$tableid.", $PostAdded)";
 				askdb($q);
 			}
 		}
@@ -720,25 +730,25 @@ function unassignDatasets($tables,$groups){
  */
 function CreateTable($locationName,$datagroups){
 	/* Prefex for names of Location tables to help identify and sort them */
-	$locPrefix=GetLocationPrefix();
+	$locPrefix = GetLocationPrefix();
 
 	/* Check to see if the name is already registered in the 'Tables' table: */
 	$nameNotFound = TRUE;
 
 	// New-style names:
-	$q="SELECT name FROM Tables WHERE name='".$locPrefix.$locationName."'";
-	$res=askdb($q);
-	if($res->fetch_object()){ $nameNotFound = FALSE; }
+	$q = "SELECT name FROM Tables WHERE name='".$locPrefix.$locationName."'";
+	$result = askdb($q);
+	if( $result->fetch_object() ){ $nameNotFound = FALSE; }
 
 	// Old-style names:
 	/* This should be deletable after upgrades are complete */
-	$q="SELECT name FROM Tables WHERE name='".$locationName."'";
-	$res=askdb($q);
-	if($res->fetch_object()){ $nameNotFound = FALSE; }
+	$q = "SELECT name FROM Tables WHERE name='".$locationName."'";
+	$result = askdb($q);
+	if( $result->fetch_object() ){ $nameNotFound = FALSE; }
 
 	/* If the table doesn't already exist, and if $locationName is properly
 		 defined, create the Location table */
-	if($nameNotFound && isset($locationName) && $locationName!=""){
+	if( $nameNotFound && isset($locationName) && $locationName!="" ){
 
 		// Should final_state and primary_state be NOT NULL?
 		/*
@@ -746,34 +756,34 @@ function CreateTable($locationName,$datagroups){
 		*/
 		/* Removing FK to allow Location tables to store unique id's for datasets.
 		 *   JG 2Dec2019 */
-		$q="CREATE TABLE `".$locPrefix.$locationName."` (event_id INT NOT NULL, checked VARCHAR(20), final_state VARCHAR(10), primary_state VARCHAR(10), mass DOUBLE)";
+		$q = "CREATE TABLE `".$locPrefix.$locationName."` (event_id INT NOT NULL, checked VARCHAR(20), final_state VARCHAR(10), primary_state VARCHAR(10), mass DOUBLE)";
 
 		askdb($q);
 
 		/* Inserts a new row of all-zero data strings in the `histograms` table.
-			 `histograms.id` AUTO_INCREMENTs. */
+		 * `histograms.id` AUTO_INCREMENTs. */
 		CreateHist();
 
 		/* 'histograms' MAX(id) will be the value created via AUTO_INCREMENT by
-			 the call to CreateHist() immediately above. */
-		$q="SELECT MAX(id) AS id FROM histograms";
-		$res=askdb($q);
-		$histid=$res->fetch_object()->id;
+		 * the call to CreateHist() immediately above. */
+		$q = "SELECT MAX(id) AS id FROM histograms";
+		$result = askdb($q);
+		$histid = $result->fetch_object()->id;
 
 		/* Register the Location table name in 'Tables' *with* the location prefix.
-			 This will AUTO_INCREMENT Tables.id */
-		$q="INSERT INTO Tables (name,histogram_id) VALUES ('".$locPrefix.$locationName."', ".$histid.")";
+		 * This will AUTO_INCREMENT Tables.id */
+		$q = "INSERT INTO Tables (name,histogram_id) VALUES ('".$locPrefix.$locationName."', ".$histid.")";
 		askdb($q);
 
 		/* 'Tables' MAX(id) will be the value created via AUTO_INCREMENT by
-			 the call to askdb() immediately above. */
-		$q="SELECT MAX(id) AS id FROM Tables";
-		$res=askdb($q);
-		$tableid=$res->fetch_object()->id;
+		 * the call to askdb() immediately above. */
+		$q = "SELECT MAX(id) AS id FROM Tables";
+		$result = askdb($q);
+		$tableid = $result->fetch_object()->id;
 
 		/* AddGroupsToTable will add the Location table's Tables.id value and
-			 the input datagroup_id values of $datagroups to the 'TableGroups' table */
-		if(isset($datagroups)){
+		 * the input datagroup_id values of $datagroups to the 'TableGroups' table */
+		if( isset($datagroups) ){
 			AddGroupsToTable($tableid,$datagroups);
 		}
 
@@ -980,10 +990,10 @@ function GenerateHistogramData($location){
 	$newData_4l = implode(";", $data_4l);
 
 	/* Get the histogram id value for this location */
-	$q="SELECT histogram_id FROM Tables WHERE `name`='".$location."'";
-	$result=askdb($q);
-	if($obj = $result->fetch_object()){
-		$id=$obj->histogram_id;
+	$q = "SELECT histogram_id FROM Tables WHERE `name`='".$location."'";
+	$result = askdb($q);
+	if( $obj = $result->fetch_object() ){
+		$id = $obj->histogram_id;
 	}
 
 	/* Call the UpdateHistogram() function database.php to change the
@@ -1043,38 +1053,38 @@ function GetTestData($bins_2l, $bins_4l){
 /* Create an entry in the MclassEvents table if it doesn't already exist */
 function CreateEvent($name){
 	/* See if $name already exists in the 'MclassEvents' table */
-	$q="SELECT * FROM MclassEvents WHERE name='".$name."'";
-	$res=askdb($q);
-	/* if $res->fetch_object() returns a "truthy" value, set $test equal to
+	$q = "SELECT * FROM MclassEvents WHERE name='".$name."'";
+	$result = askdb($q);
+	/* if $result->fetch_object() returns a "truthy" value, set $test equal to
 		 that value's 'name' */
-	if($obj = $res->fetch_object()){
-		$test=$obj->name;
+	if( $obj = $result->fetch_object() ){
+		$test = $obj->name;
 	}
-	if(!isset($test)){
+	if( !isset($test) ){
 		/* If $test could not be set,  must not exist in the DB.
-			 Create the event's row in the 'MclassEvents' table.
-			 MclassEvents.id is the PK and will auto-increment. */
-		$q="INSERT INTO MclassEvents (active,name) VALUES ( 1,'".$name."')";
+		 * Create the event's row in the 'MclassEvents' table.
+		 * MclassEvents.id is the PK and will auto-increment. */
+		$q = "INSERT INTO MclassEvents (active,name) VALUES ( 1,'".$name."')";
 		askdb($q);
-	}else{
+	} else {
 		return 0;
 	}
 }
 
 
 function GetLastEvent(){
-	$q="SELECT MAX(id) AS id FROM MclassEvents";
-	$res=askdb($q);
-	if($obj = $res->fetch_object()){
+	$q = "SELECT MAX(id) AS id FROM MclassEvents";
+	$result = askdb($q);
+	if( $obj = $result->fetch_object() ){
 		return GetMClassEvent($obj->id);
 	}
 }
 
 
 function GetMClassEvent($id){
-	$q="SELECT * FROM MclassEvents WHERE id='".$id."'";
-	$res=askdb($q);
-	if($obj = $res->fetch_object()){
+	$q = "SELECT * FROM MclassEvents WHERE id='".$id."'";
+	$res = askdb($q);
+	if( $obj = $res->fetch_object() ){
 		$result["name"]=$obj->name;
 		$result["id"]=$obj->id;
 		$result["active"]=$obj->active;
@@ -1091,9 +1101,9 @@ function GetMClassEvent($id){
 function GetTables($event){
 	/* SELECT tableid FROM EventTables WHERE MclassEventID=$event
 		 returns the Tables.id value for the given MclassEventID */
-	$q="SELECT * FROM Tables WHERE id IN (SELECT tableid FROM EventTables WHERE MclassEventID='".$event."')";
-	$res=askdb($q);
-	while($obj = $res->fetch_object()){
+	$q = "SELECT * FROM Tables WHERE id IN (SELECT tableid FROM EventTables WHERE MclassEventID='".$event."')";
+	$res = askdb($q);
+	while( $obj = $res->fetch_object() ){
 		$temp["id"]=$obj->id;
 		$temp["name"]=$obj->name;
 		/* Added Oct2018 to accommodate Location prefix: */
@@ -1101,7 +1111,7 @@ function GetTables($event){
 		$temp["displayName"]=str_replace($locPrefix, '', $temp["name"]);
 		$result[]=$temp;
 	}
-	if(isset($result)){
+	if( isset($result) ){
 		return $result;
 	}
 }
